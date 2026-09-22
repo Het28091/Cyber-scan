@@ -6,7 +6,7 @@ class Provider:
     """Adapter boundary: metadata in, schema-validated suggestions out; no tools."""
     def __init__(self,cfg):
         self.cfg=cfg;self.a=cfg.ai;self.requests=0;self.tokens=0;self.cost=0
-        if not self.a.enabled or cfg.mode=='offline': raise PolicyError('AI disabled')
+        if not self.a.enabled or cfg.mode in ('offline','internet'): raise PolicyError('AI disabled')
         origin,path,host,port=canonical(self.a.endpoint)
         if self.a.provider=='ollama' and any(not ipaddress.ip_address(x).is_loopback for x in self.a.approved_ips): raise PolicyError('local AI must be loopback')
         if cfg.mode=='connected-ai' and not self.a.endpoint.startswith('https://'): raise PolicyError('API AI requires HTTPS')

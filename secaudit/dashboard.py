@@ -48,7 +48,7 @@ def serve(root,port=8765):
                     name='index.html' if path=='/' else path.split('/')[-1]
                     kind={'index.html':'text/html; charset=utf-8','app.js':'text/javascript; charset=utf-8','style.css':'text/css; charset=utf-8'}[name]
                     self.send((static/name).read_bytes(),kind);return
-                if path=='/api/bootstrap': self.send({'csrf':csrf,'version':__version__,'presets':['offline','local-ai','api-ai'],'network':'Local dashboard','max_upload_bytes':10_000_000});return
+                if path=='/api/bootstrap': self.send({'csrf':csrf,'version':__version__,'presets':['internet','offline'],'network':'Local dashboard','max_upload_bytes':10_000_000});return
                 if path=='/api/jobs': self.send(jobs.list());return
                 if path=='/api/runs':
                     rows=[]

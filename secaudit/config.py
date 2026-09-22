@@ -38,6 +38,7 @@ class Config:
     dataset_max_age_days: int=30
     block_stale_data: bool=False
     scanners: dict=field(default_factory=dict)
+    online_package_limit: int=25
     pdf_required: bool=False
     max_files: int=5000
     max_file_bytes: int=1_000_000
@@ -47,11 +48,11 @@ class Config:
     def validate(self):
         for key in ('source','target','scope','output','advisory_dataset'):
             if not isinstance(getattr(self,key),str): raise PolicyError('paths and target must be strings')
-        if self.mode not in ('offline','local-ai','connected-ai'): raise PolicyError('invalid mode')
+        if self.mode not in ('offline','internet','local-ai','connected-ai'): raise PolicyError('invalid mode')
         if type(self.strict) is not bool or type(self.ai.enabled) is not bool: raise PolicyError('booleans required')
         if not isinstance(self.modules,list) or not all(isinstance(x,str) for x in self.modules): raise PolicyError('modules must be a list')
         if len(set(self.modules))!=len(self.modules): raise PolicyError('duplicate modules')
-        if set(self.modules)-{'source','secrets','config','dependencies','openapi','web','gitleaks','semgrep','trivy','syft'}: raise PolicyError('unknown module')
+        if set(self.modules)-{'source','secrets','config','dependencies','openapi','web','gitleaks','semgrep','trivy','syft','online_dependencies'}: raise PolicyError('unknown module')
         for key,upper in [('max_files',50000),('max_file_bytes',10_000_000),('max_total_bytes',500_000_000),('timeout',300)]:
             if type(getattr(self,key)) is not int or not 1<=getattr(self,key)<=upper: raise PolicyError(f'invalid {key}')
         if type(self.dataset_max_age_days) is not int or not 0<=self.dataset_max_age_days<=36500: raise PolicyError('invalid dataset freshness window')
@@ -60,7 +61,9 @@ class Config:
         for options in self.scanners.values():
             if not isinstance(options,dict) or set(options)-{'executable','rules','cache'} or not all(isinstance(v,str) for v in options.values()): raise PolicyError('invalid scanner options')
         a=self.ai
-        if self.mode=='offline' and a.enabled: raise PolicyError('AI is forbidden in offline mode')
+        if self.mode in ('offline','internet') and a.enabled: raise PolicyError('AI is forbidden in non-AI modes')
+        if 'online_dependencies' in self.modules and self.mode!='internet': raise PolicyError('online dependencies require internet mode')
+        if type(self.online_package_limit) is not int or not 1<=self.online_package_limit<=100: raise PolicyError('online package limit must be 1..100')
         if a.enabled and ((self.mode=='local-ai' and a.provider!='ollama') or (self.mode=='connected-ai' and a.provider!='openai-compatible')): raise PolicyError('provider does not match mode')
         if a.enabled and (not a.model or not a.endpoint or not a.approved_ips): raise PolicyError('AI endpoint, model and pinned IPs required')
         for key in ('timeout','context_tokens','output_tokens','request_budget','token_budget'):

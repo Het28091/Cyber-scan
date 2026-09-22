@@ -1,2 +1,2 @@
-"""Offline-first bounded application security assessment."""
-__version__ = '0.3.0'
+"""Linux non-AI security assessment with explicit network modes."""
+__version__ = '0.4.0'

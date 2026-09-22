@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0 — 2026-09-22
+
+- Linux-only setup, launch and CI; removed Windows/WSL wrappers.
+- Non-AI internet mode with scoped public targets and optional OSV package queries.
+- Strict-offline public-IP and online-module restrictions.
+- Scope creation helper; updated dashboard mode and disclosure text.
+- Progress/scope documentation and 51 passing tests; live OSV access remains unverified.
+
 ## 0.3.0 — 2026-09-22
 
 - Interactive dashboard with authenticated job submission, ZIP uploads, cancellation, finding exploration and available-report downloads.

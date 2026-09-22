@@ -1,0 +1,16 @@
+{
+  "mode": "internet",
+  "source": "demo/source",
+  "output": "runs",
+  "modules": [
+    "source",
+    "secrets",
+    "config",
+    "openapi",
+    "online_dependencies"
+  ],
+  "online_package_limit": 25,
+  "ai": {
+    "enabled": false
+  }
+}

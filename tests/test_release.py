@@ -73,8 +73,8 @@ class ReleaseTests(unittest.TestCase):
                     if csrf:headers['X-CSRF-Token']=csrf
                     conn.request(method,path,body=json.dumps(payload) if payload is not None else None,headers=headers);r=conn.getresponse();data=r.read();status=r.status;conn.close();return status,data
                 _,body=request('GET','/api/bootstrap');csrf=json.loads(body)['csrf']
-                self.assertEqual(request('POST','/api/jobs',{'source':'demo/source'})[0],403)
-                status,body=request('POST','/api/jobs',{'source':'demo/source'},csrf);self.assertEqual(status,202,body);ident=json.loads(body)['id']
+                self.assertEqual(request('POST','/api/jobs',{'source':'demo/source','preset':'offline'})[0],403)
+                status,body=request('POST','/api/jobs',{'source':'demo/source','preset':'offline'},csrf);self.assertEqual(status,202,body);ident=json.loads(body)['id']
                 for _ in range(100):
                     _,body=request('GET','/api/jobs');job=json.loads(body)[0]
                     if job['status'] not in ('QUEUED','RUNNING'):break

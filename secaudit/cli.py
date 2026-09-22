@@ -9,7 +9,7 @@ from .reporting import reports,LIMITATIONS
 from .store import Store
 
 def scan(cfg,run_id=None):
-    scope=Scope(json.loads(Path(cfg.scope).read_text())) if cfg.target else None
+    scope=Scope(json.loads(Path(cfg.scope).read_text()),allow_public=cfg.mode in ('internet','connected-ai')) if cfg.target else None
     result,provider=doctor(cfg,scope,check_target=bool(cfg.target))
     if not result['ready']: raise PolicyError('Preflight blocked assessment. See preflight_report.txt.')
     if not cfg.source and not cfg.target: raise PolicyError('provide --source or --target')
@@ -20,7 +20,10 @@ def scan(cfg,run_id=None):
     directory=Path(cfg.output)/ident;directory.mkdir(mode=0o700)
     write_json(directory/'preflight_report.json',result)
     atomic(directory/'preflight_report.txt',(Path(cfg.output)/'preflight_report.txt').read_text())
-    run={'id':ident,'status':'RUNNING','started':now(),'mode':cfg.mode,'findings':[],'assets':[],'components':[],'coverage':[],'events':[], 'limitations':LIMITATIONS,'ai_usage':{'enabled':cfg.ai.enabled,'provider':cfg.ai.provider,'verified':'not used'},'ai_suggestions':None}
+    run={'id':ident,'status':'RUNNING','started':now(),'mode':cfg.mode,'network_policy':{'public_targets':cfg.mode in ('internet','connected-ai'),'online_advisories':'online_dependencies' in cfg.modules,'ai_enabled':cfg.ai.enabled},'findings':[],'assets':[],'components':[],'coverage':[],'events':[], 'limitations':LIMITATIONS,'ai_usage':{'enabled':cfg.ai.enabled,'provider':cfg.ai.provider,'verified':'not used'},'ai_suggestions':None}
+    if cfg.mode=='internet':
+        run['events'].append('Internet mode: scoped target access enabled; AI disabled.')
+        if 'online_dependencies' in cfg.modules: run['events'].append('OSV lookups enabled: package ecosystem, name and version may leave this machine; source and credentials are excluded.')
     for row in result['components']:
         if row['status']!='READY': run['events'].append(row['component']+': '+row['status'])
     for name in cfg.modules:
@@ -29,7 +32,7 @@ def scan(cfg,run_id=None):
         reason=unavailable['resolution'] or unavailable['status'] if unavailable else 'Not yet executed'
         run['coverage'].append({'module':name,'status':'NOT TESTED','reason':reason})
     store.save(run)
-    if not cfg.target and not cfg.ai.enabled and not (set(cfg.modules)&EXTERNAL): deny_network()
+    if not cfg.target and not cfg.ai.enabled and 'online_dependencies' not in cfg.modules and not (set(cfg.modules)&EXTERNAL): deny_network()
     all_findings=[];all_assets=[]
     def checkpoint(findings,assets):
         run['findings']=[f.to_dict() for f in dedup(all_findings+findings)];run['assets']=all_assets+assets
@@ -57,6 +60,14 @@ def scan(cfg,run_id=None):
                 run['datasets']=[ds.manifest]
             except Exception:
                 run['events'].append('Dependency assessment unavailable; dataset validation failed.')
+        if cfg.source and 'online_dependencies' in cfg.modules:
+            from .online import scan_dependencies
+            fs,usage,events=scan_dependencies(run['components'],cfg)
+            all_findings+=fs;run['online_advisories']=usage;run['events']+=events
+            checkpoint([],[])
+            for row in run['coverage']:
+                if row['module']=='online_dependencies': row.update(status='PARTIAL' if usage['responses'] else 'NOT TESTED',reason=f"OSV: {usage['completed']} package queries completed, {usage['failed']} failed, {usage['skipped']} skipped. Inventory and advisory coverage are limited.")
+            if cfg.strict and (usage['failed'] or usage['skipped']): raise PolicyError('Required online advisory coverage incomplete')
         for name in cfg.modules:
             if name in EXTERNAL and cfg.source:
                 ready=any(r['component']==name and r['status']=='READY' for r in result['components'])
@@ -102,7 +113,7 @@ def scan(cfg,run_id=None):
 
 def main(argv=None):
     os.umask(0o077)
-    p=argparse.ArgumentParser(prog='secaudit',description='Bounded offline-first security assessment. Linux/Python 3.11+.')
+    p=argparse.ArgumentParser(prog='secaudit',description='Linux security assessment: internet or offline, no AI required. Linux/Python 3.11+.')
     p.add_argument('--version',action='version',version=__version__)
     sub=p.add_subparsers(dest='cmd',required=True)
     for name in ('doctor','scan'):
@@ -111,6 +122,7 @@ def main(argv=None):
             q.add_argument('--archive');q.add_argument('--run-id')
     q=sub.add_parser('dashboard');q.add_argument('--output',default='runs');q.add_argument('--port',type=int,default=8765)
     q=sub.add_parser('resume',help='Recover interrupted state and regenerate saved reports; never repeat requests');q.add_argument('run_id');q.add_argument('--output',default='runs')
+    q=sub.add_parser('scope',help='Create an authorization record and current DNS pins; no scan');q.add_argument('--origin',required=True);q.add_argument('--authorization',required=True);q.add_argument('--exclude',action='append',default=[]);q.add_argument('--output',required=True)
     q=sub.add_parser('dataset',help='Build an integrity manifest for an operator-supplied advisory snapshot');q.add_argument('--input',required=True);q.add_argument('--output',required=True);q.add_argument('--source',required=True);q.add_argument('--version',required=True);q.add_argument('--published-at',required=True)
     q=sub.add_parser('bundle');b=q.add_subparsers(dest='action',required=True)
     r=b.add_parser('prepare');r.add_argument('--output',required=True);r.add_argument('--download-dependencies',action='store_true',help='Explicit connected preparation: download locked PDF wheels')
@@ -119,6 +131,9 @@ def main(argv=None):
         if name=='install': r.add_argument('--destination',default='installed')
     a=p.parse_args(argv)
     try:
+        if a.cmd=='scope':
+            from .scopefile import create
+            create(a.origin,a.authorization,a.exclude,a.output);print('Scope file created. Review paths and IP pins before scanning.');return 0
         if a.cmd=='dataset':
             from .datasets import build_snapshot
             build_snapshot(a.input,a.output,a.source,a.version,a.published_at);print('Validated advisory snapshot saved.');return 0
@@ -138,7 +153,7 @@ def main(argv=None):
         if cfg.target and 'web' not in cfg.modules: cfg.modules.append('web')
         cfg.validate()
         if a.cmd=='doctor':
-            scope=Scope(json.loads(Path(cfg.scope).read_text())) if cfg.target else None
+            scope=Scope(json.loads(Path(cfg.scope).read_text()),allow_public=cfg.mode in ('internet','connected-ai')) if cfg.target else None
             result,_=doctor(cfg,scope,check_target=bool(cfg.target))
             print(json.dumps(result,indent=2) if a.json else (Path(cfg.output)/'preflight_report.txt').read_text());return 0 if result['ready'] else 2
         if a.archive:

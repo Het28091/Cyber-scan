@@ -5,7 +5,7 @@ from .security import PolicyError,atomic,digest,write_json,extract_zip
 from . import __version__
 
 ALLOWED=['secaudit.pyz','source.zip','LICENSE','README.md','requirements.lock']
-SOURCE_PATHS=['secaudit','scripts','config','demo/source','demo/server.py','tests','docs','setup.sh','run.sh','setup.cmd','run.cmd','Makefile','scope.json','requirements.lock','LICENSE','README.md']
+SOURCE_PATHS=['secaudit','scripts','config','demo/source','demo/server.py','tests','docs','setup.sh','run.sh','Makefile','scope.json','requirements.lock','LICENSE','README.md']
 def prepare(output,download_dependencies=False):
     out=Path(output)
     if out.exists(): raise PolicyError('bundle output must not already exist')

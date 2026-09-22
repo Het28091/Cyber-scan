@@ -28,8 +28,8 @@ class Jobs:
         return sorted(out,key=lambda j:j['created'],reverse=True)[:200]
     def submit(self,data):
         if set(data)-{'source','target','scope','preset','archive_base64','archive_name'}: raise PolicyError('unknown job fields')
-        preset=data.get('preset','offline')
-        if preset not in ('offline','local-ai','api-ai'): raise PolicyError('invalid preset')
+        preset=data.get('preset','internet')
+        if preset not in ('offline','internet'): raise PolicyError('invalid preset')
         project=Path(__file__).resolve().parent.parent
         cfg=load(project/'config'/(preset+'.json'))
         ident=uuid.uuid4().hex

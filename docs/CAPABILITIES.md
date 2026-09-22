@@ -1,11 +1,11 @@
-# Capability matrix — 0.3.0
+# Capability matrix — 0.4.0
 
 The original brief is a design target. This release implements a usable bounded
 assessment workflow; it does not satisfy every advanced capability in that brief.
 
 | Capability | Implemented boundary | Verification |
 |---|---|---|
-| Windows setup and launch | WSL2 Ubuntu; not native Win32 | Path/unit checks; actual Windows run outstanding |
+| Internet / no AI | Scoped public targets plus optional OSV; AI rejected | Policy and provider fixtures; live OSV blocked here |
 | Linux automatic setup | venv and hash-locked PDF packages | See verification record |
 | Local dashboard | Overview, jobs, upload, search, detail, coverage, downloads | HTTP integration; visual status in verification record |
 | Job queue | Single worker, bounded queue, cancellation, restart interruption | Local tests |

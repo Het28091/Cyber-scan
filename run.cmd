@@ -1,4 +1,0 @@
-@echo off
-setlocal
-powershell.exe -NoProfile -File "%~dp0scripts\run-windows.ps1" %*
-exit /b %ERRORLEVEL%

@@ -20,7 +20,7 @@ def doctor(cfg,scope=None,check_target=False):
         available=os.sysconf('SC_AVPHYS_PAGES')*os.sysconf('SC_PAGE_SIZE')
         row('resources','READY' if available>=128*1024*1024 else 'REQUIRED_MISSING',f'{os.cpu_count()} CPUs', 'At least 128 MiB available memory required.')
     except (ValueError,OSError): row('resources','INCOMPATIBLE',resolution='Cannot determine available memory.')
-    if not cfg.target and not cfg.ai.enabled:
+    if not cfg.target and not cfg.ai.enabled and 'online_dependencies' not in cfg.modules:
         probe='import sys; sys.path.insert(0, '+repr(str(Path(__file__).resolve().parent.parent))+'); from secaudit.security import deny_network; import socket; deny_network();\ntry: socket.socket()\nexcept PermissionError: raise SystemExit(0)\nraise SystemExit(1)'
         try:
             p=subprocess.run([sys.executable,'-c',probe],capture_output=True,timeout=5)
@@ -29,6 +29,7 @@ def doctor(cfg,scope=None,check_target=False):
     if cfg.target:
         try:
             if scope is None: raise PolicyError('scope missing')
+            scope.allow_public=cfg.mode in ('internet','connected-ai')
             scope.check(cfg.target)
             row('target scope','READY')
             if check_target:
@@ -47,6 +48,9 @@ def doctor(cfg,scope=None,check_target=False):
                 message=str(e) if isinstance(e,PolicyError) else 'Adapter preflight failed'
                 status=next((x for x in ('POLICY_BLOCKED','DATA_MISSING','INCOMPATIBLE','REQUIRED_MISSING') if message.startswith(x)),'INCOMPATIBLE')
                 row(name,status,resolution=message,required=cfg.strict)
+        elif name=='online_dependencies':
+            if not cfg.source: row(name,'OPTIONAL_UNAVAILABLE',resolution='Provide a source inventory.',required=cfg.strict)
+            else: row(name,'READY','OSV API v1',resolution='Internet mode permits package name/version disclosure to api.osv.dev. Service reachability is recorded when queries run; no preflight query is sent.')
         elif name=='dependencies':
             try:
                 from .datasets import Dataset

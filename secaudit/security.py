@@ -69,7 +69,8 @@ def canonical(url):
     return f'{u.scheme}://{host_text}:{port}', decoded, host, port
 
 class Scope:
-    def __init__(self, data):
+    def __init__(self, data, allow_public=True):
+        self.allow_public=allow_public
         required={'authorization','origins','exclusions','environment','profiles','max_requests','max_seconds','allowed_ips'}
         if not required<=data.keys(): raise PolicyError('scope is incomplete')
         if not isinstance(data['authorization'],str) or len(data['authorization'].strip())<5: raise PolicyError('authorization reference required')
@@ -90,6 +91,7 @@ class Scope:
         def matches(entries): return any(origin==o and (p=='/' or path==p or path.startswith(p.rstrip('/')+'/')) for o,p in entries)
         if matches(self.deny) or not matches(self.allow): raise PolicyError('URL outside authorized scope')
         addresses={str(ipaddress.ip_address(r[4][0])) for r in socket.getaddrinfo(host,port,type=socket.SOCK_STREAM)}
+        if not self.allow_public and any(ipaddress.ip_address(x).is_global for x in addresses): raise PolicyError('public targets require internet mode')
         if not addresses or not addresses<=self.ips: raise PolicyError('DNS result differs from authorized IP pins')
         return sorted(addresses)[0]
 

@@ -60,3 +60,11 @@ The terminal `COMPLETED_WITH_LIMITATIONS` is not a security pass.
 external subprocesses. `datasets` validates local advisory integrity and freshness.
 `frameworks` applies reviewed evidence mappings. `pdf_report` renders locally using
 ReportLab and its packaged fonts. Report generation never resolves remote assets.
+
+## Linux / non-AI internet mode (0.4)
+
+`internet` mode permits scoped target connections and optional fixed-endpoint OSV
+queries. `online` validates and minimizes package metadata; returned advisories are
+never executable. `scopefile` prepares explicit authorization records and DNS pins.
+Offline/local-AI target policy rejects public IPs. The dashboard exposes only offline
+and internet non-AI modes. Windows-specific provisioning has been removed.

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.."
+if [[ $(uname -s) != Linux ]]; then echo 'Linux is required.' >&2; exit 2; fi
 offline=0
 for arg in "$@"; do
   case "$arg" in --offline) offline=1 ;; *) echo "Unknown setup option: $arg" >&2; exit 2 ;; esac
@@ -26,10 +27,4 @@ if ((${#missing[@]})); then
 fi
 options=()
 if ((offline)); then options+=(--offline); fi
-if [[ $(uname -r) == *[Mm]icrosoft* ]]; then
-  if [[ $(uname -r) != *WSL2* && $(uname -r) != *microsoft-standard* ]]; then
-    echo 'WSL2 is required; WSL1 is not supported.' >&2; exit 2
-  fi
-  options+=(--wsl)
-fi
 exec python3 scripts/bootstrap.py "${options[@]}"

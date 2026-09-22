@@ -1,235 +1,194 @@
-# Secaudit — Cyber-scan
+# Secaudit — Linux security scanner
 
-An offline-first application security assessment workspace for authorized testing.
-Scan a local project or scoped URL, inspect candidate findings in a local dashboard,
-and export evidence for remediation and retesting. AI is optional; deterministic
-checks work without it.
+**0.4.0 · Linux only · First milestone: a working non-AI assessment pipeline.**
 
-**Release: 0.3.0.** Windows uses **WSL2 Ubuntu**, Linux runs directly. This is a
-bounded assessment platform, not a guarantee of complete vulnerability detection
-or a compliance certification. See [capabilities](docs/CAPABILITIES.md) for precise
-boundaries and [verification](docs/VERIFICATION.md) for what was actually tested.
+Assess authorized application URLs and local source projects, review candidate
+findings in a local dashboard, and export technical/executive reports.
+Internet access does not require an AI model or API key.
 
-## Start on Windows
+[Project scope](docs/SCOPE.md) · [Progress](docs/PROGRESS.md) ·
+[Verification](docs/VERIFICATION.md) · [Capabilities](docs/CAPABILITIES.md)
 
-Clone or download this repository, then open PowerShell in its root:
+## Quick start
 
-```powershell
-.\setup.cmd
-.\run.cmd scan --config config/offline.json
-.\run.cmd dashboard
-```
-
-Setup installs missing WSL/Ubuntu prerequisites, creates an isolated Python virtual
-environment, installs hash-locked PDF dependencies, and runs preflight. Initial
-setup requires internet for missing packages. WSL installation may require an
-Administrator terminal, restart, and creation of your Ubuntu user; rerun setup afterward.
-No Windows Python, Docker, Make, or manual venv activation is needed.
-
-Open **http://127.0.0.1:8765**. Sign in as `operator` with the temporary password
-printed in the terminal. Click **New assessment**, select a source directory or ZIP,
-and optionally supply an authorized target URL and scope JSON. The dashboard offers
-job cancellation, finding search, severity filters, evidence details, coverage and downloads.
-All styles and scripts are served locally; there are no CDN or font requests.
-
-```powershell
-.\run.cmd scan --source "C:\Projects\My App" --config config/offline.json
-.\run.cmd test
-.\run.cmd reports
-```
-
-For dashboard input, use a WSL path such as `/mnt/c/Projects/My App`, or upload a ZIP.
-Windows CLI paths are translated automatically. Reports and the venv stay on the
-Linux filesystem. `run.cmd reports` prints the location. WSL localhost forwarding
-must be available for the Windows browser. [Windows details](docs/WINDOWS.md).
-
-## Start on Linux
+From the repository root on Linux:
 
 ```bash
 bash setup.sh
-bash run.sh scan --config config/offline.json
 bash run.sh dashboard
 ```
 
-Python 3.11–3.14, venv/pip and libseccomp are required. Setup provisions missing OS
-packages on Debian/Ubuntu; other distributions must install them first. Minimum
-core preflight thresholds: 128 MiB free memory and 100 MB free output disk. Provision
-more for WSL, PDF dependencies, datasets, or external tools.
+Setup creates `.venv`, installs hash-locked dependencies and runs preflight. On
+Debian/Ubuntu it can install missing Python/venv/libseccomp prerequisites through
+apt; sudo may be requested. Other Linux distributions must provision these first.
+Use Python 3.11–3.14. Initial setup needs internet for missing packages. There is
+no model download or AI service to configure.
 
-`make setup`, `make doctor`, `make demo`, `make demo-web`, `make up`, `make test`,
-`make bundle`, and `make down` are also available. The dashboard stays in the
-foreground; Ctrl+C stops it and cancels its queued/running work.
+Open **http://127.0.0.1:8765**, use username `operator` and the session password
+printed in the terminal. **New assessment** accepts a Linux source path or ZIP and
+an optional authorized URL/scope file. The default dashboard mode is **Internet
+access · No AI**. Search findings, inspect evidence, cancel jobs and download reports.
+All UI assets are local. Ctrl+C stops the dashboard.
 
-## What is included
+Windows launchers, path conversion and Windows CI have been removed. Previous
+releases remain in Git history. To migrate, use a Linux checkout and rerun setup;
+existing report evidence is not deleted. WSL-specific installation is no longer a
+supported project workflow.
 
-- Python AST checks, literal secret detection, debug/TLS/Docker configuration checks.
-- JSON OpenAPI endpoint inventory and missing declared-security candidates.
-- Requirements.txt exact pins and npm lockfile v2/v3 component inventory (CycloneDX).
-- Offline exact-version advisory matching with integrity and freshness validation.
-- Bounded GET crawling, header/cookie checks, HTTPS certificate validation, DNS pins,
-  redirect revalidation, exclusions and explicit scope authorization.
-- Optional isolated adapters for Gitleaks, Semgrep, Trivy and Syft. These are
-  fixture-tested, **not verified against actual scanner binaries in this environment**.
-- A persistent local job queue, authenticated dashboard, mandatory preflight, partial
-  evidence preservation and report-only recovery.
-- Executive and technical PDFs; HTML, Markdown, JSON, CSV, SARIF and retest exports.
-- A small, versioned NIST CSF 2.0 / OWASP WSTG 4.2 evidence mapping snapshot.
-- Optional Ollama and OpenAI-compatible AI adapters, tested with controlled stubs.
+## Two non-AI modes
 
-Scanned project code is never installed, imported or executed. Only ZIP archives
-are accepted, with traversal, symlink, size and file-count checks. Do not modify an
-input tree while scanning. Local Git checkouts are read as files; Git history is
-not scanned. There is no browser execution, autonomous exploitation, state-changing
-active testing, authenticated role comparison or full container/image analysis.
+| Mode | Target access | Dependency lookups | AI |
+|---|---|---|---|
+| `internet` | Explicitly authorized local or public targets | Optional OSV HTTPS lookup | Rejected |
+| `offline` | Explicitly scoped local/private targets; public IPs blocked | Operator-supplied local dataset only | Rejected |
 
-## A local web assessment
+“No AI” is not the same as “offline.” The first milestone is a locally running
+scanner that **may use the internet without AI**. Source-only built-in offline
+scans also block network syscalls. Target hostname resolution uses the configured
+system resolver; use IP-literal private targets or an isolated local resolver for
+an entirely disconnected lab.
 
-Two terminals, from the project root:
+Internet mode retains target authorization, origin/path restrictions, exclusions,
+IP pins, rate and size limits, redirect checks and TLS verification. It does not
+authorize scanning unrelated sites or silently install tools during assessment.
+External scanner adapters remain network-isolated. Internet access is through the
+reviewed target client and the selected advisory provider, not arbitrary shell access.
 
-```bash
-# Terminal 1: synthetic demo server
-bash run.sh demo-server
-```
+## Run the supplied demo
 
 ```bash
-# Terminal 2: source + web assessment
-bash run.sh scan --config config/offline.json --target http://127.0.0.1:3000 --scope scope.json
+# Fully local source demonstration; no AI or online lookups
+bash run.sh scan --config config/offline.json
+
+# Source checks plus online package advisories; no AI
+bash run.sh scan --config config/internet.json
 ```
 
-On Windows substitute `.\run.cmd` for `bash run.sh`. The included scope only
-covers the synthetic local demo. For another authorized target, create a scope file
-with its authorization reference, exact origins/paths, exclusions and allowed IPs.
-All DNS answers must match the pins. Preflight makes one HEAD request; the crawl
-uses sequential, bounded GET requests. A server 5xx stops the crawl. GET endpoints
-must themselves be safe. The client ignores ambient proxies and does not forward
-cookies or credentials. WSL's `127.0.0.1` may differ from a Windows-hosted application's
-address; configure the correct reachable host explicitly.
-
-## Offline dependencies and external tools
-
-The built-in dependency module needs an operator-supplied normalized advisory
-snapshot. It matches **enumerated exact versions only**, not arbitrary version
-ranges. Missing data is NOT TESTED, never “zero vulnerabilities.”
+The demo dependency is synthetic and is not expected to have real advisories.
+For a local web demo, start `bash run.sh demo-server` in another terminal, then:
 
 ```bash
-bash run.sh dataset --input your-advisories.json --output data/advisories.json --source https://your-approved-source.example --version reviewed-snapshot-1 --published-at 2026-09-22T00:00:00Z
+bash run.sh scan --config config/internet-web.json --target http://127.0.0.1:3000 --scope scope.json
 ```
 
-Set `advisory_dataset` in a copy of `config/offline.json`. See
-[dataset schema](docs/DATASETS.md) and [scanner adapters](docs/ADAPTERS.md).
-Optional scanners require operator-installed tools, local rules/databases, and a
-working Bubblewrap sandbox. Preflight never installs or updates anything. A blocked
-sandbox prevents scanner execution. `strict: true` requires every selected module.
+## Assess your authorized target
 
-## Offline installation bundle
+Create a scope file using your actual authorization reference and URL:
 
-On a connected Linux/WSL machine with the same architecture and Python minor version
-as the destination:
+```bash
+bash run.sh scope --origin https://your-authorized-app.example/ --authorization "Your permission or engagement reference" --exclude https://your-authorized-app.example/logout --output my-scope.json
+```
+
+Replace the example domain first. This command resolves current IP pins and creates
+a file; it neither scans the target nor proves ownership. Review the generated
+origins, exclusions, IPs and budgets before scanning. It refuses to overwrite an
+existing scope record. Then run:
+
+```bash
+bash run.sh scan --config config/internet-web.json --target https://your-authorized-app.example/ --scope my-scope.json
+```
+
+For source and web together, use `config/internet.json` and add
+`--source /absolute/path/to/project`. For web-only, use `internet-web.json` so the
+bundled demo source is not included. DNS changes require reviewing and replacing
+pins; mismatches are blocked. Exclude logout and other state-changing GET routes.
+
+Preflight sends one scoped HEAD request. Web checks use sequential GETs; no form
+submission or script execution. Defaults are 10 crawl requests and 30 seconds.
+Server 5xx stops crawling. Ambient proxies and automatic credential forwarding are
+not used. HTTPS certificates and hostnames are verified.
+
+## Online dependency advisories
+
+`online_dependencies` in `config/internet.json` queries the fixed endpoint
+`https://api.osv.dev/v1/query`. **Package ecosystem, name and version leave the
+machine.** Source files, paths, credentials, HTTP captures and reports are not sent.
+Omit this module if your package identities must remain private. It is invalid in
+offline mode. OSV access is independent of permission to scan your target.
+
+Supported inventory: exact requirements.txt pins and npm package-lock v2/v3 entries.
+Queries are deduplicated and limited to 25 packages by default (maximum 100), with
+response-size and time bounds, no retries and no redirect following. The provider
+must resolve to public IPs. Failures, skipped packages and paginated responses are
+reported as incomplete coverage. Missing network access is never a clean result.
+Findings cite the advisory and require manual validation. MEDIUM is a provisional
+triage priority, not a computed CVSS score. Runtime updates do not alter installed tools.
+
+Official API contract: https://google.github.io/osv.dev/post-v1-query/
+
+**Verification limit:** the OSV adapter passes controlled response tests, but the
+live lookup was blocked by this development environment's DNS/public-address policy.
+A successful real OSV query on an unrestricted Linux machine is still outstanding.
+
+For disconnected dependency checks, see [local datasets](docs/DATASETS.md).
+
+## Outputs and boundaries
+
+`runs/<run-id>/` contains PDF/HTML/Markdown reports, JSON/CSV findings, SARIF,
+CycloneDX inventory, coverage, framework mappings, preflight output and a retest plan.
+Reports state the mode, AI status and online-query outcomes. `bash run.sh reports`
+prints the output directory. Failed/interrupted scans preserve available checkpoints.
+
+```bash
+bash run.sh resume RUN_ID
+```
+
+Recovery regenerates saved reports without repeating checks. Do not recover an active
+scan. The dashboard executes one job at a time; interrupted jobs are not automatically
+resubmitted. Source code and ZIP contents are never installed or executed.
+
+Findings are candidates, not proven exploits. PARTIAL indicates limited checks;
+NOT TESTED indicates unavailable coverage. No findings is not proof of security.
+There is no browser-driven scanning, authenticated role comparison, automated
+exploitation or full compliance certification. The selected NIST CSF/WSTG mappings
+are evidence context only. See [the capability matrix](docs/CAPABILITIES.md).
+
+## Offline setup and portable bundles
+
+With prerequisites and locked wheels already present in `wheelhouse/`:
+
+```bash
+bash setup.sh --offline
+```
+
+Prepare a portable bundle on a connected Linux machine:
 
 ```bash
 bash run.sh bundle prepare --output offline-bundle --download-dependencies
 bash run.sh bundle verify offline-bundle
 ```
 
-Copy the bundle to the offline machine. Python/venv/pip and libseccomp must already
-be installed there. From the directory containing the bundle:
+On matching Linux architecture/Python minor version, with Python/venv/libseccomp
+already available:
 
 ```bash
 python3 offline-bundle/secaudit.pyz bundle install offline-bundle --destination installed
 ./installed/secaudit scan --source /absolute/path/to/project --output /absolute/path/to/reports
-./installed/secaudit dashboard --output /absolute/path/to/reports
 ```
 
-Installation uses `pip --no-index --require-hashes` against bundled wheels. No OS
-packages, external scanner binaries/databases, AI models or proprietary standards
-are bundled. Omitting `--download-dependencies` produces a smaller core bundle;
-PDFs then require an already available ReportLab installation. Bundles contain a
-source archive so the dashboard can run without the original checkout. The `.pyz`
-is the bootstrap/core CLI; use the installed launcher for the dashboard.
+The installer uses bundled wheels without downloads. Unsigned checksums detect
+corruption, not publisher authenticity. OS packages, optional external tools,
+models and third-party vulnerability databases are not included.
 
-Unsigned checksums detect corruption, not publisher authenticity. Transfer bundles
-through a trusted channel. Alternatively, populate `wheelhouse/` in a checkout using
-`python3 -m pip download --require-hashes --only-binary=:all: -r requirements.lock -d wheelhouse`,
-then use `bash setup.sh --offline` or `.\setup.cmd -Offline` on the prepared machine.
-
-## Optional AI
-
-**Offline** is the default. No AI or public internet access is requested during an
-assessment. A source-only built-in assessment additionally denies network syscalls.
-Target and AI clients enforce pinned destinations; they are not a system-wide firewall.
-
-For **local AI**, install your Ollama model separately and edit `config/local-ai.json`
-with its model name and loopback endpoint. The adapter checks `/api/tags` and uses
-`/api/chat`. It never downloads models or falls back to a cloud provider.
-
-For **connected AI**, edit `config/api-ai.json` with an approved HTTPS
-OpenAI-compatible endpoint, model ID and IP pins. Provide the API key through the
-configured environment variable in the Linux/WSL environment. The provider must
-support `/models` and `/chat/completions`. Connected AI is explicitly not offline.
+## Development and troubleshooting
 
 ```bash
-bash run.sh doctor --config config/local-ai.json
-bash run.sh scan --config config/local-ai.json
-# After configuring provider and credentials:
-bash run.sh scan --config config/api-ai.json
-```
-
-Only finding IDs, rule IDs and severity for up to ten findings are sent. Source,
-evidence, credentials and asset names are excluded. Suggestions are separate from
-findings and cannot run commands, change scope or confirm vulnerabilities. Model
-responses must match a schema. Budgets apply per invocation; defaults allow two
-requests, no retries and one concurrent request. Cost ceilings require configured
-prices and remain estimates. `failure_policy: required` blocks on AI failure;
-`continue` preserves deterministic analysis. Real providers have not been tested.
-
-## Reports, interpretation and recovery
-
-Each run has a unique folder containing `run.json`, findings JSON/CSV, technical
-HTML/Markdown/PDF, executive HTML/PDF, SARIF, CycloneDX, coverage, mappings,
-asset inventory, preflight output, audit event and remediation/retest plan.
-The dashboard shows only available downloads. `pdf_required: true` makes a missing
-PDF renderer block preflight.
-
-Findings are **candidates**, with confidence separate from severity. PARTIAL means
-limited checks ran. NOT TESTED means no conclusion can be drawn. Framework mappings
-are related evidence, not certification, organizational control verification or a
-complete ASVS/ATT&CK checklist. CVSS is unset when no justified vector exists.
-
-```bash
-bash run.sh resume RUN_ID
-```
-
-Recovery regenerates reports from saved evidence and does not repeat requests.
-Do not recover an actively running assessment. Interrupted dashboard jobs are
-marked INTERRUPTED after restart; they are not silently resubmitted.
-
-## Troubleshooting
-
-| Symptom | Action |
-|---|---|
-| Setup requests reboot/user creation | Complete WSL initialization, then rerun setup. |
-| POLICY_BLOCKED isolation | Use Linux/WSL2 with libseccomp; external tools also need permitted Bubblewrap namespaces. |
-| DATA_MISSING / DATA_STALE | Supply or refresh the local snapshot during preparation; inspect its provenance. |
-| Target unavailable | Check its process, origin, path, port, IP pins and authorization file. |
-| No PDFs | Rerun setup, or install the prepared locked wheels offline. |
-| AI unavailable | Verify endpoint, model and environment credentials in WSL/Linux. |
-| No findings | Read coverage and events; this is not evidence of complete security. |
-
-## Development and GitHub
-
-```bash
+bash run.sh doctor --config config/offline.json
 bash run.sh test
 node --check secaudit/static/app.js
 ```
 
-Tests use only synthetic fixtures, temporary files and local servers. GitHub Actions
-runs Python tests plus a PowerShell syntax job; syntax validation is not a Windows
-WSL integration test. See [verification](docs/VERIFICATION.md),
-[architecture](docs/ARCHITECTURE.md), [security policy](SECURITY.md), and
-[contributing](CONTRIBUTING.md).
+- `POLICY_BLOCKED`: inspect target scope, IP pins and Linux isolation prerequisites.
+- OSV unavailable: inspect DNS/firewall access to `api.osv.dev:443`; do not disable TLS
+  verification or public-address checks to force a connection.
+- Offline public target rejected: use `internet` mode for an authorized public target.
+- Missing PDF renderer: rerun setup or install the prepared locked wheels offline.
+- External tools unavailable: see [adapter requirements](docs/ADAPTERS.md). Isolation
+  is mandatory; installation alone does not establish compatible execution.
 
-Repository: https://github.com/Het28091/Cyber-scan
+CI runs on Ubuntu; tests use synthetic local targets and provider fixtures, not public
+scan targets. Optional AI backend code is retained for later development, but is
+excluded from the first milestone and from the dashboard's available modes.
 
-Never commit real target reports, uploaded projects, credentials, database snapshots,
-model weights or virtual environments. The included demo uses synthetic evidence.
-MIT license covers this project's code; dependency/tool licenses remain separate.
+MIT license. Do not commit real target reports, uploads, credentials or private package
+inventories. [Security policy](SECURITY.md) · [Architecture](docs/ARCHITECTURE.md)

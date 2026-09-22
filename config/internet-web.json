@@ -1,0 +1,7 @@
+{
+  "mode": "internet",
+  "source": "",
+  "output": "runs",
+  "modules": ["web"],
+  "ai": {"enabled": false}
+}

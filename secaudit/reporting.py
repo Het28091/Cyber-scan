@@ -20,7 +20,7 @@ def reports(directory,run):
     md+=['- '+r['module']+': '+r['status']+' — '+r['reason'] for r in run['coverage']]
     for f in run['findings']:
         md += ['',f"## {f['title']}",f"{f['severity']} / {f['confidence']} / {f['validation_status']}",f"Location: {f['asset']}:{f['line']}",f['description'], 'Remediation: '+f['remediation'],'Retest: '+f['retest']]
-    md+=['','## AI usage',json.dumps(run.get('ai_usage',{})), '','## Framework snapshot',json.dumps(run.get('framework_snapshot',{}))]
+    md+=['','## Network policy',json.dumps(run.get('network_policy',{})), '','## Online advisory usage',json.dumps(run.get('online_advisories',{})), '','## AI usage',json.dumps(run.get('ai_usage',{})), '','## Framework snapshot',json.dumps(run.get('framework_snapshot',{}))]
     md+=['','## Events',*['- '+x for x in run['events']]]
     text='\n\n'.join(md)+'\n';atomic(d/'technical.md',text)
     style='body{font:16px system-ui;max-width:1100px;margin:40px auto;background:#101927;color:#edf3fc;padding:24px}h1{color:#69e5c1}pre{white-space:pre-wrap;overflow-wrap:anywhere}a{color:#69e5c1}'

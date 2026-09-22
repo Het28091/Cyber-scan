@@ -2,7 +2,7 @@ PYTHON ?= $(shell test ! -x .venv/bin/python || echo .venv/bin/python)
 ifeq ($(strip $(PYTHON)),)
 PYTHON = python3
 endif
-.PHONY: setup doctor demo demo-web up down test bundle
+.PHONY: setup doctor demo demo-web demo-internet up down test bundle
 setup:
 	bash setup.sh
 doctor:
@@ -19,3 +19,6 @@ test:
 	$(PYTHON) -m unittest discover -s tests -v
 bundle:
 	$(PYTHON) -m secaudit bundle prepare --output offline-bundle
+
+demo-internet:
+	$(PYTHON) -m secaudit scan --config config/internet.json

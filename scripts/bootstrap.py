@@ -4,21 +4,16 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 
-def environment_paths(root=ROOT,wsl=False):
-    if wsl:
-        key=hashlib.sha256(str(root.resolve()).encode()).hexdigest()[:16]
-        base=Path.home()/'.local/share/secaudit'/key
-        return base/'venv',base/'runs'
+def environment_paths(root=ROOT):
     return root/'.venv',root/'runs'
 
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--offline',action='store_true')
-    parser.add_argument('--wsl',action='store_true')
     args=parser.parse_args()
     if platform.system()!='Linux' or not (3,11)<=sys.version_info[:2]<(3,15):
-        raise SystemExit('Use Python 3.11–3.14 on Linux or the Windows WSL2 launcher.')
-    env,output=environment_paths(wsl=args.wsl)
+        raise SystemExit('Use Python 3.11–3.14 on Linux.')
+    env,output=environment_paths()
     env.parent.mkdir(parents=True,exist_ok=True)
     if env.is_symlink(): raise SystemExit('Refusing a symlink virtual environment.')
     if env.exists() and not (env/'pyvenv.cfg').is_file(): raise SystemExit('Environment directory exists but is not a virtual environment.')
@@ -39,7 +34,7 @@ def main():
     launcher.write_text('#!/bin/sh\nexec '+shlex.quote(str(python))+' '+shlex.quote(str(ROOT/'scripts/launch.py'))+' \"$@\"\n',encoding='utf-8')
     launcher.chmod(0o700)
     # State is written only after successful provisioning. No secrets are stored.
-    state={'schema':1,'python':str(python.resolve()),'venv_python':str(python),'output':str(output),'backend':'wsl2' if args.wsl else 'linux'}
+    state={'schema':1,'python':str(python.resolve()),'venv_python':str(python),'output':str(output),'backend':'linux'}
     from tempfile import NamedTemporaryFile
     with NamedTemporaryFile(mode='w',encoding='utf-8',dir=ROOT,delete=False) as f:
         json.dump(state,f,indent=2);name=f.name
@@ -48,6 +43,6 @@ def main():
     print('Running mandatory preflight...',flush=True)
     result=subprocess.run([str(python),'-m','secaudit','doctor','--config','config/offline.json','--output',str(output)],cwd=ROOT)
     if result.returncode: raise SystemExit(result.returncode)
-    print('Setup complete. Use run.cmd on Windows or ./run.sh on Linux.')
+    print('Setup complete. Use bash run.sh dashboard on Linux.')
 
 if __name__=='__main__': main()
