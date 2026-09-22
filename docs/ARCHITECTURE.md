@@ -87,3 +87,15 @@ every use; connections still dial literal pins. Jobs remove terminal execution
 inputs and retain 200 terminal summaries, without deleting assessment evidence.
 Structured failure categories replace the previous generic UI error. AI providers
 require an explicit experimental environment opt-in. See [review response](REVIEW_RESPONSE.md).
+
+## Static authentication and acceptance (v0.6)
+
+Scope may reference a credential environment variable, authentication type, origin
+and path prefixes. Transport validates scope and method before resolving that
+credential. Every redirect is handled as a new scoped request; credentials do not
+cross the profile boundary. Preflight rejects explicit 401/403 responses. Secret
+values are registered only in process memory for evidence redaction.
+
+A separate live acceptance job queries OSV once, runs real Gitleaks under Bubblewrap
+and tests namespace, read-only input, environment and dropped-capability boundaries.
+Unit tests collect child-process execution and enforce at least 81% statement coverage.

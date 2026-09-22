@@ -1,6 +1,15 @@
-# Verification — Linux 0.5.0
+# Verification — 0.6.0
 
-## 0.5.0 review response
+## v0.6 live acceptance — passed
+
+100 tests and 93% statement coverage passed; live OSV and Gitleaks positive/clean
+controls plus sandbox boundary tests passed. See [CI evidence](evidence/v0.6-live.json).
+
+[Acceptance record](V06_ACCEPTANCE.md) separates actual OSV/scanner execution from
+mocked regressions. Full subprocess coverage is collected; the old 69% measurement
+missed those processes. The statement coverage gate is 81% with no excluded modules.
+
+## Historical 0.5.0 review response
 
 `python -m unittest discover -s tests -q`: 87 tests pass locally (packaging 26.3).
 `node --check secaudit/static/app.js`: passes. Locked packaging 25.0 and the new CI

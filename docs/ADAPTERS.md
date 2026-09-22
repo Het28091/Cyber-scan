@@ -81,3 +81,17 @@ version. NIST CSF ID.RA-01 is evidence context; WSTG references cover HSTS/cooki
 observations. No control is declared passed by this mapping. This is a small subset,
 not a full standards corpus or organizational audit. No proprietary standards are
 redistributed; ATT&CK is not a sequential testing workflow.
+
+## Gitleaks runtime memory acceptance
+
+Live testing of Gitleaks 8.24.2 exposed a startup panic under the generic 2 GiB
+virtual-address limit: its WASM regex runtime reserves 4 GiB before scanning.
+Gitleaks now has a finite 8 GiB RLIMIT_AS ceiling; other adapters retain 2 GiB.
+This limit measures virtual address space, not resident memory. It is not a cgroup
+RSS limit. CPU/time, output/file/descriptor limits and mandatory Bubblewrap
+network/input/environment/capability isolation remain enforced.
+
+Gitleaks reports use the upstream stdout sentinel `--report-path -`. `/dev/stdout`
+is not equivalent: report initialization may unlink/recreate that path in the
+sandbox, causing JSON to be written to a file rather than the captured pipe.
+The live positive and clean controls exercise the actual stream/parser boundary.

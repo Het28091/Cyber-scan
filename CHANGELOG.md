@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.6.0 — Verified integrations and static authentication
+
+- Passed genuine live OSV and real Bubblewrap/Gitleaks acceptance on Linux CI.
+- Fixed Gitleaks WASM virtual-address limit and stdout report-path incompatibilities.
+- Added scoped static bearer/cookie credentials with environment references, validation,
+  redaction, redirect boundaries and explicit rejected-access reporting.
+- Added negative failure regressions and subprocess coverage: 100 tests, 93% statements.
+- Enforced the 81% coverage gate; retained all other security and dependency gates.
+- Recorded live evidence and remaining browser/distribution work for v1.0.
+
+
 ## 0.5.0 — Review response
 
 - Quantified PEP 508 requirements/npm lockfile inventory; strict dependency-gap failure.

@@ -1,6 +1,6 @@
 # Secaudit — Linux assessment orchestration and evidence
 
-**v0.6.0 acceptance in progress · Linux only · Non-AI by default.**
+**0.6.0 · Linux only · Non-AI by default.**
 
 Secaudit coordinates scoped security checks and produces reviewable evidence.
 Use local source or an explicitly authorized URL, then review findings in a local dashboard.
@@ -232,3 +232,9 @@ authentication and browser acceptance in [issue 2](https://github.com/Het28091/C
 See [acceptance status](docs/V06_ACCEPTANCE.md) and [static authentication](docs/AUTHENTICATION.md).
 Live OSV and real sandboxed Gitleaks run in a separate Linux CI job. Unavailable
 services or isolation fail acceptance rather than becoming skipped or mocked passes.
+
+The v0.6 acceptance run passed: **100 tests, 93% statement coverage**, one live OSV
+query (10 advisories), and real Gitleaks 8.24.2 positive/clean controls in Bubblewrap.
+Network isolation, read-only input, credential-environment removal and dropped
+capabilities also passed. See [machine-readable evidence](docs/evidence/v0.6-live.json).
+This closes the v0.6 gates; browser and distribution acceptance remain before v1.0.

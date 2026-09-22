@@ -1,11 +1,11 @@
-# Capability matrix — 0.4.1
+# Capability matrix — 0.6.0
 
 The original brief is a design target. This release implements a usable bounded
 assessment workflow; it does not satisfy every advanced capability in that brief.
 
 | Capability | Implemented boundary | Verification |
 |---|---|---|
-| Internet / no AI | Scoped public targets plus optional OSV; AI rejected | Policy and provider fixtures; live OSV blocked here |
+| Internet / no AI | Scoped public targets plus optional OSV; AI rejected | Live OSV passed on Linux CI; see V06_ACCEPTANCE.md |
 | Linux automatic setup | venv and hash-locked PDF packages | See verification record |
 | Local dashboard | Overview, jobs, upload, search, detail, coverage, downloads | HTTP integration; visual status in verification record |
 | Job queue | Single worker, bounded queue, cancellation, restart interruption | Local tests |
@@ -13,12 +13,12 @@ assessment workflow; it does not satisfy every advanced capability in that brief
 | Configuration | Debug, TLS verification, Docker USER | Heuristics, no general IaC engine |
 | API inventory | JSON OpenAPI declarations | No full schema validator or endpoint fuzzing |
 | Dependencies | Exact versions from operator snapshot | Integrity/staleness/CLI tests |
-| SBOM | Python pins and npm lock v2/v3; optional Syft | Not exhaustive environment inventory |
-| Web | Bounded GET crawl, headers, cookie flags, TLS certificate validation | Local HTTP fixture; no full TLS vulnerability audit |
-| External tools | Gitleaks/Semgrep/Trivy/Syft isolated adapters | Output fixtures and fail-closed checks only; actual binaries unverified |
+| SBOM | Quantified Python declarations and npm lock v1/v2/v3; optional Syft | Not exhaustive environment inventory |
+| Web | Scoped static bearer/cookie GET/HEAD, headers, cookie flags, TLS certificate validation | Local HTTP fixture; no full TLS vulnerability audit |
+| External tools | Gitleaks/Semgrep/Trivy/Syft isolated adapters | Gitleaks 8.24.2 verified live in Bubblewrap; others fixture-tested |
 | Frameworks | Selected NIST CSF 2.0 and WSTG 4.2 evidence mappings | Referenced official pages; no complete control assessment |
 | Reports | HTML, PDF, Markdown, JSON, CSV, SARIF, CycloneDX, retest plans | Generated and parsed; PDF visual check |
-| AI | Ollama / OpenAI-compatible, minimized inputs, budgets | Stubs only; no actual provider/model verification |
+| AI | Ollama / OpenAI-compatible, minimized inputs, budgets | Explicit experimental gate; stubs only; no real provider verification |
 | Offline bundle | Core zipapp, source, optional locked wheels, checksums | Core offline integration; full wheels status in verification record |
 | Recovery | Saved evidence/report regeneration | Does not repeat scans |
 | Browser / active workflows | Not implemented | Always outside claimed coverage |

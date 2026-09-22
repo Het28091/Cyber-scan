@@ -1,7 +1,16 @@
-# Progress — v0.6.0 acceptance in progress
+# Progress — 0.6.0
 
 Updated 2026-09-22. Project direction: Linux-only, non-AI scanning with optional
 internet access. Scope is recorded in [SCOPE.md](SCOPE.md).
+
+## Completed in 0.6.0
+
+- [x] Real OSV query and real sandboxed Gitleaks execution on Linux CI.
+- [x] Sandbox network/input/environment/capability boundary acceptance.
+- [x] Static scoped authentication, rejected-login handling and secret scrubbing.
+- [x] 100 passing tests and 93% subprocess-inclusive statement coverage.
+- [x] Fixed the real Gitleaks address-space and stdout-report incompatibilities.
+- [x] Persisted [acceptance evidence](evidence/v0.6-live.json).
 
 Current acceptance and remaining v1.0 work: [V06_ACCEPTANCE.md](V06_ACCEPTANCE.md).
 

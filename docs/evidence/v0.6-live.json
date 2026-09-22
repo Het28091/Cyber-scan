@@ -1,0 +1,40 @@
+{
+  "started": "2026-09-22T17:08:51.493089+00:00",
+  "platform": "Linux-6.8.0-1064-azure-x86_64-with-glibc2.35",
+  "status": "PASSED",
+  "osv": {
+    "requests": 1,
+    "responses": 1,
+    "completed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "advisories": 10
+  },
+  "stage": "sandbox-boundaries",
+  "tool": {
+    "name": "gitleaks",
+    "version": "8.24.2",
+    "virtual_address_limit_bytes": 8589934592,
+    "sha256": "64805175c8f88959587ba6afc58210401088206a27ba582cfbb98791137d6208",
+    "fixture_findings": 1,
+    "clean_control_findings": 0
+  },
+  "sandbox": {
+    "network_namespace": "PASS",
+    "source_read_only": "PASS",
+    "credential_environment_removed": "PASS",
+    "capabilities_dropped": "PASS",
+    "bubblewrap": "/usr/bin/bwrap"
+  },
+  "finished": "2026-09-22T17:08:53.896861+00:00",
+  "commit": "337d23cbbbf0e9ce62367f7bf7adc2f0d9241bb9",
+  "workflow_url": "https://github.com/Het28091/Cyber-scan/actions/runs/35758735153",
+  "unit_tests": 100,
+  "statement_coverage": {
+    "statements": 1562,
+    "missed": 108,
+    "display_percent": 93,
+    "minimum_percent": 81,
+    "includes_subprocesses": true
+  }
+}
