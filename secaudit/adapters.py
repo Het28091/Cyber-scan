@@ -97,7 +97,7 @@ def _parse(name,raw,version):
 
 def execute(name,source,options,timeout):
     exe,version=probe(name,options);extra=[]
-    if name=='gitleaks': args=['dir','/input','--no-banner','--redact=100','--report-format','json','--report-path','/dev/stdout','--exit-code','0']
+    if name=='gitleaks': args=['dir','/input','--no-banner','--redact=100','--report-format','json','--report-path','-','--exit-code','0']
     elif name=='semgrep':
         extra=[(options['rules'],'/rules.yaml')];args=['scan','--config','/rules.yaml','--metrics=off','--disable-version-check','--json','--no-git-ignore','/input']
     elif name=='trivy':
