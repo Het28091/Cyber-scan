@@ -30,6 +30,11 @@ def verify():
         if usage['requests'] != 1 or usage['completed'] != 1 or usage['failed'] or usage['skipped'] or not findings:
             raise RuntimeError('Live OSV acceptance did not complete')
         result['stage']='scanner-preflight'
+        # Fixed version command only: no source mount or inherited credentials.
+        # Retain bounded startup diagnostics to distinguish runtime incompatibility.
+        code, startup = bounded(sandbox_command('/bin/sh') + ['-c', '/usr/local/bin/gitleaks version 2>&1'], 10, 65536)
+        if code:
+            result['startup_diagnostic']=startup.decode('utf-8','replace')[:2000]
         exe, version = probe('gitleaks', {})
         result['tool'] = {'name': 'gitleaks', 'version': version,
                           'sha256': hashlib.sha256(Path(exe).read_bytes()).hexdigest()}
