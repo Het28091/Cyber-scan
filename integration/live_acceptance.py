@@ -14,6 +14,7 @@ from pathlib import Path
 from secaudit.adapters import bounded, execute, probe, sandbox_command
 from secaudit.config import Config
 from secaudit.models import now
+from secaudit.security import PolicyError
 from secaudit.online import scan_dependencies
 
 
@@ -28,6 +29,7 @@ def verify():
                          'skipped': usage['skipped'], 'advisories': len(findings)}
         if usage['requests'] != 1 or usage['completed'] != 1 or usage['failed'] or usage['skipped'] or not findings:
             raise RuntimeError('Live OSV acceptance did not complete')
+        result['stage']='scanner-preflight'
         exe, version = probe('gitleaks', {})
         result['tool'] = {'name': 'gitleaks', 'version': version,
                           'sha256': hashlib.sha256(Path(exe).read_bytes()).hexdigest()}
@@ -36,11 +38,13 @@ def verify():
             source.mkdir()
             # Deliberately synthetic, never an issued credential.
             (source / 'fixture.py').write_text('api_key = "ghp_Ab7cD8eF9gH0iJ1kL2mN3oP4qR5sT6uV7wX8"\n')
+            result['stage']='scanner-positive-control'
             detected, _ = execute('gitleaks', source, {}, 45)
             if not detected:
                 raise RuntimeError('Real scanner missed the synthetic secret')
             result['tool']['fixture_findings'] = len(detected)
             (source / 'fixture.py').write_text('print("hello")\n')
+            result['stage']='scanner-negative-control'
             clean, _ = execute('gitleaks', source, {}, 45)
             if clean:
                 raise RuntimeError('Real scanner flagged the clean control')
@@ -51,6 +55,7 @@ def verify():
                 listener.listen()
                 port = listener.getsockname()[1]
                 os.environ['SECAUDIT_TARGET_ACCEPTANCE'] = 'synthetic-not-for-child'
+                result['stage']='sandbox-boundaries'
                 script = """import os,socket
 assert 'SECAUDIT_TARGET_ACCEPTANCE' not in os.environ
 s=socket.socket();s.settimeout(1)
@@ -72,6 +77,7 @@ assert int(next(x.split(':')[1].strip() for x in open('/proc/self/status') if x.
         result['status'] = 'PASSED'
     except Exception as exc:
         result['failure_type'] = type(exc).__name__
+        if isinstance(exc,PolicyError): result['policy_failure']=str(exc)
         # No raw tool/provider output or credentials in acceptance logs.
     result['finished'] = now()
     print(json.dumps(result, indent=2))
