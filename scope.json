@@ -1,0 +1,1 @@
+{"authorization":"Operator-owned synthetic demo only","origins":["http://127.0.0.1:3000/"],"exclusions":["http://127.0.0.1:3000/admin"],"environment":"local-lab","profiles":["passive"],"max_requests":10,"max_seconds":30,"allowed_ips":["127.0.0.1"]}

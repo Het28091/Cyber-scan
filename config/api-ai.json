@@ -1,0 +1,1 @@
+{"mode":"connected-ai","source":"demo/source","output":"runs","modules":["source","secrets","config"],"ai":{"enabled":true,"provider":"openai-compatible","endpoint":"https://api.example.invalid/v1","model":"operator-selected-model","approved_ips":["192.0.2.1"],"api_key_env":"SECAUDIT_API_KEY","failure_policy":"continue"}}

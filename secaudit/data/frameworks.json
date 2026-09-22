@@ -1,0 +1,13 @@
+{
+  "version": "secaudit-mappings-2026-09-22",
+  "reviewed_at": "2026-09-22",
+  "sources": [
+    "https://csrc.nist.gov/projects/cybersecurity-framework/filters",
+    "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/07-Test_HTTP_Strict_Transport_Security/",
+    "https://owasp.github.io/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/06-Session_Management_Testing/02-Testing_for_Cookies_Attributes"
+  ],
+  "rules": {
+    "HTTP-HSTS": [{"framework":"OWASP WSTG","version":"4.2","control":"WSTG-v42-CONF-07","rationale":"Observed HSTS response-header absence; policy coverage requires manual review."}],
+    "COOKIE-FLAGS": [{"framework":"OWASP WSTG","version":"4.2","control":"WSTG-v42-SESS-02","rationale":"Cookie-attribute observation; purpose and session sensitivity require review."}]
+  }
+}

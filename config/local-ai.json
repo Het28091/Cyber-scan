@@ -1,0 +1,1 @@
+{"mode":"local-ai","source":"demo/source","output":"runs","modules":["source","secrets","config"],"ai":{"enabled":true,"provider":"ollama","endpoint":"http://127.0.0.1:11434","model":"operator-installed-model","approved_ips":["127.0.0.1"],"failure_policy":"continue"}}

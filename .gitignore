@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+runs/
+uploads/
+offline-bundle/
+installed/
+*.db
+*.sqlite3
+*.gguf
+*.zip
+.setup-state.json
+.windows-runtime.json
+wheelhouse/

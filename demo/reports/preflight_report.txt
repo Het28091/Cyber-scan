@@ -1,0 +1,11 @@
+Component | Required for | Detected version | Status | Resolution
+runtime | assessment | 3.12.14 | READY | Use Linux with Python 3.11+.
+evidence storage | assessment |  | READY | 
+resources | assessment | 9 CPUs | READY | At least 128 MiB available memory required.
+kernel source isolation | assessment |  | READY | Install libseccomp2 and use a kernel permitting seccomp filters.
+source | assessment | 0.3.0 | READY | 
+secrets | assessment | 0.3.0 | READY | 
+config | assessment | 0.3.0 | READY | 
+dependency database | optional module |  | DATA_MISSING | DATA_MISSING: advisory snapshot absent
+openapi | assessment | 0.3.0 | READY | 
+PDF renderer | optional module | 4.4.9 | READY | 

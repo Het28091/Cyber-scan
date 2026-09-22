@@ -1,0 +1,6 @@
+id,title,asset,line,severity,confidence,validation_status,remediation
+5039eab36f64cdbd,Dynamic code execution requires review,app.py,6,HIGH,MEDIUM,NEEDS MANUAL REVIEW,Remove dynamic evaluation or strictly validate trusted input.
+eeb5dcc6ff35659b,Shell subprocess requires review,app.py,8,HIGH,MEDIUM,NEEDS MANUAL REVIEW,Use an argument list with shell=False.
+9f3f1e34e14cad93,Debug mode enabled,app.py,3,MEDIUM,MEDIUM,NEEDS MANUAL REVIEW,Disable debug mode in production.
+873be20af1527489,Potential hardcoded credential,app.py,4,HIGH,MEDIUM,NEEDS MANUAL REVIEW,Review whether the value is sensitive; rotate exposed credentials and use a secret store.
+f6fcf34abb6944b0,API operation has no declared security,openapi.json,1,MEDIUM,MEDIUM,NEEDS MANUAL REVIEW,Verify the intended authorization policy and document it.

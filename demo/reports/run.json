@@ -1,0 +1,260 @@
+{
+  "id": "037408c78db44255bda8ad8bd3371569",
+  "status": "COMPLETED_WITH_LIMITATIONS",
+  "started": "2026-09-22T03:57:31.834851+00:00",
+  "mode": "offline",
+  "findings": [
+    {
+      "rule": "PY-DYNAMIC-EXEC",
+      "title": "Dynamic code execution requires review",
+      "asset": "app.py",
+      "description": "Dynamic execution can interpret untrusted input. This is a syntax-based candidate, not data-flow proof.",
+      "remediation": "Remove dynamic evaluation or strictly validate trusted input.",
+      "severity": "HIGH",
+      "confidence": "MEDIUM",
+      "line": 6,
+      "scanner": "secaudit-builtins",
+      "scanner_version": "0.3.0",
+      "evidence": [
+        "app.py:6: pattern matched; source content omitted"
+      ],
+      "timestamp": "2026-09-22T03:57:31.838351+00:00",
+      "validation_status": "NEEDS MANUAL REVIEW",
+      "role": null,
+      "impact": "Potential application or data exposure; actual exploitability requires review.",
+      "reproduction": "Inspect the referenced location in an authorized local copy.",
+      "retest": "Apply remediation and repeat this check; manually verify the affected workflow.",
+      "mappings": [
+        {
+          "framework": "NIST CSF",
+          "version": "2.0",
+          "control": "ID.RA-01",
+          "status": "NEEDS MANUAL REVIEW",
+          "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+        }
+      ],
+      "cvss": null,
+      "provenance": [],
+      "id": "5039eab36f64cdbd",
+      "fingerprint": "5039eab36f64cdbd8a017bf3f2e5f29aa401461ed7ab94ab52de6af508a97059"
+    },
+    {
+      "rule": "PY-SHELL",
+      "title": "Shell subprocess requires review",
+      "asset": "app.py",
+      "description": "shell=True enables shell interpretation.",
+      "remediation": "Use an argument list with shell=False.",
+      "severity": "HIGH",
+      "confidence": "MEDIUM",
+      "line": 8,
+      "scanner": "secaudit-builtins",
+      "scanner_version": "0.3.0",
+      "evidence": [
+        "app.py:8: pattern matched; source content omitted"
+      ],
+      "timestamp": "2026-09-22T03:57:31.838369+00:00",
+      "validation_status": "NEEDS MANUAL REVIEW",
+      "role": null,
+      "impact": "Potential application or data exposure; actual exploitability requires review.",
+      "reproduction": "Inspect the referenced location in an authorized local copy.",
+      "retest": "Apply remediation and repeat this check; manually verify the affected workflow.",
+      "mappings": [
+        {
+          "framework": "NIST CSF",
+          "version": "2.0",
+          "control": "ID.RA-01",
+          "status": "NEEDS MANUAL REVIEW",
+          "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+        }
+      ],
+      "cvss": null,
+      "provenance": [],
+      "id": "eeb5dcc6ff35659b",
+      "fingerprint": "eeb5dcc6ff35659ba6f9aecca2ea2faa2c6470087c62c9d015200490d1d60f1b"
+    },
+    {
+      "rule": "CONFIG-DEBUG",
+      "title": "Debug mode enabled",
+      "asset": "app.py",
+      "description": "Debug setting is enabled.",
+      "remediation": "Disable debug mode in production.",
+      "severity": "MEDIUM",
+      "confidence": "MEDIUM",
+      "line": 3,
+      "scanner": "secaudit-builtins",
+      "scanner_version": "0.3.0",
+      "evidence": [
+        "app.py:3: pattern matched; source content omitted"
+      ],
+      "timestamp": "2026-09-22T03:57:31.839158+00:00",
+      "validation_status": "NEEDS MANUAL REVIEW",
+      "role": null,
+      "impact": "Potential application or data exposure; actual exploitability requires review.",
+      "reproduction": "Inspect the referenced location in an authorized local copy.",
+      "retest": "Apply remediation and repeat this check; manually verify the affected workflow.",
+      "mappings": [
+        {
+          "framework": "NIST CSF",
+          "version": "2.0",
+          "control": "ID.RA-01",
+          "status": "NEEDS MANUAL REVIEW",
+          "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+        }
+      ],
+      "cvss": null,
+      "provenance": [],
+      "id": "9f3f1e34e14cad93",
+      "fingerprint": "9f3f1e34e14cad935d2b59bdb43a9fb0418b91b9512e93c12a3e28ce8ca0e013"
+    },
+    {
+      "rule": "SECRET-LITERAL",
+      "title": "Potential hardcoded credential",
+      "asset": "app.py",
+      "description": "A credential-like assignment contains a literal. Value intentionally discarded.",
+      "remediation": "Review whether the value is sensitive; rotate exposed credentials and use a secret store.",
+      "severity": "HIGH",
+      "confidence": "MEDIUM",
+      "line": 4,
+      "scanner": "secaudit-builtins",
+      "scanner_version": "0.3.0",
+      "evidence": [
+        "app.py:4: pattern matched; source content omitted"
+      ],
+      "timestamp": "2026-09-22T03:57:31.839167+00:00",
+      "validation_status": "NEEDS MANUAL REVIEW",
+      "role": null,
+      "impact": "Potential application or data exposure; actual exploitability requires review.",
+      "reproduction": "Inspect the referenced location in an authorized local copy.",
+      "retest": "Apply remediation and repeat this check; manually verify the affected workflow.",
+      "mappings": [
+        {
+          "framework": "NIST CSF",
+          "version": "2.0",
+          "control": "ID.RA-01",
+          "status": "NEEDS MANUAL REVIEW",
+          "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+        }
+      ],
+      "cvss": null,
+      "provenance": [],
+      "id": "873be20af1527489",
+      "fingerprint": "873be20af1527489fcd52050d8bb7d153f0c90fb925977a873b81276e4c13451"
+    },
+    {
+      "rule": "API-SECURITY",
+      "title": "API operation has no declared security",
+      "asset": "openapi.json",
+      "description": "GET /public has no non-empty security requirement; public endpoints may be intentional.",
+      "remediation": "Verify the intended authorization policy and document it.",
+      "severity": "MEDIUM",
+      "confidence": "MEDIUM",
+      "line": 1,
+      "scanner": "secaudit-builtins",
+      "scanner_version": "0.3.0",
+      "evidence": [
+        "openapi.json:1: pattern matched; source content omitted"
+      ],
+      "timestamp": "2026-09-22T03:57:31.841027+00:00",
+      "validation_status": "NEEDS MANUAL REVIEW",
+      "role": null,
+      "impact": "Potential application or data exposure; actual exploitability requires review.",
+      "reproduction": "Inspect the referenced location in an authorized local copy.",
+      "retest": "Apply remediation and repeat this check; manually verify the affected workflow.",
+      "mappings": [
+        {
+          "framework": "NIST CSF",
+          "version": "2.0",
+          "control": "ID.RA-01",
+          "status": "NEEDS MANUAL REVIEW",
+          "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+        }
+      ],
+      "cvss": null,
+      "provenance": [],
+      "id": "f6fcf34abb6944b0",
+      "fingerprint": "f6fcf34abb6944b0a880a3c84b8639a323e97a9d22bec5019cb8421a500c58f4"
+    }
+  ],
+  "assets": [
+    {
+      "asset": "app.py",
+      "type": "source"
+    },
+    {
+      "asset": "openapi.json",
+      "type": "source"
+    },
+    {
+      "asset": "/public",
+      "method": "get",
+      "type": "declared-api"
+    },
+    {
+      "asset": "requirements.txt",
+      "type": "source"
+    }
+  ],
+  "components": [
+    {
+      "name": "example-demo-package",
+      "version": "1.0.0",
+      "type": "library",
+      "purl": "pkg:pypi/example-demo-package@1.0.0"
+    }
+  ],
+  "coverage": [
+    {
+      "module": "source",
+      "status": "PARTIAL",
+      "reason": "Bounded heuristic checks executed; manual validation required. Inventory records processed files."
+    },
+    {
+      "module": "secrets",
+      "status": "PARTIAL",
+      "reason": "Bounded heuristic checks executed; manual validation required. Inventory records processed files."
+    },
+    {
+      "module": "config",
+      "status": "PARTIAL",
+      "reason": "Bounded heuristic checks executed; manual validation required. Inventory records processed files."
+    },
+    {
+      "module": "dependencies",
+      "status": "NOT TESTED",
+      "reason": "DATA_MISSING: advisory snapshot absent"
+    },
+    {
+      "module": "openapi",
+      "status": "PARTIAL",
+      "reason": "Bounded heuristic checks executed; manual validation required. Inventory records processed files."
+    }
+  ],
+  "events": [
+    "dependency database: DATA_MISSING"
+  ],
+  "limitations": [
+    "Findings require manual validation; no compliance certification or complete vulnerability detection.",
+    "Browser execution, state-changing active attacks, business-logic verification and authenticated role comparisons are not supported.",
+    "Dependency matching is limited by supplied snapshots and inventory coverage; missing data remains NOT TESTED.",
+    "Framework mappings are a reviewed subset of related evidence, not complete ASVS/NIST/ATT&CK control assessments.",
+    "Source rules are syntax/regex heuristics; external scanners require a working isolated execution profile."
+  ],
+  "ai_usage": {
+    "enabled": false,
+    "provider": "none",
+    "verified": "not used"
+  },
+  "ai_suggestions": null,
+  "framework_snapshot": {
+    "version": "secaudit-mappings-2026-09-22",
+    "reviewed_at": "2026-09-22",
+    "sha256": "18a063fcd3fce66667f6096f49cb5a006068eecbf9a21f2a31afa2094516729b",
+    "sources": [
+      "https://csrc.nist.gov/projects/cybersecurity-framework/filters",
+      "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/07-Test_HTTP_Strict_Transport_Security/",
+      "https://owasp.github.io/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/06-Session_Management_Testing/02-Testing_for_Cookies_Attributes"
+    ],
+    "limitation": "Reviewed subset only; mappings are related evidence, not certification or control pass/fail."
+  },
+  "finished": "2026-09-22T03:57:31.849778+00:00"
+}

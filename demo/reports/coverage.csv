@@ -1,0 +1,6 @@
+module,status,reason
+source,PARTIAL,Bounded heuristic checks executed; manual validation required. Inventory records processed files.
+secrets,PARTIAL,Bounded heuristic checks executed; manual validation required. Inventory records processed files.
+config,PARTIAL,Bounded heuristic checks executed; manual validation required. Inventory records processed files.
+dependencies,NOT TESTED,DATA_MISSING: advisory snapshot absent
+openapi,PARTIAL,Bounded heuristic checks executed; manual validation required. Inventory records processed files.

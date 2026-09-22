@@ -1,0 +1,19 @@
+[
+  {
+    "asset": "app.py",
+    "type": "source"
+  },
+  {
+    "asset": "openapi.json",
+    "type": "source"
+  },
+  {
+    "asset": "/public",
+    "method": "get",
+    "type": "declared-api"
+  },
+  {
+    "asset": "requirements.txt",
+    "type": "source"
+  }
+]

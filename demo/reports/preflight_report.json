@@ -1,0 +1,89 @@
+{
+  "ready": true,
+  "mode": "offline",
+  "components": [
+    {
+      "component": "runtime",
+      "required_for": "assessment",
+      "version": "3.12.14",
+      "status": "READY",
+      "resolution": "Use Linux with Python 3.11+.",
+      "required": true
+    },
+    {
+      "component": "evidence storage",
+      "required_for": "assessment",
+      "version": "",
+      "status": "READY",
+      "resolution": "",
+      "required": true
+    },
+    {
+      "component": "resources",
+      "required_for": "assessment",
+      "version": "9 CPUs",
+      "status": "READY",
+      "resolution": "At least 128 MiB available memory required.",
+      "required": true
+    },
+    {
+      "component": "kernel source isolation",
+      "required_for": "assessment",
+      "version": "",
+      "status": "READY",
+      "resolution": "Install libseccomp2 and use a kernel permitting seccomp filters.",
+      "required": true
+    },
+    {
+      "component": "source",
+      "required_for": "assessment",
+      "version": "0.3.0",
+      "status": "READY",
+      "resolution": "",
+      "required": true
+    },
+    {
+      "component": "secrets",
+      "required_for": "assessment",
+      "version": "0.3.0",
+      "status": "READY",
+      "resolution": "",
+      "required": true
+    },
+    {
+      "component": "config",
+      "required_for": "assessment",
+      "version": "0.3.0",
+      "status": "READY",
+      "resolution": "",
+      "required": true
+    },
+    {
+      "component": "dependency database",
+      "required_for": "optional module",
+      "version": "",
+      "status": "DATA_MISSING",
+      "resolution": "DATA_MISSING: advisory snapshot absent",
+      "required": false
+    },
+    {
+      "component": "openapi",
+      "required_for": "assessment",
+      "version": "0.3.0",
+      "status": "READY",
+      "resolution": "",
+      "required": true
+    },
+    {
+      "component": "PDF renderer",
+      "required_for": "optional module",
+      "version": "4.4.9",
+      "status": "READY",
+      "resolution": "",
+      "required": false
+    }
+  ],
+  "limitations": [
+    "Optional modules are NOT TESTED when unavailable. External scanners require working Bubblewrap isolation."
+  ]
+}

@@ -1,0 +1,1 @@
+{"openapi":"3.0.3","info":{"title":"Synthetic demo","version":"1.0"},"paths":{"/public":{"get":{"responses":{"200":{"description":"OK"}}}}}}

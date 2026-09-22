@@ -1,0 +1,172 @@
+[
+  {
+    "rule": "PY-DYNAMIC-EXEC",
+    "title": "Dynamic code execution requires review",
+    "asset": "app.py",
+    "description": "Dynamic execution can interpret untrusted input. This is a syntax-based candidate, not data-flow proof.",
+    "remediation": "Remove dynamic evaluation or strictly validate trusted input.",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "line": 6,
+    "scanner": "secaudit-builtins",
+    "scanner_version": "0.3.0",
+    "evidence": [
+      "app.py:6: pattern matched; source content omitted"
+    ],
+    "timestamp": "2026-09-22T03:57:31.838351+00:00",
+    "validation_status": "NEEDS MANUAL REVIEW",
+    "role": null,
+    "impact": "Potential application or data exposure; actual exploitability requires review.",
+    "reproduction": "Inspect the referenced location in an authorized local copy.",
+    "retest": "Apply remediation and repeat this check; manually verify the affected workflow.",
+    "mappings": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "cvss": null,
+    "provenance": [],
+    "id": "5039eab36f64cdbd",
+    "fingerprint": "5039eab36f64cdbd8a017bf3f2e5f29aa401461ed7ab94ab52de6af508a97059"
+  },
+  {
+    "rule": "PY-SHELL",
+    "title": "Shell subprocess requires review",
+    "asset": "app.py",
+    "description": "shell=True enables shell interpretation.",
+    "remediation": "Use an argument list with shell=False.",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "line": 8,
+    "scanner": "secaudit-builtins",
+    "scanner_version": "0.3.0",
+    "evidence": [
+      "app.py:8: pattern matched; source content omitted"
+    ],
+    "timestamp": "2026-09-22T03:57:31.838369+00:00",
+    "validation_status": "NEEDS MANUAL REVIEW",
+    "role": null,
+    "impact": "Potential application or data exposure; actual exploitability requires review.",
+    "reproduction": "Inspect the referenced location in an authorized local copy.",
+    "retest": "Apply remediation and repeat this check; manually verify the affected workflow.",
+    "mappings": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "cvss": null,
+    "provenance": [],
+    "id": "eeb5dcc6ff35659b",
+    "fingerprint": "eeb5dcc6ff35659ba6f9aecca2ea2faa2c6470087c62c9d015200490d1d60f1b"
+  },
+  {
+    "rule": "CONFIG-DEBUG",
+    "title": "Debug mode enabled",
+    "asset": "app.py",
+    "description": "Debug setting is enabled.",
+    "remediation": "Disable debug mode in production.",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "line": 3,
+    "scanner": "secaudit-builtins",
+    "scanner_version": "0.3.0",
+    "evidence": [
+      "app.py:3: pattern matched; source content omitted"
+    ],
+    "timestamp": "2026-09-22T03:57:31.839158+00:00",
+    "validation_status": "NEEDS MANUAL REVIEW",
+    "role": null,
+    "impact": "Potential application or data exposure; actual exploitability requires review.",
+    "reproduction": "Inspect the referenced location in an authorized local copy.",
+    "retest": "Apply remediation and repeat this check; manually verify the affected workflow.",
+    "mappings": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "cvss": null,
+    "provenance": [],
+    "id": "9f3f1e34e14cad93",
+    "fingerprint": "9f3f1e34e14cad935d2b59bdb43a9fb0418b91b9512e93c12a3e28ce8ca0e013"
+  },
+  {
+    "rule": "SECRET-LITERAL",
+    "title": "Potential hardcoded credential",
+    "asset": "app.py",
+    "description": "A credential-like assignment contains a literal. Value intentionally discarded.",
+    "remediation": "Review whether the value is sensitive; rotate exposed credentials and use a secret store.",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "line": 4,
+    "scanner": "secaudit-builtins",
+    "scanner_version": "0.3.0",
+    "evidence": [
+      "app.py:4: pattern matched; source content omitted"
+    ],
+    "timestamp": "2026-09-22T03:57:31.839167+00:00",
+    "validation_status": "NEEDS MANUAL REVIEW",
+    "role": null,
+    "impact": "Potential application or data exposure; actual exploitability requires review.",
+    "reproduction": "Inspect the referenced location in an authorized local copy.",
+    "retest": "Apply remediation and repeat this check; manually verify the affected workflow.",
+    "mappings": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "cvss": null,
+    "provenance": [],
+    "id": "873be20af1527489",
+    "fingerprint": "873be20af1527489fcd52050d8bb7d153f0c90fb925977a873b81276e4c13451"
+  },
+  {
+    "rule": "API-SECURITY",
+    "title": "API operation has no declared security",
+    "asset": "openapi.json",
+    "description": "GET /public has no non-empty security requirement; public endpoints may be intentional.",
+    "remediation": "Verify the intended authorization policy and document it.",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "line": 1,
+    "scanner": "secaudit-builtins",
+    "scanner_version": "0.3.0",
+    "evidence": [
+      "openapi.json:1: pattern matched; source content omitted"
+    ],
+    "timestamp": "2026-09-22T03:57:31.841027+00:00",
+    "validation_status": "NEEDS MANUAL REVIEW",
+    "role": null,
+    "impact": "Potential application or data exposure; actual exploitability requires review.",
+    "reproduction": "Inspect the referenced location in an authorized local copy.",
+    "retest": "Apply remediation and repeat this check; manually verify the affected workflow.",
+    "mappings": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "cvss": null,
+    "provenance": [],
+    "id": "f6fcf34abb6944b0",
+    "fingerprint": "f6fcf34abb6944b0a880a3c84b8639a323e97a9d22bec5019cb8421a500c58f4"
+  }
+]
