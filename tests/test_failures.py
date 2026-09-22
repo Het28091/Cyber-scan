@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch, MagicMock
-from secaudit.adapters import parse, execute, probe, sandbox_command
+from secaudit.adapters import ADDRESS_LIMITS, parse, execute, probe, sandbox_command
 from secaudit.config import Config
 from secaudit.network import PinnedHTTP, request, scan_web
 from secaudit.scanners import source_scan
@@ -30,9 +30,10 @@ class FailureTests(unittest.TestCase):
 
     def test_scanner_crash_never_returns_clean_result(self):
         for name in ('gitleaks','semgrep','trivy','syft'):
-            with self.subTest(name=name),patch('secaudit.adapters.sandbox_command',return_value=['isolated-tool']),patch('secaudit.adapters.probe',return_value=('/usr/bin/true','1.0.0')),patch('secaudit.adapters.bounded',return_value=(139,b'sensitive raw data')):
+            with self.subTest(name=name),patch('secaudit.adapters.sandbox_command',return_value=['isolated-tool']),patch('secaudit.adapters.probe',return_value=('/usr/bin/true','1.0.0')),patch('secaudit.adapters.bounded',return_value=(139,b'sensitive raw data')) as invocation:
                 with self.assertRaisesRegex(PolicyError,'raw output discarded'):
                     execute(name,ROOT/'demo/source',{'rules':__file__,'cache':str(ROOT)},2)
+                self.assertEqual(invocation.call_args.kwargs['max_address_bytes'],ADDRESS_LIMITS.get(name,2*1024**3))
 
     def test_sandbox_rejection_blocks_scanner_version_execution(self):
         with patch('shutil.which',return_value='/usr/bin/tool'),patch('secaudit.adapters.bounded',return_value=(1,b'no namespaces')) as run:

@@ -11,7 +11,7 @@ import shutil
 import socket
 import tempfile
 from pathlib import Path
-from secaudit.adapters import bounded, execute, probe, sandbox_command
+from secaudit.adapters import ADDRESS_LIMITS, bounded, execute, probe, sandbox_command
 from secaudit.config import Config
 from secaudit.models import now
 from secaudit.security import PolicyError
@@ -32,11 +32,11 @@ def verify():
         result['stage']='scanner-preflight'
         # Fixed version command only: no source mount or inherited credentials.
         # Retain bounded startup diagnostics to distinguish runtime incompatibility.
-        code, startup = bounded(sandbox_command('/bin/sh') + ['-c', '/usr/local/bin/gitleaks version 2>&1'], 10, 65536)
+        code, startup = bounded(sandbox_command('/bin/sh') + ['-c', '/usr/local/bin/gitleaks version 2>&1'], 10, 65536, max_address_bytes=ADDRESS_LIMITS['gitleaks'])
         if code:
             result['startup_diagnostic']=startup.decode('utf-8','replace')[:2000]
         exe, version = probe('gitleaks', {})
-        result['tool'] = {'name': 'gitleaks', 'version': version,
+        result['tool'] = {'name': 'gitleaks', 'version': version, 'virtual_address_limit_bytes': ADDRESS_LIMITS['gitleaks'],
                           'sha256': hashlib.sha256(Path(exe).read_bytes()).hexdigest()}
         with tempfile.TemporaryDirectory() as temp:
             source = Path(temp) / 'source'

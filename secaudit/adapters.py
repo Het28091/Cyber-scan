@@ -4,6 +4,10 @@ from pathlib import Path
 from .security import PolicyError
 from .models import Finding
 
+# Gitleaks' WASM regex runtime reserves 4 GiB even for `version`.
+# This is virtual address space, not a resident-memory/cgroup guarantee.
+ADDRESS_LIMITS={'gitleaks':8*1024**3}
+
 VERSIONS={'gitleaks':r'\b8\.\d+\.\d+\b','semgrep':r'\b1\.\d+\.\d+\b','trivy':r'\b0\.\d+\.\d+\b','syft':r'\b1\.\d+\.\d+\b'}
 
 def sandbox_command(executable,source=None,extra=None):
@@ -20,13 +24,13 @@ def sandbox_command(executable,source=None,extra=None):
     for host,guest in (extra or []): cmd+=['--ro-bind',str(Path(host).resolve()),guest]
     return cmd+['--',str(executable)]
 
-def bounded(command,timeout=60,max_bytes=10_000_000):
+def bounded(command,timeout=60,max_bytes=10_000_000,max_address_bytes=2*1024**3):
     """Drain both streams without unbounded buffers; terminate the whole process group."""
     import selectors
     def limits():
         resource.setrlimit(resource.RLIMIT_FSIZE,(max_bytes,max_bytes))
         resource.setrlimit(resource.RLIMIT_NOFILE,(128,128))
-        resource.setrlimit(resource.RLIMIT_AS,(2*1024**3,2*1024**3))
+        resource.setrlimit(resource.RLIMIT_AS,(max_address_bytes,max_address_bytes))
         resource.setrlimit(resource.RLIMIT_CPU,(max(1,int(timeout)),max(2,int(timeout)+1)))
     p=subprocess.Popen(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE,start_new_session=True,preexec_fn=limits)
     selector=selectors.DefaultSelector();selector.register(p.stdout,selectors.EVENT_READ);selector.register(p.stderr,selectors.EVENT_READ)
@@ -54,7 +58,7 @@ def probe(name,options):
     if not exe: raise PolicyError('REQUIRED_MISSING: '+name)
     code,_=bounded(sandbox_command('/bin/true'),5,65536)
     if code: raise PolicyError('POLICY_BLOCKED: kernel does not permit Bubblewrap isolation')
-    code,raw=bounded(sandbox_command(exe)+(['version'] if name in ('gitleaks','syft') else ['--version']),10,65536)
+    code,raw=bounded(sandbox_command(exe)+(['version'] if name in ('gitleaks','syft') else ['--version']),10,65536,max_address_bytes=ADDRESS_LIMITS.get(name,2*1024**3))
     if code: raise PolicyError('INCOMPATIBLE: tool cannot start inside sandbox')
     match=re.search(VERSIONS[name],raw.decode('utf-8','replace'))
     if not match: raise PolicyError('INCOMPATIBLE: unsupported scanner version output')
@@ -99,6 +103,6 @@ def execute(name,source,options,timeout):
     elif name=='trivy':
         extra=[(options['cache'],'/cache')];args=['fs','--cache-dir','/cache','--scan-cache','memory','--skip-version-check','--offline-scan','--skip-db-update','--skip-java-db-update','--scanners','vuln','--format','json','/input']
     else: args=['dir:/input','-o','cyclonedx-json','--check-for-app-update=false']
-    code,raw=bounded(sandbox_command(exe,source,extra)+args,timeout)
+    code,raw=bounded(sandbox_command(exe,source,extra)+args,timeout,max_address_bytes=ADDRESS_LIMITS.get(name,2*1024**3))
     if code: raise PolicyError('scanner failed; raw output discarded')
     return parse(name,raw,version)
