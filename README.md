@@ -121,9 +121,11 @@ triage priority, not a computed CVSS score. Runtime updates do not alter install
 
 Official API contract: https://google.github.io/osv.dev/post-v1-query/
 
-**Verification limit:** the OSV adapter passes controlled response tests, but the
-live lookup was blocked by this development environment's DNS/public-address policy.
-A successful real OSV query on an unrestricted Linux machine is still outstanding.
+**Live verification:** a genuine query passed on Linux CI in v0.6.0 (one request,
+one completed response, ten advisories for the deliberately vulnerable fixture).
+The development environment itself remains restricted; no local policy was bypassed.
+See [acceptance evidence](docs/evidence/v0.6-live.json). Provider availability and
+advisory completeness are not guaranteed by that successful test.
 
 For disconnected dependency checks, see [local datasets](docs/DATASETS.md).
 

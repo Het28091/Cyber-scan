@@ -61,13 +61,15 @@ Current acceptance and remaining v1.0 work: [V06_ACCEPTANCE.md](V06_ACCEPTANCE.m
 
 ## Remaining acceptance work
 
-- [ ] Successful OSV lookup on an unrestricted Linux machine.
+- [x] Successful real OSV lookup on Linux CI.
 - [ ] Actual externally hosted authorized target test; local fixtures cover client behavior.
 - [ ] Browser-level UI verification; Chromium installation was unavailable in this environment.
-- [ ] End-to-end verification of optional scanner binaries on a host allowing Bubblewrap.
+- [x] End-to-end Gitleaks verification on Linux CI with mandatory Bubblewrap.
+- [ ] Other optional scanner binaries remain unverified end to end.
+- [ ] Supported Linux/Python installation matrix and release packaging acceptance.
 
 ## Next milestone
 
-Prioritize live Linux acceptance and broader deterministic checks before adding AI.
+Prioritize browser, distribution and release acceptance before v1.0; new features stay frozen.
 Browser scanning and authenticated role testing require their own tested scope and
 network controls. No percentage-complete estimate is used to hide unverified work.
