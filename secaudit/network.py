@@ -1,4 +1,4 @@
-"""No ambient proxies, automatic redirects, cookies, or credential forwarding."""
+"""Pinned transport; static credentials are injected only within their own scope."""
 import http.client, socket, ssl, time
 from urllib.parse import urlsplit,urljoin
 from html.parser import HTMLParser
@@ -23,9 +23,15 @@ def request(url,scope,method='GET',body=None,headers=None,timeout=5,max_bytes=1_
     ip=scope.check(url)
     _,_,host,port=canonical(url)
     u=urlsplit(url)
+    outgoing=dict(headers) if headers is not None else {'User-Agent':'Secaudit/'+__version__+' authorized-assessment'}
+    auth=getattr(scope,'auth',None)
+    if auth and auth.matches(url):
+        if method not in ('GET','HEAD'): raise PolicyError('authenticated transport is passive GET/HEAD only')
+        if any(k.lower() in ('authorization','cookie') for k in outgoing): raise PolicyError('conflicting authentication headers')
+        outgoing.update(auth.headers(url))
     conn=PinnedHTTP(host,port,ip,timeout,u.scheme=='https')
     try:
-        conn.request(method,(u.path or '/')+('?' +u.query if u.query else ''),body=body,headers=headers or {'User-Agent':'Secaudit/'+__version__+' authorized-assessment'})
+        conn.request(method,(u.path or '/')+('?' +u.query if u.query else ''),body=body,headers=outgoing)
         response=conn.getresponse(); payload=response.read(max_bytes+1)
         if len(payload)>max_bytes: raise PolicyError('response exceeds size limit')
         return response.status,response.getheaders(),payload
@@ -52,6 +58,8 @@ def scan_web(url,scope,checkpoint):
         # Paths are evidence metadata, not full captures or query values.
         u=urlsplit(current); asset=u.scheme+'://'+u.netloc+u.path
         inventory.append({'asset':asset,'status':status})
+        if status in (401,403) and getattr(scope,'auth',None) and scope.auth.matches(current):
+            events.append('AUTHENTICATION_REJECTED: credential or access policy rejected; protected content not assessed.');checkpoint(findings,inventory);break
         if status>=500: events.append('Stopped after server error (possible instability)');break
         hd={k.lower():v for k,v in hs}
         if status in (301,302,303,307,308) and 'location' in hd:

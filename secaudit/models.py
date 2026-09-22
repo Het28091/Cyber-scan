@@ -14,7 +14,7 @@ class Finding:
     confidence: str='MEDIUM'
     line: int=0
     scanner: str='secaudit-builtins'
-    scanner_version: str='0.5.0'
+    scanner_version: str='0.6.0.dev1'
     evidence: list=field(default_factory=list)
     timestamp: str=field(default_factory=now)
     validation_status: str='NEEDS MANUAL REVIEW'

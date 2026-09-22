@@ -1,10 +1,16 @@
 from __future__ import annotations
 import ctypes, ctypes.util, errno, hashlib, ipaddress, json, os, re, socket, stat, tempfile, zipfile
 from pathlib import Path
-from urllib.parse import urlsplit, unquote
+from urllib.parse import urlsplit, unquote, quote
 
 class PolicyError(ValueError):
     pass
+
+_ACTIVE_SECRETS=set()
+def register_secret(value):
+    # Process-local only: never stored in scope, jobs, database or reports.
+    encoded=quote(value,safe='')
+    _ACTIVE_SECRETS.update((value,encoded,re.sub(r'%[0-9A-F]{2}',lambda m:m[0].lower(),encoded)))
 
 SECRET = re.compile(r'''(?i)(["']?(?:password|passwd|secret|api[_-]?key|token|authorization|cookie|set-cookie)["']?\s*[:=]\s*)(?:["'][^"'\r\n]*["']|[^\s,;}]+)''')
 def redact(value):
@@ -12,6 +18,7 @@ def redact(value):
         return {str(k): '[REDACTED]' if re.search(r'(?i)^(password|secret|token|api.?key|authorization|cookie|set-cookie)$', str(k)) else redact(v) for k,v in value.items()}
     if isinstance(value, list): return [redact(v) for v in value]
     if not isinstance(value,str): return value
+    for secret in sorted(_ACTIVE_SECRETS,key=len,reverse=True): value=value.replace(secret,'[REDACTED CREDENTIAL]')
     value = re.sub(r'-----BEGIN [^-]*PRIVATE KEY-----.*?-----END [^-]*PRIVATE KEY-----', '[REDACTED PRIVATE KEY]', value, flags=re.S)
     value = re.sub(r'\b(?:AKIA[A-Z0-9]{16}|gh[pousr]_[A-Za-z0-9]{20,}|eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)\b', '[REDACTED TOKEN]', value)
     value = re.sub(r'[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}', '[REDACTED EMAIL]', value)
@@ -77,7 +84,7 @@ class Scope:
         self._resolved={}
         required={'authorization','origins','exclusions','environment','profiles','max_requests','max_seconds','allowed_ips'}
         if not isinstance(data,dict): raise PolicyError('scope must be an object')
-        if set(data)-required: raise PolicyError('unknown scope fields')
+        if set(data)-(required|{'authentication'}): raise PolicyError('unknown scope fields')
         for key in ('origins','exclusions','allowed_ips','profiles'):
             if key in data and (not isinstance(data[key],list) or len(data[key])>200 or not all(isinstance(x,str) for x in data[key])): raise PolicyError('scope lists must contain bounded strings')
         if not isinstance(data.get('environment'),str) or not data['environment'].strip(): raise PolicyError('environment must be a nonempty string')
@@ -91,6 +98,11 @@ class Scope:
         self.allow=[self._entry(x) for x in data['origins']]
         self.deny=[self._entry(x) for x in data['exclusions']]
         self.ips={str(ipaddress.ip_address(x)) for x in data['allowed_ips']}
+        self.auth=None
+        if 'authentication' in data:
+            from .auth import StaticAuth
+            self.auth=StaticAuth(data['authentication'])
+            if not any(origin==self.auth.origin for origin,_ in self.allow): raise PolicyError('authentication origin must be authorized')
     def _entry(self,x):
         origin,path,_,_=canonical(x)
         if urlsplit(x).query: raise PolicyError('scope entries cannot contain queries')

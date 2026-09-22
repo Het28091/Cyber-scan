@@ -21,10 +21,49 @@ jobs:
         run: bandit -r secaudit scripts -lll -iii
       - name: Dependency advisory gate (network required; failures block)
         run: pip-audit -r requirements.lock --disable-pip --no-deps
-      - name: Unit and integration tests with coverage
+      - name: Unit and integration tests with subprocess coverage
         run: |
-          coverage run --source=secaudit -m unittest discover -s tests -v
-          coverage report --show-missing
+          python - <<'PYCODE'
+          import pathlib, site
+          (pathlib.Path(site.getsitepackages()[0]) / 'secaudit_coverage.pth').write_text('import coverage; coverage.process_startup()\n')
+          PYCODE
+          mkdir -p "$RUNNER_TEMP/coverage"
+          export SECAUDIT_COVERAGE_SOURCE="$GITHUB_WORKSPACE/secaudit"
+          export COVERAGE_PROCESS_START="$GITHUB_WORKSPACE/.coveragerc"
+          export COVERAGE_FILE="$RUNNER_TEMP/coverage/.coverage"
+          python -m unittest discover -s tests -v
+          unset COVERAGE_PROCESS_START
+          python -m coverage combine "$RUNNER_TEMP/coverage"
+          python -m coverage report --fail-under=81
 
       - name: Synthetic offline assessment
         run: python3 -m secaudit scan --config config/offline.json
+
+  live-acceptance:
+    # Ubuntu 22.04 supports unprivileged Bubblewrap on the hosted Linux runner.
+    # Do not disable AppArmor, seccomp, namespaces or other host security policies.
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Install real scanner and mandatory sandbox
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y bubblewrap
+          mkdir -p "$RUNNER_TEMP/gitleaks"
+          cd "$RUNNER_TEMP/gitleaks"
+          curl --fail --silent --show-error --location --max-time 60 -O https://github.com/gitleaks/gitleaks/releases/download/v8.24.2/gitleaks_8.24.2_linux_x64.tar.gz
+          curl --fail --silent --show-error --location --max-time 60 -O https://github.com/gitleaks/gitleaks/releases/download/v8.24.2/gitleaks_8.24.2_checksums.txt
+          grep ' gitleaks_8.24.2_linux_x64.tar.gz$' gitleaks_8.24.2_checksums.txt > selected.sha256
+          test -s selected.sha256
+          sha256sum --check selected.sha256
+          tar -xzf gitleaks_8.24.2_linux_x64.tar.gz gitleaks
+          sudo install -m 0755 gitleaks /usr/local/bin/gitleaks
+      - name: Live OSV and real sandboxed Gitleaks acceptance
+        env:
+          PYTHONPATH: .
+        run: python integration/live_acceptance.py

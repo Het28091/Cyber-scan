@@ -35,6 +35,7 @@ def doctor(cfg,scope=None,check_target=False):
             if check_target:
                 from .network import request
                 status,_,_=request(cfg.target,scope,method='HEAD',max_bytes=0)
+                if status in (401,403) and scope.auth and scope.auth.matches(cfg.target): raise PolicyError('authentication rejected during preflight')
                 row('target connectivity','UNREACHABLE' if status>=500 else 'READY',str(status), 'Check target health; HEAD 4xx does not mean the target is unreachable.')
         except ValueError: row('target scope/connectivity','POLICY_BLOCKED',resolution='Supply authorization, exact origin/path and current IP pins; verify target availability.')
         except (OSError,http.client.HTTPException): row('target connectivity','UNREACHABLE',resolution='Target connection or HTTP exchange failed; verify service availability.')

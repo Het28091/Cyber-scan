@@ -20,7 +20,7 @@ def scan(cfg,run_id=None):
     directory=Path(cfg.output)/ident;directory.mkdir(mode=0o700)
     write_json(directory/'preflight_report.json',result)
     atomic(directory/'preflight_report.txt',(Path(cfg.output)/'preflight_report.txt').read_text())
-    run={'id':ident,'status':'RUNNING','started':now(),'mode':cfg.mode,'network_policy':{'public_targets':cfg.mode in ('internet','connected-ai'),'online_advisories':'online_dependencies' in cfg.modules,'ai_enabled':cfg.ai.enabled},'findings':[],'assets':[],'components':[],'coverage':[],'events':[], 'limitations':LIMITATIONS,'ai_usage':{'enabled':cfg.ai.enabled,'provider':cfg.ai.provider,'verified':'not used'},'ai_suggestions':None}
+    run={'id':ident,'status':'RUNNING','started':now(),'mode':cfg.mode,'network_policy':{'public_targets':cfg.mode in ('internet','connected-ai'),'online_advisories':'online_dependencies' in cfg.modules,'ai_enabled':cfg.ai.enabled,'static_authentication':bool(scope and scope.auth)},'findings':[],'assets':[],'components':[],'coverage':[],'events':[], 'limitations':LIMITATIONS,'ai_usage':{'enabled':cfg.ai.enabled,'provider':cfg.ai.provider,'verified':'not used'},'ai_suggestions':None}
     if cfg.mode=='internet':
         run['events'].append('Internet mode: scoped target access enabled; AI disabled.')
         if 'online_dependencies' in cfg.modules: run['events'].append('OSV lookups enabled: package ecosystem, name and version may leave this machine; source and credentials are excluded.')
@@ -91,8 +91,14 @@ def scan(cfg,run_id=None):
         if cfg.target and 'web' in cfg.modules:
             from .network import scan_web
             fs,assets,events=scan_web(cfg.target,scope,checkpoint);all_findings+=fs;all_assets+=assets;run['events']+=events
+            auth_rejected=any(e.startswith('AUTHENTICATION_REJECTED') for e in events)
             for row in run['coverage']:
-                if row['module']=='web': row.update(status='PARTIAL' if assets else 'NOT TESTED',reason='Bounded GET crawl and header/cookie checks; no browser or authentication checks.' if assets else 'No HTTP responses available.')
+                if row['module']=='web': row.update(status='PARTIAL' if assets else 'NOT TESTED',reason='Bounded GET crawl and header/cookie checks; no browser, login automation or role-comparison checks. Static credentials are sent only when configured.' if assets else 'No HTTP responses available.')
+            if auth_rejected:
+                for row in run['coverage']:
+                    if row['module']=='web': row.update(status='PARTIAL' if any(a['status'] not in (401,403) for a in assets) else 'NOT TESTED',reason='Authentication/access rejected; protected content coverage incomplete.')
+                checkpoint([],[])
+                if cfg.strict: raise PolicyError('Required authenticated assessment rejected')
         run['findings']=[f.to_dict() for f in dedup(all_findings)];run['assets']=all_assets
         if provider:
             try:

@@ -42,3 +42,9 @@ credential attacks, destructive actions or compliance certification are promised
 
 See PROGRESS.md and VERIFICATION.md. A passed fixture test is not a successful live
 provider test. A usable first pipeline is not complete security coverage.
+
+## Static authentication amendment
+
+Passive GET/HEAD now supports an existing bearer/session credential from an environment
+reference, scoped to one origin and explicit paths. See [authentication](AUTHENTICATION.md).
+Login automation and role comparison remain outside this milestone.

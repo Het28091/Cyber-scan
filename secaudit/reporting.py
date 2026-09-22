@@ -2,7 +2,7 @@ import csv,html,io,json
 from pathlib import Path
 from .security import atomic,write_json,csv_safe,redact
 
-LIMITATIONS=['Findings require manual validation; no compliance certification or complete vulnerability detection.', 'Browser execution, state-changing active attacks, business-logic verification and authenticated role comparisons are not supported.', 'Dependency matching is limited by supplied snapshots and inventory coverage; missing data remains NOT TESTED.', 'Framework mappings are a reviewed subset of related evidence, not complete ASVS/NIST/ATT&CK control assessments.', 'Source rules are syntax/regex heuristics; external scanners require a working isolated execution profile.']
+LIMITATIONS=['Findings require manual validation; no compliance certification or complete vulnerability detection.', 'Browser execution, login automation, state-changing active attacks, business-logic verification and role comparisons are not supported. Static bearer/cookie authentication is scope-bound when configured.', 'Dependency matching is limited by supplied snapshots and inventory coverage; missing data remains NOT TESTED.', 'Framework mappings are a reviewed subset of related evidence, not complete ASVS/NIST/ATT&CK control assessments.', 'Source rules are syntax/regex heuristics; external scanners require a working isolated execution profile.']
 
 def export_csv(path,rows,keys):
     s=io.StringIO();w=csv.writer(s);w.writerow(keys)

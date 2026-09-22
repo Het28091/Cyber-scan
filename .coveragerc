@@ -1,0 +1,8 @@
+[run]
+source = ${SECAUDIT_COVERAGE_SOURCE-secaudit}
+parallel = True
+sigterm = True
+
+[report]
+show_missing = True
+fail_under = 81

@@ -63,6 +63,15 @@ def probe(name,options):
     return str(exe),match[0]
 
 def parse(name,raw,version):
+    if name not in VERSIONS: raise PolicyError('unknown scanner')
+    try:
+        result=_parse(name,raw,version)
+        if any(f.line<0 for f in result[0]): raise PolicyError('invalid finding line')
+        return result
+    except (ValueError,TypeError,KeyError,AttributeError,RecursionError):
+        raise PolicyError('invalid scanner output; raw content discarded') from None
+
+def _parse(name,raw,version):
     data=json.loads(raw);fs=[]
     if name=='gitleaks':
         if not isinstance(data,list): raise PolicyError('invalid Gitleaks JSON')

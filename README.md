@@ -1,13 +1,13 @@
 # Secaudit — Linux assessment orchestration and evidence
 
-**0.5.0 · Linux only · Non-AI by default.**
+**v0.6.0 acceptance in progress · Linux only · Non-AI by default.**
 
 Secaudit coordinates scoped security checks and produces reviewable evidence.
 Use local source or an explicitly authorized URL, then review findings in a local dashboard.
 Built-in checks are a heuristic baseline; isolated external scanners extend detection.
 Reports expose coverage, inventory gaps, provenance and untested controls.
 Offline scans use local data; internet mode can query package advisories without AI.
-Authenticated testing, a full SAST engine and compliance certification are outside this milestone.
+Static authenticated GET/HEAD is supported; login automation, role comparison, a full SAST engine and compliance certification are outside this milestone.
 
 [Project scope](docs/SCOPE.md) · [Progress](docs/PROGRESS.md) ·
 [Verification](docs/VERIFICATION.md) · [Capabilities](docs/CAPABILITIES.md) · [Security review](docs/SECURITY_REVIEW.md) · [Review response](docs/REVIEW_RESPONSE.md)
@@ -226,3 +226,9 @@ CI includes SHA-pinned actions, correctness/security checks, dependency auditing
 coverage reporting. See [review decisions and limitations](docs/REVIEW_RESPONSE.md).
 Live integration acceptance is tracked in [issue 1](https://github.com/Het28091/Cyber-scan/issues/1);
 authentication and browser acceptance in [issue 2](https://github.com/Het28091/Cyber-scan/issues/2).
+
+## v0.6.0 verification milestone
+
+See [acceptance status](docs/V06_ACCEPTANCE.md) and [static authentication](docs/AUTHENTICATION.md).
+Live OSV and real sandboxed Gitleaks run in a separate Linux CI job. Unavailable
+services or isolation fail acceptance rather than becoming skipped or mocked passes.

@@ -1,7 +1,9 @@
-# Progress — 0.5.0
+# Progress — v0.6.0 acceptance in progress
 
 Updated 2026-09-22. Project direction: Linux-only, non-AI scanning with optional
 internet access. Scope is recorded in [SCOPE.md](SCOPE.md).
+
+Current acceptance and remaining v1.0 work: [V06_ACCEPTANCE.md](V06_ACCEPTANCE.md).
 
 ## Completed review response in 0.5.0
 
