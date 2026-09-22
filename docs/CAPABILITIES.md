@@ -1,4 +1,4 @@
-# Capability matrix — 0.4.0
+# Capability matrix — 0.4.1
 
 The original brief is a design target. This release implements a usable bounded
 assessment workflow; it does not satisfy every advanced capability in that brief.
@@ -28,7 +28,7 @@ assessment workflow; it does not satisfy every advanced capability in that brief
 | CVSS | Null unless justified scoring is added | No invented scores |
 
 All runs retain COMPLETED_WITH_LIMITATIONS when successful. No findings does not
-mean secure. Uploaded projects are never executed. Source-only built-in scans use
+mean secure. Uploaded projects are never executed. Source-only built-in scans without online advisory/AI access use
 seccomp; external tools use Bubblewrap with network namespaces and read-only input.
 The development host blocks Bubblewrap namespaces, so external tool execution
 cannot be validated here and must remain blocked here.

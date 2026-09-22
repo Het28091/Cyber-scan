@@ -54,16 +54,19 @@ def deny_network():
     finally: lib.seccomp_release(ctx)
 
 def canonical(url):
-    if not isinstance(url,str) or any(ord(c)<33 for c in url) or '\\' in url: raise PolicyError('invalid URL')
+    if not isinstance(url,str) or any(ord(c)<33 or ord(c)==127 for c in url) or '\\' in url: raise PolicyError('invalid URL')
     u=urlsplit(url)
     if u.scheme not in ('http','https') or not u.hostname or u.username or u.password or u.fragment: raise PolicyError('invalid URL authority')
-    try: port=u.port or (443 if u.scheme=='https' else 80)
+    try: port=u.port if u.port is not None else (443 if u.scheme=='https' else 80)
     except ValueError: raise PolicyError('invalid port')
+    if not 1<=port<=65535: raise PolicyError('invalid port')
     host=u.hostname.encode('idna').decode().lower().rstrip('.')
     if '%' in host: raise PolicyError('scoped IPv6 not supported')
     path=u.path or '/'
-    decoded=unquote(path)
-    if '%' in decoded or '\\' in decoded or any(x in ('.','..') for x in decoded.split('/')) or '//' in decoded or any(ord(c)<32 for c in decoded): raise PolicyError('ambiguous path encoding')
+    try: decoded=unquote(path,errors='strict')
+    except UnicodeError: raise PolicyError('invalid path encoding')
+    if any(x in decoded for x in (';','?','#')): raise PolicyError('ambiguous path delimiters')
+    if '%' in decoded or '\\' in decoded or any(x in ('.','..') for x in decoded.split('/')) or '//' in decoded or any(ord(c)<32 or ord(c)==127 for c in decoded): raise PolicyError('ambiguous path encoding')
     if unquote(path).count('/')!=path.count('/'): raise PolicyError('encoded path separators')
     host_text='['+host+']' if ':' in host else host
     return f'{u.scheme}://{host_text}:{port}', decoded, host, port
@@ -72,6 +75,11 @@ class Scope:
     def __init__(self, data, allow_public=True):
         self.allow_public=allow_public
         required={'authorization','origins','exclusions','environment','profiles','max_requests','max_seconds','allowed_ips'}
+        if not isinstance(data,dict): raise PolicyError('scope must be an object')
+        if set(data)-required: raise PolicyError('unknown scope fields')
+        for key in ('origins','exclusions','allowed_ips','profiles'):
+            if key in data and (not isinstance(data[key],list) or len(data[key])>200 or not all(isinstance(x,str) for x in data[key])): raise PolicyError('scope lists must contain bounded strings')
+        if not isinstance(data.get('environment'),str) or not data['environment'].strip(): raise PolicyError('environment must be a nonempty string')
         if not required<=data.keys(): raise PolicyError('scope is incomplete')
         if not isinstance(data['authorization'],str) or len(data['authorization'].strip())<5: raise PolicyError('authorization reference required')
         if data['profiles']!=['passive']: raise PolicyError('only passive profile supported')
@@ -103,6 +111,7 @@ def extract_zip(archive, destination, max_bytes=50_000_000,max_files=5000):
         if len(entries)>max_files or sum(x.file_size for x in entries)>max_bytes: raise PolicyError('archive limit exceeded')
         seen=set()
         for x in entries:
+            if x.flag_bits & 1: raise PolicyError('encrypted archives are unsupported')
             p=Path(x.filename); mode=x.external_attr>>16
             if p.is_absolute() or '..' in p.parts or '\\' in x.filename or ':' in x.filename or stat.S_ISLNK(mode) or (stat.S_IFMT(mode) not in (0,stat.S_IFREG,stat.S_IFDIR)): raise PolicyError('unsafe archive entry')
             if str(p) in seen: raise PolicyError('duplicate archive entry')

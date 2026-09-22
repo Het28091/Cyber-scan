@@ -1,11 +1,11 @@
-# Verification — Linux 0.4.0
+# Verification — Linux 0.4.1
 
 Environment: Linux, Python 3.12. Date: 2026-09-22.
 
 | Check | Result |
 |---|---|
-| `bash run.sh test` | 51 tests passed |
-| `bash setup.sh --offline` | Passed with locally installed locked packages |
+| `bash run.sh test` | 77 tests passed |
+| `bash setup.sh --offline` | Passed after repairing corrupt pip bytecode; see SECURITY_REVIEW.md |
 | `node --check secaudit/static/app.js` | Passed |
 | Internet-mode pipeline | Controlled OSV response, source analysis, reports and no-AI assertion passed |
 | Online disclosure | Only ecosystem/name/version transmitted; deduplication tested |
@@ -15,6 +15,9 @@ Environment: Linux, Python 3.12. Date: 2026-09-22.
 | Live OSV attempt | Blocked at DNS/public-address policy; correctly NOT TESTED, 0 requests sent |
 | Local web / internet mode | Live synthetic server: 2 assets, 6 candidate findings, AI disabled |
 | Real source assessment in internet mode | Completed with 5 expected synthetic findings and explicit OSV failure |
+| Hardened request/queue/recovery paths | 26 new regression tests passed |
+| Documentation links | All local Markdown link targets resolved |
+| `make doctor` / `make demo` | Passed; 5 expected source findings |
 | Dashboard API | Authentication, Host, CSRF, job completion and PDF download regression tests passed |
 | Windows | Removed from supported scope and CI |
 | Browser UI | Not newly verified; browser executable unavailable |
@@ -23,5 +26,8 @@ Environment: Linux, Python 3.12. Date: 2026-09-22.
 Tests use local synthetic targets and controlled provider fixtures. Real internet
 access was attempted only for the advisory API, not a scan against a public target.
 Prior 0.3 verification covered generated PDFs and disconnected bundle installation.
-The 0.4 suite continues to exercise PDF output and offline core bundle installation.
+The 0.4.1 suite continues to exercise PDF output and offline core bundle installation.
 Do not interpret fixture verification as external-service or production certification.
+
+Prior release GitHub CI completed successfully. The new release CI status is tracked
+in GitHub Actions after publication; local results above were executed before upload.

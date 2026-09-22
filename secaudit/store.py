@@ -15,9 +15,11 @@ class Store:
                 self.db.execute('PRAGMA user_version=1')
     def save(self,run):
         with self.db: self.db.execute('INSERT OR REPLACE INTO runs VALUES(?,?,?)',(run['id'],run['status'],json.dumps(redact(run))))
-    def recover(self):
+    def recover(self,ident=None):
         with self.db:
-            for ident,raw in self.db.execute("SELECT id,data FROM runs WHERE status='RUNNING'").fetchall():
+            query="SELECT id,data FROM runs WHERE status='RUNNING'"
+            rows=self.db.execute(query+' AND id=?',(ident,)).fetchall() if ident is not None else self.db.execute(query).fetchall()
+            for ident,raw in rows:
                 run=json.loads(raw);run['status']='INTERRUPTED';run['events'].append('Interrupted assessment recovered; use resume to regenerate partial reports.')
                 self.db.execute('UPDATE runs SET status=?,data=? WHERE id=?',('INTERRUPTED',json.dumps(run),ident))
     def get(self,ident):

@@ -51,6 +51,7 @@ class Config:
         if self.mode not in ('offline','internet','local-ai','connected-ai'): raise PolicyError('invalid mode')
         if type(self.strict) is not bool or type(self.ai.enabled) is not bool: raise PolicyError('booleans required')
         if not isinstance(self.modules,list) or not all(isinstance(x,str) for x in self.modules): raise PolicyError('modules must be a list')
+        if not self.modules: raise PolicyError('select at least one module')
         if len(set(self.modules))!=len(self.modules): raise PolicyError('duplicate modules')
         if set(self.modules)-{'source','secrets','config','dependencies','openapi','web','gitleaks','semgrep','trivy','syft','online_dependencies'}: raise PolicyError('unknown module')
         for key,upper in [('max_files',50000),('max_file_bytes',10_000_000),('max_total_bytes',500_000_000),('timeout',300)]:
@@ -61,6 +62,9 @@ class Config:
         for options in self.scanners.values():
             if not isinstance(options,dict) or set(options)-{'executable','rules','cache'} or not all(isinstance(v,str) for v in options.values()): raise PolicyError('invalid scanner options')
         a=self.ai
+        for key in ('provider','endpoint','model','api_key_env','failure_policy'):
+            if not isinstance(getattr(a,key),str): raise PolicyError('AI text fields must be strings')
+        if not isinstance(a.approved_ips,list) or not all(isinstance(x,str) for x in a.approved_ips): raise PolicyError('AI pins must be a list of strings')
         if self.mode in ('offline','internet') and a.enabled: raise PolicyError('AI is forbidden in non-AI modes')
         if 'online_dependencies' in self.modules and self.mode!='internet': raise PolicyError('online dependencies require internet mode')
         if type(self.online_package_limit) is not int or not 1<=self.online_package_limit<=100: raise PolicyError('online package limit must be 1..100')

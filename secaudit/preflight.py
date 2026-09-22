@@ -1,4 +1,4 @@
-import json,os,platform,shutil,subprocess,sys,tempfile
+import http.client,json,os,platform,shutil,subprocess,sys,tempfile
 from pathlib import Path
 from .security import Scope,atomic,write_json,PolicyError
 from .ai import Provider
@@ -9,7 +9,7 @@ def doctor(cfg,scope=None,check_target=False):
     rows=[];provider=None
     def row(component,status,version='',resolution='',required=True): rows.append({'component':component,'required_for':'assessment' if required else 'optional module','version':version,'status':status,'resolution':resolution,'required':required})
     cfg.validate()
-    row('runtime','READY' if sys.version_info>=(3,11) and platform.system()=='Linux' else 'INCOMPATIBLE',platform.python_version(), 'Use Linux with Python 3.11+.' )
+    row('runtime','READY' if (3,11)<=sys.version_info[:2]<(3,15) and platform.system()=='Linux' else 'INCOMPATIBLE',platform.python_version(), 'Use Linux with Python 3.11+.' )
     try:
         out=Path(cfg.output);out.mkdir(parents=True,exist_ok=True,mode=0o700)
         with tempfile.TemporaryFile(dir=out): pass
@@ -36,7 +36,8 @@ def doctor(cfg,scope=None,check_target=False):
                 from .network import request
                 status,_,_=request(cfg.target,scope,method='HEAD',max_bytes=0)
                 row('target connectivity','UNREACHABLE' if status>=500 else 'READY',str(status), 'Check target health; HEAD 4xx does not mean the target is unreachable.')
-        except (ValueError,OSError): row('target scope/connectivity','POLICY_BLOCKED',resolution='Supply authorization, exact origin/path and current IP pins; verify target availability.')
+        except ValueError: row('target scope/connectivity','POLICY_BLOCKED',resolution='Supply authorization, exact origin/path and current IP pins; verify target availability.')
+        except (OSError,http.client.HTTPException): row('target connectivity','UNREACHABLE',resolution='Target connection or HTTP exchange failed; verify service availability.')
     if cfg.source and not Path(cfg.source).is_dir(): row('source','REQUIRED_MISSING',resolution='Supply a readable local directory.')
     for name in cfg.modules:
         if name in EXTERNAL:

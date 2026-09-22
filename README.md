@@ -1,13 +1,13 @@
 # Secaudit — Linux security scanner
 
-**0.4.0 · Linux only · First milestone: a working non-AI assessment pipeline.**
+**0.4.1 · Linux only · First milestone: a working non-AI assessment pipeline.**
 
 Assess authorized application URLs and local source projects, review candidate
 findings in a local dashboard, and export technical/executive reports.
 Internet access does not require an AI model or API key.
 
 [Project scope](docs/SCOPE.md) · [Progress](docs/PROGRESS.md) ·
-[Verification](docs/VERIFICATION.md) · [Capabilities](docs/CAPABILITIES.md)
+[Verification](docs/VERIFICATION.md) · [Capabilities](docs/CAPABILITIES.md) · [Security review](docs/SECURITY_REVIEW.md)
 
 ## Quick start
 
@@ -91,7 +91,9 @@ bash run.sh scan --config config/internet-web.json --target https://your-authori
 For source and web together, use `config/internet.json` and add
 `--source /absolute/path/to/project`. For web-only, use `internet-web.json` so the
 bundled demo source is not included. DNS changes require reviewing and replacing
-pins; mismatches are blocked. Exclude logout and other state-changing GET routes.
+pins; mismatches are blocked. Ambiguous semicolon paths, encoded delimiters,
+invalid UTF-8 and port zero are rejected, including applications that intentionally
+use those URL forms. Exclude logout and other state-changing GET routes.
 
 Preflight sends one scoped HEAD request. Web checks use sequential GETs; no form
 submission or script execution. Defaults are 10 crawl requests and 30 seconds.
@@ -134,7 +136,8 @@ bash run.sh resume RUN_ID
 ```
 
 Recovery regenerates saved reports without repeating checks. Do not recover an active
-scan. The dashboard executes one job at a time; interrupted jobs are not automatically
+scan. Recovery changes only the selected run. Only one dashboard may own an output
+directory at a time. The dashboard executes one job at a time; interrupted jobs are not automatically
 resubmitted. Source code and ZIP contents are never installed or executed.
 
 Findings are candidates, not proven exploits. PARTIAL indicates limited checks;
@@ -192,3 +195,10 @@ excluded from the first milestone and from the dashboard's available modes.
 
 MIT license. Do not commit real target reports, uploads, credentials or private package
 inventories. [Security policy](SECURITY.md) · [Architecture](docs/ARCHITECTURE.md)
+
+## Adversarial verification
+
+The 0.4.1 review added 26 regression tests: **77 tests pass locally**. Scope validation,
+HTTP error handling, upload cleanup, recovery and evidence preservation were hardened.
+See the [review](docs/SECURITY_REVIEW.md) for findings and remaining risks. These
+checks do not establish complete edge-case coverage or production certification.

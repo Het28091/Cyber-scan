@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.1 — 2026-09-22
+
+- Adversarial hardening: strict scope/URL parsing and resilient malformed HTTP/JSON handling.
+- Bounded dashboard connections, exclusive queue ownership and rejected-upload cleanup.
+- Targeted recovery and evidence checkpoints across scanner failures.
+- Staged advisory validation and non-overwriting snapshot publication.
+- 77 passing tests and a documented security review with residual risks.
+
 ## 0.4.0 — 2026-09-22
 
 - Linux-only setup, launch and CI; removed Windows/WSL wrappers.

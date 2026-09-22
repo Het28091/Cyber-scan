@@ -1,9 +1,18 @@
-# Progress — 0.4.0
+# Progress — 0.4.1
 
 Updated 2026-09-22. Project direction: Linux-only, non-AI scanning with optional
 internet access. Scope is recorded in [SCOPE.md](SCOPE.md).
 
-## Completed in this release
+## Completed hardening pass
+
+- [x] Adversarial source review and 26 additional regression tests.
+- [x] Hardened URL/scope parsing, dashboard HTTP handling and connection limits.
+- [x] Fixed failed-upload cleanup, competing dashboard ownership and targeted recovery.
+- [x] Preserved evidence across later failures; required dataset failures now fail the scan.
+- [x] Validated snapshot publication and checked documentation links/commands.
+- [x] Recorded residual risks in [SECURITY_REVIEW.md](SECURITY_REVIEW.md).
+
+## Completed in 0.4.0
 
 - [x] Removed Windows launchers, WSL path handling, Windows documentation and Windows CI.
 - [x] Kept automatic Linux venv/setup and hash-locked PDF dependencies.
@@ -18,7 +27,7 @@ internet access. Scope is recorded in [SCOPE.md](SCOPE.md).
 
 ## Verified here
 
-- 51 automated tests passed on Linux, including a complete internet-mode pipeline
+- 77 automated tests passed on Linux, including a complete internet-mode pipeline
   using a controlled advisory response and an assertion that AI never runs.
 - A live local-web assessment in internet mode completed: 2 assets, 6 candidate
   findings, no AI requests.

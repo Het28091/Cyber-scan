@@ -30,8 +30,8 @@ Basic authentication uses a new per-process random password. Host validation pro
 against ordinary DNS rebinding, and no CORS headers or cookie session is provided.
 Authentication does not protect against a malicious process with the same OS user.
 
-The source-only CLI installs an irreversible seccomp network denial before reading
-source. Preflight probes the policy in a child first. Scans with target or AI access
+The source-only built-in CLI installs an irreversible seccomp network denial before
+reading source when no AI, online advisory module or external scanner is selected. Preflight probes the policy in a child first. Scans with target, online advisory or AI access
 use the built-in fixed-IP client and validated allowlists. Proxies, automatic redirects,
 remote report assets and implicit credentials are absent. That client is a code-level
 boundary, not a replacement for kernel isolation for any future subprocess adapter.
@@ -68,3 +68,12 @@ queries. `online` validates and minimizes package metadata; returned advisories 
 never executable. `scopefile` prepares explicit authorization records and DNS pins.
 Offline/local-AI target policy rejects public IPs. The dashboard exposes only offline
 and internet non-AI modes. Windows-specific provisioning has been removed.
+
+## Dashboard and recovery hardening (0.4.1)
+
+A Linux file lock prevents competing dashboards from recovering the same queue.
+Rejected submissions roll back newly created uploads/configuration. The local HTTP
+server caps concurrent connections at eight and applies 15-second inactivity
+timeouts. Duplicate security/body headers and malformed input fail cleanly.
+`resume` changes only the requested run; verify that run has stopped first.
+See SECURITY_REVIEW.md for residual local denial-of-service and filesystem risks.

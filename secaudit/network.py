@@ -4,6 +4,7 @@ from urllib.parse import urlsplit,urljoin
 from html.parser import HTMLParser
 from .security import canonical,PolicyError
 from .models import Finding
+from . import __version__
 
 class PinnedHTTP(http.client.HTTPConnection):
     def __init__(self,host,port,ip,timeout,secure=False):
@@ -24,7 +25,7 @@ def request(url,scope,method='GET',body=None,headers=None,timeout=5,max_bytes=1_
     u=urlsplit(url)
     conn=PinnedHTTP(host,port,ip,timeout,u.scheme=='https')
     try:
-        conn.request(method,(u.path or '/')+('?' +u.query if u.query else ''),body=body,headers=headers or {'User-Agent':'Secaudit/0.1 authorized-assessment'})
+        conn.request(method,(u.path or '/')+('?' +u.query if u.query else ''),body=body,headers=headers or {'User-Agent':'Secaudit/'+__version__+' authorized-assessment'})
         response=conn.getresponse(); payload=response.read(max_bytes+1)
         if len(payload)>max_bytes: raise PolicyError('response exceeds size limit')
         return response.status,response.getheaders(),payload
@@ -54,8 +55,8 @@ def scan_web(url,scope,checkpoint):
         if status>=500: events.append('Stopped after server error (possible instability)');break
         hd={k.lower():v for k,v in hs}
         if status in (301,302,303,307,308) and 'location' in hd:
-            nxt=urljoin(current,hd['location'])
-            try: scope.check(nxt);queue.append(nxt)
+            try:
+                nxt=urljoin(current,hd['location']);scope.check(nxt);queue.append(nxt)
             except (ValueError,OSError): events.append('Out-of-scope redirect blocked')
             continue
         for header,why in [('content-security-policy','Define a restrictive Content-Security-Policy.'),('x-content-type-options','Set X-Content-Type-Options: nosniff.')]:
@@ -72,10 +73,11 @@ def scan_web(url,scope,checkpoint):
         if 'text/html' in hd.get('content-type',''):
             parser=Links();parser.feed(body.decode('utf-8','replace'))
             for link in parser.urls[:100]:
-                nxt=urljoin(current,link)
-                # Avoid arbitrary query workflows; never submit forms or execute scripts.
-                if urlsplit(nxt).query or urlsplit(nxt).fragment: continue
-                try: scope.check(nxt)
+                try:
+                    nxt=urljoin(current,link)
+                    # Avoid arbitrary query workflows; never submit forms or execute scripts.
+                    if urlsplit(nxt).query or urlsplit(nxt).fragment: continue
+                    scope.check(nxt)
                 except (ValueError,OSError): continue
                 if nxt not in seen and len(queue)<100: queue.append(nxt)
         time.sleep(0.1)

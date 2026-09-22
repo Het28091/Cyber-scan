@@ -11,6 +11,7 @@ class Dataset:
         if not p.is_file(): raise PolicyError('DATA_MISSING: advisory snapshot absent')
         if p.stat().st_size>100_000_000: raise PolicyError('dataset exceeds 100 MB limit')
         self.manifest=json.loads(p.with_suffix('.manifest.json').read_text(encoding='utf-8'))
+        if not isinstance(self.manifest,dict) or any(not isinstance(self.manifest.get(k),str) or not self.manifest[k] for k in ('source','version','published_at','sha256')): raise PolicyError('invalid dataset manifest fields')
         raw=p.read_bytes()
         if self.manifest.get('sha256')!=hashlib.sha256(raw).hexdigest(): raise PolicyError('INCOMPATIBLE: dataset integrity mismatch')
         if self.manifest.get('schema')!=1 or not self.manifest.get('source') or not self.manifest.get('version'): raise PolicyError('INCOMPATIBLE: dataset manifest')
@@ -28,6 +29,7 @@ class Dataset:
             if not all(isinstance(r[k],str) and r[k] for k in ('id','ecosystem','name','summary','source')): raise PolicyError('invalid advisory text')
             if not isinstance(r['affected_versions'],list) or not all(isinstance(v,str) for v in r['affected_versions']): raise PolicyError('invalid advisory versions')
             if r.get('severity','MEDIUM') not in ('CRITICAL','HIGH','MEDIUM','LOW','INFO'): raise PolicyError('invalid advisory severity')
+            if 'remediation' in r and not isinstance(r['remediation'],str): raise PolicyError('invalid advisory remediation')
             self.records.append(r)
     def scan(self,components):
         fs=[]
@@ -41,11 +43,17 @@ class Dataset:
 
 def build_snapshot(input_file,output_file,source,version,published_at):
     # Operator supplies normalized advisory data; never infer unsupported version ranges.
-    p=Path(output_file);raw=Path(input_file).read_bytes()
+    p=Path(output_file)
+    if p.exists() or p.is_symlink() or p.with_suffix('.manifest.json').exists() or p.with_suffix('.manifest.json').is_symlink(): raise PolicyError('snapshot output already exists; use a new versioned filename')
+    raw=Path(input_file).read_bytes()
     if len(raw)>100_000_000: raise PolicyError('snapshot too large')
     data=json.loads(raw)
     if not isinstance(data,list): raise PolicyError('expected array')
     from .security import atomic,write_json
-    atomic(p,json.dumps(data,indent=2)+'\n')
-    write_json(p.with_suffix('.manifest.json'),{'schema':1,'source':source,'version':version,'published_at':published_at,'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'authenticity':'Operator-supplied provenance; unsigned hash is not publisher authentication','coverage':'Exact enumerated versions only; version ranges not inferred'})
-    Dataset(p,max_age_days=365000)
+    import tempfile
+    normalized=json.dumps(data,indent=2)+'\n'
+    manifest={'schema':1,'source':source,'version':version,'published_at':published_at,'sha256':hashlib.sha256(normalized.encode('utf-8')).hexdigest(),'authenticity':'Operator-supplied provenance; unsigned hash is not publisher authentication','coverage':'Exact enumerated versions only; version ranges not inferred'}
+    with tempfile.TemporaryDirectory() as temp:
+        candidate=Path(temp)/'candidate.json';atomic(candidate,normalized);write_json(candidate.with_suffix('.manifest.json'),manifest)
+        Dataset(candidate,max_age_days=365000)
+    atomic(p,normalized);write_json(p.with_suffix('.manifest.json'),manifest)

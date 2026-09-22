@@ -1,4 +1,4 @@
-import argparse,json,os,signal,sys,tempfile,uuid
+import argparse,json,os,signal,sys,tempfile,uuid,zipfile
 from pathlib import Path
 from . import __version__
 from .config import load
@@ -58,8 +58,10 @@ def scan(cfg,run_id=None):
                 for row in run['coverage']:
                     if row['module']=='dependencies': row.update(status='PARTIAL',reason='Exact version advisory matching; '+('STALE dataset; ' if ds.stale else '')+ds.manifest['version'])
                 run['datasets']=[ds.manifest]
+                checkpoint([],[])
             except Exception:
                 run['events'].append('Dependency assessment unavailable; dataset validation failed.')
+                if cfg.strict: raise PolicyError('Required dependency assessment failed')
         if cfg.source and 'online_dependencies' in cfg.modules:
             from .online import scan_dependencies
             fs,usage,events=scan_dependencies(run['components'],cfg)
@@ -77,6 +79,7 @@ def scan(cfg,run_id=None):
                     fs,sbom=execute(name,cfg.source,cfg.scanners.get(name,{}),cfg.timeout)
                     all_findings+=fs
                     if sbom: run['external_sbom']=sbom
+                    checkpoint([],[])
                     for row in run['coverage']:
                         if row['module']==name: row.update(status='PARTIAL',reason='Isolated scanner completed; detections need review.')
                 except Exception:
@@ -145,8 +148,8 @@ def main(argv=None):
             from .dashboard import serve
             serve(a.output,a.port);return 0
         if a.cmd=='resume':
-            if not a.run_id.isalnum(): raise PolicyError('invalid run ID')
-            s=Store(a.output);s.recover();run=s.get(a.run_id);reports(Path(a.output)/a.run_id,run);s.db.close();print('Reports regenerated from saved evidence; no checks repeated.');return 0
+            if len(a.run_id)!=32 or any(c not in '0123456789abcdef' for c in a.run_id): raise PolicyError('invalid run ID')
+            s=Store(a.output);s.recover(a.run_id);run=s.get(a.run_id);reports(Path(a.output)/a.run_id,run);s.db.close();print('Reports regenerated from saved evidence; no checks repeated.');return 0
         cfg=load(a.config)
         for name in ('source','target','scope','output'):
             if getattr(a,name,None) is not None: setattr(cfg,name,getattr(a,name))
@@ -161,7 +164,7 @@ def main(argv=None):
             with tempfile.TemporaryDirectory(prefix='secaudit-input-') as temp:
                 cfg.source=str(extract_zip(a.archive,Path(temp)/'source',cfg.max_total_bytes,cfg.max_files));return scan(cfg,a.run_id)
         return scan(cfg,a.run_id)
-    except (ValueError,OSError,KeyError,TypeError) as e:
+    except (ValueError,OSError,KeyError,TypeError,zipfile.BadZipFile,RecursionError) as e:
         # Do not expose URLs, credentials, raw scanner/provider errors or source contents.
         print('Secaudit: '+(str(e) if isinstance(e,PolicyError) else type(e).__name__+'; check configuration and local paths.'),file=sys.stderr);return 2
 
