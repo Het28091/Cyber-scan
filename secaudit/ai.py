@@ -5,6 +5,7 @@ from .network import request
 class Provider:
     """Adapter boundary: metadata in, schema-validated suggestions out; no tools."""
     def __init__(self,cfg):
+        if os.environ.get('SECAUDIT_EXPERIMENTAL_AI')!='1': raise PolicyError('experimental AI is disabled')
         self.cfg=cfg;self.a=cfg.ai;self.requests=0;self.tokens=0;self.cost=0
         if not self.a.enabled or cfg.mode in ('offline','internet'): raise PolicyError('AI disabled')
         origin,path,host,port=canonical(self.a.endpoint)

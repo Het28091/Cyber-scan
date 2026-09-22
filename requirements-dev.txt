@@ -1,0 +1,5 @@
+# CI tools, explicit versions. Transitive development dependencies are not hash-locked.
+ruff==0.11.13
+bandit==1.8.6
+pip-audit==2.9.0
+coverage==7.8.2

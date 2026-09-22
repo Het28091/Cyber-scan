@@ -4,7 +4,7 @@ from .models import Finding
 from .security import PolicyError
 
 IGNORE={'.git','.venv','node_modules','__pycache__','runs'}
-TEXT={'.py','.js','.ts','.jsx','.tsx','.json','.yaml','.yml','.env','.tf','.toml','.ini','.cfg','.txt','.xml','.conf','.sh','.properties'}
+TEXT={'.py','.js','.ts','.jsx','.tsx','.json','.yaml','.yml','.env','.tf','.toml','.ini','.cfg','.txt','.xml','.conf','.sh','.properties','.in','.lock'}
 
 def files(root,cfg):
     root=Path(root).resolve()
@@ -56,23 +56,16 @@ def source_scan(root,cfg,checkpoint):
                 if re.search(r'(?i)\bverify\s*=\s*False\b',line): add('CONFIG-TLS','TLS verification disabled',name,ln,'Certificate verification is disabled.','Use certificate validation and a trusted CA bundle.','HIGH')
         if 'config' in cfg.modules and Path(name).name=='Dockerfile' and not re.search(r'(?im)^\s*USER\s+(?!root\b|0\b)\S+',text):
             add('DOCKER-USER','No explicit non-root Docker user',name,1,'The Dockerfile does not explicitly select a non-root user; base image defaults are unknown.','Choose a non-root runtime user.')
-        if Path(name).name=='requirements.txt':
-            for line in text.splitlines():
-                m=re.fullmatch(r'([A-Za-z0-9_.-]+)==([A-Za-z0-9_.+-]+)',line.strip())
-                if m: components.append({'name':m[1],'version':m[2],'type':'library','purl':f'pkg:pypi/{m[1].lower() }@{m[2]}'})
-        if Path(name).name=='package-lock.json':
-            try:
-                lock=json.loads(text)
-                for location,package in lock.get('packages',{}).items():
-                    if location and isinstance(package,dict) and isinstance(package.get('version'),str):
-                        pkg=package.get('name') or location.split('node_modules/')[-1]
-                        components.append({'name':pkg,'version':package['version'],'type':'library','purl':'pkg:npm/'+pkg+'@'+package['version']})
-            except (ValueError,AttributeError): events.append('Invalid npm lockfile: '+name)
+        from .inventory import parse_manifest
+        parsed=parse_manifest(name,text)
+        if parsed is not None:
+            cs,summary=parsed;components.extend(cs);inventory.append(summary)
+            events.append(f"Inventory {name}: {summary['pinned']}/{summary['total']} exact pins; {summary['unresolved']} unresolved, {summary['invalid']} invalid, {summary['unsupported']} unsupported; {summary['conditional']} conditional declarations retained. This is declaration coverage, not installed-package completeness.")
         if 'openapi' in cfg.modules and name.endswith('.json'):
             try: spec=json.loads(text)
             except ValueError: continue
             if isinstance(spec,dict) and 'openapi' in spec:
-                for path,methods in spec.get('paths',{}).items():
+                for path,methods in (spec.get('paths',{}) if isinstance(spec.get('paths',{}),dict) else {}).items():
                     if not isinstance(methods,dict): continue
                     for method,op in methods.items():
                         if method not in ('get','post','put','delete','patch','head','options') or not isinstance(op,dict): continue

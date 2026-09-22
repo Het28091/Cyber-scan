@@ -12,12 +12,14 @@ def export_csv(path,rows,keys):
 def reports(directory,run):
     d=Path(directory);run=redact(run)
     write_json(d/'run.json',run);write_json(d/'findings.json',run['findings']);write_json(d/'assets.json',run['assets'])
+    write_json(d/'inventory.json',run.get('inventory_completeness',[]))
     export_csv(d/'findings.csv',run['findings'],['id','title','asset','line','severity','confidence','validation_status','remediation'])
     export_csv(d/'coverage.csv',run['coverage'],['module','status','reason'])
     mapping_rows=[dict(m,finding_id=f['id']) for f in run['findings'] for m in f.get('mappings',[])]
     export_csv(d/'framework-mappings.csv',mapping_rows,['finding_id','framework','version','control','rationale'])
     md=['# Secaudit technical assessment',f"Run: {run['id']}",f"Mode: {run['mode']} | State: {run['status']}",f"Findings: {len(run['findings'])}",'','## Limitations',*['- '+x for x in LIMITATIONS],'','## Coverage']
     md+=['- '+r['module']+': '+r['status']+' — '+r['reason'] for r in run['coverage']]
+    md+=['','## Declaration inventory',json.dumps(run.get('inventory_completeness',[]))]
     for f in run['findings']:
         md += ['',f"## {f['title']}",f"{f['severity']} / {f['confidence']} / {f['validation_status']}",f"Location: {f['asset']}:{f['line']}",f['description'], 'Remediation: '+f['remediation'],'Retest: '+f['retest']]
     md+=['','## Network policy',json.dumps(run.get('network_policy',{})), '','## Online advisory usage',json.dumps(run.get('online_advisories',{})), '','## AI usage',json.dumps(run.get('ai_usage',{})), '','## Framework snapshot',json.dumps(run.get('framework_snapshot',{}))]

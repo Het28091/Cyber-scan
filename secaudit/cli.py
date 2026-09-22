@@ -47,6 +47,9 @@ def scan(cfg,run_id=None):
             from .scanners import source_scan
             fs,assets,components,events=source_scan(cfg.source,cfg,checkpoint)
             all_findings+=fs;all_assets+=assets;run['components']=components;run['events']+=events
+            run['inventory_completeness']=[a for a in assets if a.get('type')=='dependency-inventory']
+            if cfg.strict and any(a['unresolved']+a['invalid']+a['unsupported'] for a in run['inventory_completeness']) and set(cfg.modules)&{'dependencies','online_dependencies'}:
+                checkpoint([],[]);raise PolicyError('Required dependency inventory is incomplete')
             for row in run['coverage']:
                 if row['module'] in ('source','secrets','config','openapi'):
                     row.update(status='PARTIAL',reason='Bounded heuristic checks executed; manual validation required. Inventory records processed files.')
@@ -109,7 +112,7 @@ def scan(cfg,run_id=None):
         signal.setitimer(signal.ITIMER_REAL,0)
         signal.signal(signal.SIGTERM,old_term);signal.signal(signal.SIGALRM,old_alarm)
         run['finished']=now();store.save(run);reports(directory,run)
-        atomic(directory/'audit.jsonl',json.dumps({'timestamp':now(),'event':'assessment_finished','id':ident,'status':run['status']})+'\n')
+        atomic(directory/'audit.jsonl',''.join(json.dumps(event)+'\n' for event in [dict(timestamp=run['started'],event='assessment_started',id=ident,mode=cfg.mode),*[dict(timestamp=now(),event='module_coverage',id=ident,**row) for row in run['coverage']],dict(timestamp=now(),event='assessment_finished',id=ident,status=run['status'])]))
         store.db.close()
     print(json.dumps({'run_id':ident,'status':run['status'],'findings':len(run['findings']),'reports':str(directory)}))
     return 1 if run['status'] in ('FAILED','CANCELLED') else 0

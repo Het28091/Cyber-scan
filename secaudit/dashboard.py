@@ -22,7 +22,7 @@ class BoundedHTTPServer(ThreadingHTTPServer):
         try: super().process_request_thread(request,client_address)
         finally: self.slots.release()
 
-DOWNLOADS={'technical.html','technical.md','technical.pdf','executive.html','executive.pdf','findings.json','findings.csv','findings.sarif','coverage.csv','framework-mappings.csv','sbom.cdx.json','external-sbom.cdx.json','assets.json','preflight_report.json','preflight_report.txt','remediation-retest.md','run.json','audit.jsonl','ai-suggestions.json'}
+DOWNLOADS={'inventory.json','technical.html','technical.md','technical.pdf','executive.html','executive.pdf','findings.json','findings.csv','findings.sarif','coverage.csv','framework-mappings.csv','sbom.cdx.json','external-sbom.cdx.json','assets.json','preflight_report.json','preflight_report.txt','remediation-retest.md','run.json','audit.jsonl','ai-suggestions.json'}
 def serve(root,port=8765):
     root=Path(root).resolve();root.mkdir(parents=True,exist_ok=True,mode=0o700)
     static=Path(__file__).parent/'static';jobs=Jobs(root)
@@ -30,6 +30,7 @@ def serve(root,port=8765):
     expected='Basic '+base64.b64encode(('operator:'+token).encode()).decode()
     def run(ident):
         if not re.fullmatch('[a-f0-9]{32}',ident): raise PolicyError('invalid run ID')
+        # Output is operator-owned. These checks reject accidents, not same-UID races.
         folder=root/ident
         if folder.is_symlink(): raise PolicyError('symlink output refused')
         path=folder/'run.json'

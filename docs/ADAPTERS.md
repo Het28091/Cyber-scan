@@ -60,6 +60,9 @@ Official adapter references reviewed 2026-09-22:
 
 ## AI boundary
 
+Experimental only: both configuration validation and Provider construction require
+`SECAUDIT_EXPERIMENTAL_AI=1`. This does not enable AI in offline/internet modes.
+
 `Provider.health()` verifies the model is advertised. `Provider.suggest()` accepts
 normalized finding metadata and returns `{suggestions: [{id, text}]}`. Future
 adapters must retain endpoint/IP checks, budgets, environment credential handling,

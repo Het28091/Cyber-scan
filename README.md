@@ -1,13 +1,16 @@
-# Secaudit — Linux security scanner
+# Secaudit — Linux assessment orchestration and evidence
 
-**0.4.1 · Linux only · First milestone: a working non-AI assessment pipeline.**
+**0.5.0 · Linux only · Non-AI by default.**
 
-Assess authorized application URLs and local source projects, review candidate
-findings in a local dashboard, and export technical/executive reports.
-Internet access does not require an AI model or API key.
+Secaudit coordinates scoped security checks and produces reviewable evidence.
+Use local source or an explicitly authorized URL, then review findings in a local dashboard.
+Built-in checks are a heuristic baseline; isolated external scanners extend detection.
+Reports expose coverage, inventory gaps, provenance and untested controls.
+Offline scans use local data; internet mode can query package advisories without AI.
+Authenticated testing, a full SAST engine and compliance certification are outside this milestone.
 
 [Project scope](docs/SCOPE.md) · [Progress](docs/PROGRESS.md) ·
-[Verification](docs/VERIFICATION.md) · [Capabilities](docs/CAPABILITIES.md) · [Security review](docs/SECURITY_REVIEW.md)
+[Verification](docs/VERIFICATION.md) · [Capabilities](docs/CAPABILITIES.md) · [Security review](docs/SECURITY_REVIEW.md) · [Review response](docs/REVIEW_RESPONSE.md)
 
 ## Quick start
 
@@ -191,7 +194,9 @@ node --check secaudit/static/app.js
 
 CI runs on Ubuntu; tests use synthetic local targets and provider fixtures, not public
 scan targets. Optional AI backend code is retained for later development, but is
-excluded from the first milestone and from the dashboard's available modes.
+excluded from the first milestone and from the dashboard's available modes. Both AI
+modes and the provider require explicit `SECAUDIT_EXPERIMENTAL_AI=1`; real providers
+remain unverified.
 
 MIT license. Do not commit real target reports, uploads, credentials or private package
 inventories. [Security policy](SECURITY.md) · [Architecture](docs/ARCHITECTURE.md)
@@ -202,3 +207,22 @@ The 0.4.1 review added 26 regression tests: **77 tests pass locally**. Scope val
 HTTP error handling, upload cleanup, recovery and evidence preservation were hardened.
 See the [review](docs/SECURITY_REVIEW.md) for findings and remaining risks. These
 checks do not establish complete edge-case coverage or production certification.
+
+## Review-driven improvements in 0.5.0
+
+87 tests pass locally. Requirements parsing now accounts for extras, markers and
+unresolved versions; npm lockfile versions 1–3 are supported. Download
+`inventory.json` for recognized-declaration counts and reasons for missed records.
+This metric does not measure all installed dependencies. Rerun `bash setup.sh` to
+install the new hash-locked `packaging` parser. Core-only bundles without it show
+unsupported Python declarations explicitly.
+
+The dashboard displays failure categories and preflight component statuses, removes
+terminal execution inputs and keeps 200 terminal job summaries. Assessment reports
+are retained. Validated DNS pins are reused within a scan; URL scope checks still
+run for every request. New finding IDs distinguish different same-line observations.
+
+CI includes SHA-pinned actions, correctness/security checks, dependency auditing and
+coverage reporting. See [review decisions and limitations](docs/REVIEW_RESPONSE.md).
+Live integration acceptance is tracked in [issue 1](https://github.com/Het28091/Cyber-scan/issues/1);
+authentication and browser acceptance in [issue 2](https://github.com/Het28091/Cyber-scan/issues/2).

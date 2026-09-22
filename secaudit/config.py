@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field, fields
 from pathlib import Path
-import json
+import json,os
 from .security import PolicyError
 
 @dataclass
@@ -48,6 +48,7 @@ class Config:
     def validate(self):
         for key in ('source','target','scope','output','advisory_dataset'):
             if not isinstance(getattr(self,key),str): raise PolicyError('paths and target must be strings')
+        if self.mode in ('local-ai','connected-ai') and os.environ.get('SECAUDIT_EXPERIMENTAL_AI')!='1': raise PolicyError('AI is experimental; explicit SECAUDIT_EXPERIMENTAL_AI=1 opt-in required')
         if self.mode not in ('offline','internet','local-ai','connected-ai'): raise PolicyError('invalid mode')
         if type(self.strict) is not bool or type(self.ai.enabled) is not bool: raise PolicyError('booleans required')
         if not isinstance(self.modules,list) or not all(isinstance(x,str) for x in self.modules): raise PolicyError('modules must be a list')

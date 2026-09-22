@@ -1,4 +1,15 @@
-# Verification — Linux 0.4.1
+# Verification — Linux 0.5.0
+
+## 0.5.0 review response
+
+`python -m unittest discover -s tests -q`: 87 tests pass locally (packaging 26.3).
+`node --check secaudit/static/app.js`: passes. Locked packaging 25.0 and the new CI
+gates are verified by the linked commit's GitHub Actions run, not by a local clean
+install. Local PyPI downloads failed. OSV retry: zero requests/responses; DNS/public
+address policy blocked lookup. External scanner binaries remain absent.
+See [review response](REVIEW_RESPONSE.md) and [release acceptance issue](https://github.com/Het28091/Cyber-scan/issues/1).
+
+## Historical 0.4.1 verification
 
 Environment: Linux, Python 3.12. Date: 2026-09-22.
 

@@ -74,6 +74,7 @@ def canonical(url):
 class Scope:
     def __init__(self, data, allow_public=True):
         self.allow_public=allow_public
+        self._resolved={}
         required={'authorization','origins','exclusions','environment','profiles','max_requests','max_seconds','allowed_ips'}
         if not isinstance(data,dict): raise PolicyError('scope must be an object')
         if set(data)-required: raise PolicyError('unknown scope fields')
@@ -98,10 +99,17 @@ class Scope:
         origin,path,host,port=canonical(url)
         def matches(entries): return any(origin==o and (p=='/' or path==p or path.startswith(p.rstrip('/')+'/')) for o,p in entries)
         if matches(self.deny) or not matches(self.allow): raise PolicyError('URL outside authorized scope')
+        key=(host,port)
+        if key in self._resolved:
+            address=self._resolved[key]
+            if address not in self.ips or (not self.allow_public and ipaddress.ip_address(address).is_global): raise PolicyError('cached address no longer permitted')
+            return address
         addresses={str(ipaddress.ip_address(r[4][0])) for r in socket.getaddrinfo(host,port,type=socket.SOCK_STREAM)}
         if not self.allow_public and any(ipaddress.ip_address(x).is_global for x in addresses): raise PolicyError('public targets require internet mode')
         if not addresses or not addresses<=self.ips: raise PolicyError('DNS result differs from authorized IP pins')
-        return sorted(addresses)[0]
+        # Cache only validated addresses; every connection still dials this literal pin.
+        self._resolved[key]=sorted(addresses)[0]
+        return self._resolved[key]
 
 def extract_zip(archive, destination, max_bytes=50_000_000,max_files=5000):
     dest=Path(destination)

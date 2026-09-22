@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.0 — Review response
+
+- Quantified PEP 508 requirements/npm lockfile inventory; strict dependency-gap failure.
+- Cached validated DNS pins, job retention/cleanup and safe dashboard diagnostics.
+- Feature-gated experimental AI; distinct same-line finding identity (new IDs).
+- Added CI correctness, security, dependency and coverage gates; SHA-pinned actions.
+- Added 10 regression tests and documented decisions plus live acceptance blockers.
+
+
 ## 0.4.1 — 2026-09-22
 
 - Adversarial hardening: strict scope/URL parsing and resilient malformed HTTP/JSON handling.

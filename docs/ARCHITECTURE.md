@@ -77,3 +77,13 @@ server caps concurrent connections at eight and applies 15-second inactivity
 timeouts. Duplicate security/body headers and malformed input fail cleanly.
 `resume` changes only the requested run; verify that run has stopped first.
 See SECURITY_REVIEW.md for residual local denial-of-service and filesystem risks.
+
+## Review changes in 0.5.0
+
+The inventory parser uses packaging for Python declarations and version-aware npm
+lockfile parsing. Recognized-manifest gaps are persisted separately from the SBOM.
+Scope caches validated host/port addresses for its lifetime and rechecks paths on
+every use; connections still dial literal pins. Jobs remove terminal execution
+inputs and retain 200 terminal summaries, without deleting assessment evidence.
+Structured failure categories replace the previous generic UI error. AI providers
+require an explicit experimental environment opt-in. See [review response](REVIEW_RESPONSE.md).

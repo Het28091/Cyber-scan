@@ -1,6 +1,6 @@
 from dataclasses import dataclass,field,asdict
 from datetime import datetime,timezone
-import hashlib
+import hashlib,json
 
 def now(): return datetime.now(timezone.utc).isoformat()
 @dataclass
@@ -14,7 +14,7 @@ class Finding:
     confidence: str='MEDIUM'
     line: int=0
     scanner: str='secaudit-builtins'
-    scanner_version: str='0.4.1'
+    scanner_version: str='0.5.0'
     evidence: list=field(default_factory=list)
     timestamp: str=field(default_factory=now)
     validation_status: str='NEEDS MANUAL REVIEW'
@@ -26,8 +26,8 @@ class Finding:
     cvss: dict|None=None
     provenance: list=field(default_factory=list)
     @property
-    def fingerprint(self): return hashlib.sha256(f'{self.rule}|{self.asset}|{self.line}'.encode()).hexdigest()
-    def to_dict(self): return dict(asdict(self),id=self.fingerprint[:16],fingerprint=self.fingerprint)
+    def fingerprint(self): return hashlib.sha256(json.dumps([self.rule,self.asset,self.line,self.role,self.description],ensure_ascii=True,separators=(',',':')).encode()).hexdigest()
+    def to_dict(self): return dict(asdict(self),id=self.fingerprint[:32],fingerprint=self.fingerprint)
 
 def dedup(findings):
     out={}

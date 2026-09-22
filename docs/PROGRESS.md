@@ -1,9 +1,20 @@
-# Progress — 0.4.1
+# Progress — 0.5.0
 
 Updated 2026-09-22. Project direction: Linux-only, non-AI scanning with optional
 internet access. Scope is recorded in [SCOPE.md](SCOPE.md).
 
-## Completed hardening pass
+## Completed review response in 0.5.0
+
+- [x] Quantified requirements/npm inventory and strict failure on observed dependency gaps.
+- [x] Validated DNS caching, bounded terminal job retention and safe failure diagnostics.
+- [x] Experimental AI gate and stronger finding identity.
+- [x] CI security/dependency gates and coverage reporting configured.
+- [x] 87 local regression tests passed; JavaScript syntax checked.
+- [x] Review decisions, scope and deferred work recorded in [REVIEW_RESPONSE.md](REVIEW_RESPONSE.md).
+- [ ] Live integration release gate: [issue 1](https://github.com/Het28091/Cyber-scan/issues/1).
+- [ ] Authenticated/browser acceptance: [issue 2](https://github.com/Het28091/Cyber-scan/issues/2).
+
+## Completed hardening pass in 0.4.1
 
 - [x] Adversarial source review and 26 additional regression tests.
 - [x] Hardened URL/scope parsing, dashboard HTTP handling and connection limits.
@@ -25,7 +36,7 @@ internet access. Scope is recorded in [SCOPE.md](SCOPE.md).
 - [x] Added policy, provider, scope and pipeline regression tests.
 - [x] Updated GitHub README, scope, progress and verification records.
 
-## Verified here
+## Historical verification through 0.4.1
 
 - 77 automated tests passed on Linux, including a complete internet-mode pipeline
   using a controlled advisory response and an assertion that AI never runs.

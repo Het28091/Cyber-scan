@@ -1,5 +1,5 @@
 """Persistent single-worker queue. Only the reviewed scanner entry point is executed."""
-import base64,fcntl,json,os,queue,signal,subprocess,sys,threading,time,uuid
+import base64,fcntl,json,os,queue,re,signal,subprocess,sys,threading,time,uuid
 from pathlib import Path
 from .security import PolicyError,write_json,atomic
 from .config import load
@@ -23,8 +23,9 @@ class Jobs:
                     job.update(status='INTERRUPTED',finished=now());write_json(path,job)
             except (ValueError,OSError,AttributeError,TypeError): continue
         for upload in self.folder.glob('*.zip'): upload.unlink(missing_ok=True)
+        self.prune()
         self.worker=threading.Thread(target=self._worker,daemon=True);self.worker.start()
-    def list(self):
+    def list(self,limit=200):
         out=[]
         with self.lock:
             for p in self.folder.glob('*.json'):
@@ -33,7 +34,41 @@ class Jobs:
                     value=json.loads(p.read_text())
                     if isinstance(value,dict) and all(isinstance(value.get(k),str) for k in ('id','created','status')): out.append(value)
                 except (OSError,ValueError): pass
-        return sorted(out,key=lambda j:j['created'],reverse=True)[:200]
+        return sorted(out,key=lambda j:j['created'],reverse=True)[:limit]
+    def prune(self):
+        """Retain 200 terminal job summaries. Assessment evidence is never pruned."""
+        with self.lock:
+            terminal=[]
+            for job in self.list(None):
+                ident=job['id']
+                if not re.fullmatch('[a-f0-9]{32}',ident): continue
+                if job['status'] in ('QUEUED','RUNNING'): continue
+                for suffix in ('.config.json','.scope','.zip'):
+                    (self.folder/(ident+suffix)).unlink(missing_ok=True)
+                terminal.append(job)
+            for job in terminal[200:]:
+                (self.folder/(job['id']+'.json')).unlink(missing_ok=True)
+            # Remove orphan execution inputs left by a process killed before job persistence.
+            for pattern,suffix in (('*.config.json','.config.json'),('*.scope','.scope')):
+                for path in self.folder.glob(pattern):
+                    ident=path.name[:-len(suffix)]
+                    if re.fullmatch('[a-f0-9]{32}',ident) and not (self.folder/(ident+'.json')).exists(): path.unlink(missing_ok=True)
+    def diagnostic(self,ident,returncode):
+        result={'exit_code':returncode,'code':'PROCESS_FAILED','message':'Assessment process failed; review saved partial evidence.'}
+        if returncode==0: return {'exit_code':0,'code':'COMPLETED','message':'Assessment completed; review coverage and limitations.'}
+        if returncode==2:
+            result.update(code='PREFLIGHT_OR_INPUT_REJECTED',message='Preflight or input validation blocked the scan. Check source/archive, scope, dependencies and configuration.')
+            try:
+                preflight=json.loads((self.root/'preflight_report.json').read_text())
+                blocked=[r['component']+': '+r['status'] for r in preflight.get('components',[]) if r.get('status') not in ('READY','OPTIONAL_UNAVAILABLE')]
+                if blocked: result['message']+=' Preflight: '+('; '.join(blocked))[:1000]
+            except (OSError,ValueError,TypeError,KeyError,AttributeError): pass
+        try:
+            run=json.loads((self.root/ident/'run.json').read_text())
+            if isinstance(run,dict) and run.get('status') in ('FAILED','CANCELLED'):
+                result.update(code=run['status'],message='Assessment '+run['status'].lower()+'. Saved run events and partial evidence explain coverage.')
+        except (OSError,ValueError): pass
+        return result
     def submit(self,data):
         if set(data)-{'source','target','scope','preset','archive_base64','archive_name'}: raise PolicyError('unknown job fields')
         preset=data.get('preset','internet')
@@ -67,7 +102,7 @@ class Jobs:
         # Reserve capacity and validate before writing; roll back every rejected submission.
         with self.lock:
             if self.closed: raise PolicyError('dashboard is shutting down')
-            if len([j for j in self.list() if j['status'] in ('QUEUED','RUNNING')])>=10: raise PolicyError('queue limit reached')
+            if len([j for j in self.list(None) if j['status'] in ('QUEUED','RUNNING')])>=10: raise PolicyError('queue limit reached')
             created=[]
             try:
                 if archive:
@@ -107,6 +142,8 @@ class Jobs:
                     command=[sys.executable,'-m','secaudit','scan','--config',str(config),'--run-id',ident]
                     if archive: command+=['--archive',archive]
                     env=dict(os.environ);env['PYTHONPATH']=str(project)
+                    for filename in ('preflight_report.json','preflight_report.txt'):
+                        (self.root/filename).unlink(missing_ok=True)
                     self.process=subprocess.Popen(command,cwd=project,env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,start_new_session=True)
                     self.current=ident;p=self.process
                 try: p.wait(timeout=360)
@@ -114,12 +151,15 @@ class Jobs:
                 with self.lock:
                     job=json.loads(path.read_text())
                     if job['status']=='RUNNING': job['status']='COMPLETED' if p.returncode==0 else 'FAILED'
-                    job['finished']=now();write_json(path,job);self.current=None;self.process=None
+                    job['finished']=now();job['diagnostic']=self.diagnostic(ident,p.returncode);write_json(path,job);self.current=None;self.process=None
             except Exception:
                 with self.lock:
-                    job={'id':ident,'run_id':ident,'created':now(),'status':'FAILED','kind':'assessment','mode':'unknown'};write_json(path,job)
+                    job={'id':ident,'run_id':ident,'created':now(),'status':'FAILED','kind':'assessment','mode':'unknown','diagnostic':{'code':'WORKER_ERROR','message':'Worker could not start or record this assessment. Check local permissions and disk space.'}};write_json(path,job);self.current=None;self.process=None
             finally:
                 if archive: Path(archive).unlink(missing_ok=True)
+                config.unlink(missing_ok=True)
+                (self.folder/(ident+'.scope')).unlink(missing_ok=True)
+                self.prune()
                 self.tasks.task_done()
     def close(self):
         with self.lock:
