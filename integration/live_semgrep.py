@@ -51,7 +51,15 @@ def main():
             # Project-provided rule configuration must not replace operator rules.
             (source/'.semgrep.yml').write_text('rules: []\n')
             result['stage'] = 'positive-control'
-            findings, _ = execute('semgrep', source, options, 60)
+            try:
+                findings, _ = execute('semgrep', source, options, 60)
+            except PolicyError:
+                # Synthetic fixtures only. Production execute continues discarding raw diagnostics.
+                command = EXE+' scan --config /rules.yaml --metrics=off --disable-version-check --jobs 1 --max-memory 512 --json --no-git-ignore /input 2>&1'
+                code, diagnostic = bounded(sandbox_command('/bin/sh', source, runtime_mounts('semgrep')+[(rules, '/rules.yaml')])+['-c', command], 60, 65536)
+                result['fixture_exit_code'] = code
+                result['fixture_diagnostic'] = diagnostic.decode('utf-8','replace')[-8000:]
+                raise
             if len(findings) != 2 or {f.asset for f in findings} != {'app.py', 'app.js'}:
                 raise RuntimeError('Expected both Python and JavaScript findings')
             result['positive_findings'] = len(findings)
