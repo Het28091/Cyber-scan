@@ -1,0 +1,12 @@
+# Demonstration rules only; not a comprehensive security policy.
+rules:
+  - id: example-python-eval
+    languages: [python]
+    message: Review dynamic evaluation
+    severity: WARNING
+    pattern: eval(...)
+  - id: example-js-innerhtml
+    languages: [javascript]
+    message: Review HTML assignment
+    severity: WARNING
+    pattern: $EL.innerHTML = $VALUE

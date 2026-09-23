@@ -7,6 +7,8 @@ from pathlib import Path
 
 from secaudit.adapters import ADDRESS_LIMITS, bounded, sandbox_command, runtime_mounts, execute, probe
 from secaudit.models import now
+from secaudit.cli import scan
+from secaudit.config import Config
 from secaudit.security import PolicyError, write_json
 
 EXE = '/usr/local/lib/secaudit-semgrep/bin/semgrep'
@@ -79,6 +81,22 @@ def main():
                 result['invalid_rules'] = 'rejected'
             else:
                 raise RuntimeError('Invalid rules produced a clean result')
+            result['stage'] = 'reporting-pipeline'
+            rules.write_text(RULES)
+            (source/'app.py').write_text('eval(input())\n')
+            cfg = Config(mode='offline', source=str(source), output=str(root/'runs'),
+                         modules=['semgrep'], scanners={'semgrep': options},
+                         strict=True, pdf_required=True).validate()
+            if scan(cfg):
+                raise RuntimeError('Semgrep reporting pipeline failed')
+            run_path = next((root/'runs').glob('*/run.json'))
+            run = json.loads(run_path.read_text())
+            if len(run['findings']) != 1 or run['findings'][0]['scanner'] != 'semgrep':
+                raise RuntimeError('Expected one normalized pipeline finding')
+            for name in ('executive.pdf', 'technical.pdf'):
+                if not (run_path.parent/name).read_bytes().startswith(b'%PDF-'):
+                    raise RuntimeError('Semgrep PDF output unavailable')
+            result['pipeline'] = {'findings': 1, 'pdf_reports': 'passed', 'ai_enabled': run['ai_usage']['enabled']}
             result['status'] = 'PASSED'
     except Exception as error:
         result['failure_type'] = type(error).__name__

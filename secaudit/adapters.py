@@ -5,6 +5,7 @@ from .security import PolicyError
 from .models import Finding
 
 # Gitleaks' WASM regex runtime reserves 4 GiB even for `version`.
+# Semgrep core also crashed at 2 GiB and passed at 8 GiB in live acceptance.
 # This is virtual address space, not a resident-memory/cgroup guarantee.
 ADDRESS_LIMITS={'gitleaks':8*1024**3,'semgrep':8*1024**3}
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased — v1.1 verification
+
+- Verified real Semgrep 1.175.0 in Bubblewrap with positive/clean/invalid-rule controls.
+- Fixed Semgrep CA-bundle startup, version-probe network flags and address-space compatibility.
+- Bounded Semgrep to one worker and added a runnable local-rule configuration example.
+- Syft/Trivy verification and v1.1 publication remain outstanding.
+
 ## 1.0.0 — Linux non-AI workflow acceptance
 
 - Passed owner-authorized external HTTPS login-page scan and PDF generation.

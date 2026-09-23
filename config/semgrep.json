@@ -1,0 +1,13 @@
+{
+  "mode": "offline",
+  "source": "demo/source",
+  "output": "runs",
+  "modules": ["semgrep"],
+  "pdf_required": true,
+  "scanners": {
+    "semgrep": {
+      "executable": "/usr/local/lib/secaudit-semgrep/bin/semgrep",
+      "rules": "config/semgrep-example.yaml"
+    }
+  }
+}

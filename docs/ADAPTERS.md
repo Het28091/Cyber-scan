@@ -32,7 +32,7 @@ updates are intentionally not performed by assessment or preflight.
 | Syft | 1.x | Local directory; CycloneDX JSON | Update checks off; no image registry input |
 
 *These are parser gates, **not claims that every release is compatible**. Gitleaks
-8.24.2 is live-verified in Bubblewrap. Semgrep 1.175.0 acceptance is in progress;
+8.24.2 is live-verified in Bubblewrap. Semgrep 1.175.0 is also live-verified;
 Trivy and Syft remain fixture-tested. Use a tested pinned release and record its
 version. A tool that cannot start or returns malformed output never produces a
 clean result.
@@ -86,7 +86,8 @@ redistributed; ATT&CK is not a sequential testing workflow.
 
 Live testing of Gitleaks 8.24.2 exposed a startup panic under the generic 2 GiB
 virtual-address limit: its WASM regex runtime reserves 4 GiB before scanning.
-Gitleaks now has a finite 8 GiB RLIMIT_AS ceiling; other adapters retain 2 GiB.
+Gitleaks has a finite 8 GiB RLIMIT_AS ceiling. Semgrep also uses 8 GiB after
+its live acceptance exposed a core crash at 2 GiB; Trivy and Syft retain 2 GiB.
 This limit measures virtual address space, not resident memory. It is not a cgroup
 RSS limit. CPU/time, output/file/descriptor limits and mandatory Bubblewrap
 network/input/environment/capability isolation remain enforced.
@@ -104,3 +105,32 @@ read-only at `/etc/ssl/certs/ca-certificates.crt`. It does not expose the rest o
 `/etc`, private keys or user configuration. Missing bundles fail preflight.
 Network namespaces, dropped capabilities, cleared credentials and resource limits
 remain mandatory; availability of trust anchors does not enable network access.
+
+
+## Verified Semgrep example (post-v1.0 development)
+
+[Live evidence](evidence/v1_1-semgrep.json): Semgrep 1.175.0, two intended Python/JS
+findings, zero clean-control findings, invalid local rules rejected. This verifies
+the adapter, not a comprehensive ruleset or detection benchmark. The core crashed
+under 2 GiB RLIMIT_AS and passed at a finite 8 GiB ceiling. Scans use one worker and
+`--max-memory 512`; neither limit is an aggregate cgroup RSS guarantee. Version
+probes explicitly disable metrics and version checks, as scans already did.
+
+On the tested Ubuntu 22.04 x86_64 host, explicitly prepare the tool while connected:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y bubblewrap python3-venv ca-certificates
+sudo /usr/bin/python3 -m venv /usr/local/lib/secaudit-semgrep
+sudo /usr/local/lib/secaudit-semgrep/bin/python -m pip install pip==25.0.1
+sudo /usr/local/lib/secaudit-semgrep/bin/python -m pip install semgrep==1.175.0
+bash setup.sh
+bash run.sh scan --config config/semgrep.json
+```
+
+The example uses `demo/source` and two demonstration rules in
+`config/semgrep-example.yaml`. Review and replace the rules/source for your own
+assessment. Top-level Semgrep is pinned; its transitive dependencies are not
+hash-locked. An installation under the operator's home or a Python interpreter
+outside the sandbox-visible system paths is not covered by this acceptance.
+No package installation or remote-rule download occurs during the scan.

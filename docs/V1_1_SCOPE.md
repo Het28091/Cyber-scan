@@ -6,11 +6,12 @@ target authorization.
 
 First increment: real Semgrep 1.175.0 in mandatory Bubblewrap, local operator rules,
 Python/JavaScript positive controls, clean controls and malformed-rule rejection.
-It must retain network isolation, read-only input, cleared environment and resource
+It retains network isolation, read-only input, cleared environment and resource
 bounds. Install tool dependencies under `/usr` so the sandbox can resolve their
 interpreter and libraries; do not mount the operator's home or disable isolation.
 
-Acceptance is pending until the real CI job passes. Installation is an explicit
+Semgrep acceptance passed in [run 35841025866](https://github.com/Het28091/Cyber-scan/actions/runs/35841025866);
+see [durable evidence](evidence/v1_1-semgrep.json). Installation is an explicit
 connected preparation step. The Semgrep top-level version is pinned; its transitive
 installation dependencies are not hash-locked. This is not yet a certified offline
 Semgrep distribution or a general detection-quality benchmark.

@@ -15,7 +15,7 @@ assessment workflow; it does not satisfy every advanced capability in that brief
 | Dependencies | Exact versions from operator snapshot | Integrity/staleness/CLI tests |
 | SBOM | Quantified Python declarations and npm lock v1/v2/v3; optional Syft | Not exhaustive environment inventory |
 | Web | Scoped static bearer/cookie GET/HEAD, headers, cookie flags, TLS certificate validation | Owned local fixtures plus authorized external login page; no full TLS vulnerability audit |
-| External tools | Gitleaks/Semgrep/Trivy/Syft isolated adapters | Gitleaks 8.24.2 verified live in Bubblewrap; others fixture-tested |
+| External tools | Gitleaks/Semgrep/Trivy/Syft isolated adapters | Gitleaks 8.24.2 and post-v1.0 Semgrep 1.175.0 verified live in Bubblewrap; Trivy/Syft fixture-tested |
 | Frameworks | Selected NIST CSF 2.0 and WSTG 4.2 evidence mappings | Referenced official pages; no complete control assessment |
 | Reports | HTML, PDF, Markdown, JSON, CSV, SARIF, CycloneDX, retest plans | Generated and parsed; PDF visual check |
 | AI | Ollama / OpenAI-compatible, minimized inputs, budgets | Explicit experimental gate; stubs only; no real provider verification |

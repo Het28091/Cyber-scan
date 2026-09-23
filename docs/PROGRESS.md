@@ -140,3 +140,17 @@ Scope: [V1_1_SCOPE.md](V1_1_SCOPE.md). Start with real Semgrep positive/clean co
 and invalid-rule rejection inside mandatory Bubblewrap. No active exploitation,
 AI-provider work or additional Grid Guard scanning is included. Stable v1.0.0 is
 unchanged; v1.1 is not released and Semgrep acceptance is pending its CI result.
+
+
+### Semgrep increment completed — 2026-09-23
+
+- Real Semgrep 1.175.0 passed with two Python/JavaScript findings, zero clean-control
+  findings and rejected malformed local rules. Project-local rules did not replace
+  operator-supplied rules.
+- Fixed required public CA-bundle visibility, disabled optional network features in
+  version probes and added finite 8 GiB address-space allowance, one worker and
+  512 MB engine memory setting. Mandatory isolation remains enforced.
+- Added regression tests and a runnable `config/semgrep.json` example.
+- [Evidence](evidence/v1_1-semgrep.json), [CI](https://github.com/Het28091/Cyber-scan/actions/runs/35841025866),
+  and installation/limits in ADAPTERS.md. These changes are on main after v1.0.0;
+  v1.1 is not released. Syft/Trivy verification remains next.
