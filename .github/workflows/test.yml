@@ -186,3 +186,29 @@ jobs:
           fi
           gh release create v1.0.0 release-assets/* --target "$GITHUB_SHA" --title 'Secaudit 1.0.0' --notes-file docs/RELEASE_1.0.0.md --draft
           gh release edit v1.0.0 --draft=false --latest
+
+  semgrep-acceptance:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Explicitly install Semgrep in a sandbox-visible environment
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y bubblewrap python3-venv
+          sudo /usr/bin/python3 -m venv /usr/local/lib/secaudit-semgrep
+          sudo /usr/local/lib/secaudit-semgrep/bin/python -m pip install pip==25.0.1
+          sudo /usr/local/lib/secaudit-semgrep/bin/python -m pip install semgrep==1.175.0 --report "$RUNNER_TEMP/semgrep-install.json"
+      - name: Real isolated Semgrep positive, clean and invalid-rules controls
+        env:
+          PYTHONPATH: .
+        run: python integration/live_semgrep.py
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: semgrep-acceptance
+          path: artifacts/semgrep
+          retention-days: 14
