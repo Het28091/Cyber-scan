@@ -1,4 +1,14 @@
-# Progress — 1.0.0 published
+# Progress — 1.1.0 published
+
+Updated 2026-09-23. **The agreed project scope is complete with
+[v1.1.0 published](https://github.com/Het28091/Cyber-scan/releases/tag/v1.1.0).**
+Release source: `55ac666b57963fe0e45910ec51a31179ad566be0`.
+[Release CI](https://github.com/Het28091/Cyber-scan/actions/runs/35875591193)
+passed all 14 recurring acceptance jobs and the gated publication job. Published
+assets include source, four Python 3.11–3.14 Linux x86_64 wheel bundles, metadata
+and SHA256SUMS. External scanner binaries/databases remain explicitly prepared
+prerequisites. No work remains for the agreed 1.1 release scope; advanced deferred
+features are future projects, not blockers. Historical checkpoints follow.
 
 Updated 2026-09-23. **The scoped v1.0.0 milestone is complete and [published](https://github.com/Het28091/Cyber-scan/releases/tag/v1.0.0).**
 Final CI: [35818090522](https://github.com/Het28091/Cyber-scan/actions/runs/35818090522).

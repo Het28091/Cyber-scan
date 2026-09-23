@@ -1,4 +1,11 @@
-# v1.1 scope — verify existing scanner integrations
+# v1.1 scope — completed
+
+Published [v1.1.0](https://github.com/Het28091/Cyber-scan/releases/tag/v1.1.0),
+source `55ac666b57963fe0e45910ec51a31179ad566be0`,
+[release CI](https://github.com/Het28091/Cyber-scan/actions/runs/35875591193).
+The recorded milestones below are historical; release configuration, all
+verification gates, bundle preparation and publication are complete.
+
 
 Stable v1.0 remains available. The next milestone closes verification gaps in the
 existing orchestration layer; it does not add AI, active exploitation or broaden
