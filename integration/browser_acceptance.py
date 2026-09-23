@@ -50,7 +50,7 @@ def main():
                     result = page.evaluate("async () => await axe.run(document, {runOnly: {type: 'tag', values: ['wcag2a','wcag2aa','wcag21aa']}})")
                     accessibility.append({'view': label, 'violations': result['violations'], 'incomplete': result['incomplete']})
                     (artifacts / 'accessibility.json').write_text(json.dumps(accessibility, indent=2))
-                    assert not result['violations'], json.dumps({'view': label, 'violations': result['violations']})
+                    # Gather every view before failing so the evidence is actionable.
 
                 page.on('pageerror', lambda error: errors.append(str(error)))
                 page.goto(f'http://127.0.0.1:{port}')
@@ -151,6 +151,8 @@ def main():
                     release.set()
                     target.shutdown()
                     target.server_close()
+                failures = [{'view': a['view'], 'violations': a['violations']} for a in accessibility if a['violations']]
+                assert not failures, json.dumps(failures)
                 assert not errors, errors
                 browser.close()
             result = {'status': 'passed', 'engine': 'Chromium', 'checks': ['keyboard dialog', 'malformed ZIP recovery', 'real offline ZIP scan', 'finding search/detail', 'all navigation views', 'JSON download', 'mobile overflow', 'no uncaught JavaScript errors', 'failed worker diagnostic', 'running crawler cancellation'], 'limitations': ['Not a full accessibility audit']}

@@ -114,3 +114,14 @@ jobs:
         env:
           PYTHONPATH: .
         run: .venv/bin/python integration/distribution_acceptance.py
+
+      - name: Build versioned candidate bundle
+        env:
+          PYTHONPATH: .
+        run: .venv/bin/python scripts/package-release.py --commit "$GITHUB_SHA" --output artifacts/release --with-wheels
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: candidate-${{ matrix.os }}-python-${{ matrix.python }}
+          path: artifacts/release
+          if-no-files-found: error
+          retention-days: 14

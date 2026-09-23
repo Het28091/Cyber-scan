@@ -1,6 +1,6 @@
 # Progress — 0.6.0
 
-Updated 2026-09-22. Project direction: Linux-only, non-AI scanning with optional
+Updated 2026-09-23. Project direction: Linux-only, non-AI scanning with optional
 internet access. Scope is recorded in [SCOPE.md](SCOPE.md).
 
 ## Completed in 0.6.0
@@ -22,8 +22,8 @@ Current acceptance and remaining v1.0 work: [V06_ACCEPTANCE.md](V06_ACCEPTANCE.m
 - [x] CI security/dependency gates and coverage reporting configured.
 - [x] 87 local regression tests passed; JavaScript syntax checked.
 - [x] Review decisions, scope and deferred work recorded in [REVIEW_RESPONSE.md](REVIEW_RESPONSE.md).
-- [ ] Live integration release gate: [issue 1](https://github.com/Het28091/Cyber-scan/issues/1).
-- [ ] Authenticated/browser acceptance: [issue 2](https://github.com/Het28091/Cyber-scan/issues/2).
+- [x] Required OSV/Gitleaks live gate completed; broader follow-ups: [issue 1](https://github.com/Het28091/Cyber-scan/issues/1).
+- [x] Static authentication/dashboard acceptance completed; broader follow-ups: [issue 2](https://github.com/Het28091/Cyber-scan/issues/2).
 
 ## Completed hardening pass in 0.4.1
 
