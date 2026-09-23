@@ -1,5 +1,6 @@
 """Real Chromium acceptance against the production loopback dashboard; no mocks."""
 import io
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 import os
 from pathlib import Path
@@ -82,16 +83,63 @@ def main():
                 with page.expect_download() as downloaded:
                     card.locator('a').click()
                 download = downloaded.value
-                assert download.failure() is None
+                assert download.failure() is None, 'Browser download failed: '+str(download.failure())
                 assert json.loads(Path(download.path()).read_text()), 'Empty findings download'
                 page.screenshot(path=str(artifacts / 'desktop.png'), full_page=True)
                 page.set_viewport_size({'width': 390, 'height': 844})
                 page.locator('.nav[data-view="overview"]').click()
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth'), 'Mobile horizontal overflow'
                 page.screenshot(path=str(artifacts / 'mobile.png'), full_page=True)
+                page.set_viewport_size({'width': 1440, 'height': 1000})
+                page.locator('#new-scan').click()
+                page.locator('#scan-archive').set_input_files([])
+                page.locator('#scan-source').fill(str(Path(temp) / 'missing-source'))
+                page.locator('#submit-scan').click()
+                expect(page.locator('#scan-dialog')).not_to_be_visible()
+                expect(page.locator('#jobs-list')).to_contain_text('Failed', timeout=30000)
+                expect(page.locator('#jobs-list')).to_contain_text('blocked the scan')
+                # Hold a real owned HTTP response so cancellation exercises a running worker.
+                entered, release = threading.Event(), threading.Event()
+                class SlowTarget(BaseHTTPRequestHandler):
+                    def log_message(self, *args):
+                        pass
+                    def do_HEAD(self):
+                        self.send_response(200)
+                        self.send_header('Content-Length', '0')
+                        self.end_headers()
+                    def do_GET(self):
+                        entered.set()
+                        release.wait(30)
+                        try:
+                            self.do_HEAD()
+                        except (BrokenPipeError, ConnectionResetError):
+                            pass
+                target = ThreadingHTTPServer(('127.0.0.1', 0), SlowTarget)
+                target.daemon_threads = True
+                threading.Thread(target=target.serve_forever, daemon=True).start()
+                try:
+                    origin = f'http://127.0.0.1:{target.server_port}/'
+                    page.locator('#new-scan').click()
+                    page.locator('#scan-source').fill('')
+                    page.locator('#scan-target').fill(origin)
+                    page.locator('#scan-scope').fill(json.dumps({
+                        'authorization': 'Owned browser acceptance fixture', 'origins': [origin],
+                        'exclusions': [], 'environment': 'local-lab', 'profiles': ['passive'],
+                        'max_requests': 2, 'max_seconds': 60, 'allowed_ips': ['127.0.0.1']}))
+                    page.locator('#submit-scan').click()
+                    expect(page.locator('#scan-dialog')).not_to_be_visible()
+                    assert entered.wait(20), 'Crawler never reached owned target'
+                    page.locator('#refresh').click()
+                    page.locator('#jobs-list button', has_text='Cancel').click()
+                    page.wait_for_function("async () => (await (await fetch('/api/jobs')).json()).some(j => j.status === 'CANCELLED')")
+                    expect(page.locator('#jobs-list button', has_text='Cancel')).to_have_count(0)
+                finally:
+                    release.set()
+                    target.shutdown()
+                    target.server_close()
                 assert not errors, errors
                 browser.close()
-            result = {'status': 'passed', 'engine': 'Chromium', 'checks': ['keyboard dialog', 'malformed ZIP recovery', 'real offline ZIP scan', 'finding search/detail', 'all navigation views', 'JSON download', 'mobile overflow', 'no uncaught JavaScript errors'], 'limitations': ['Not a full accessibility audit', 'Cancellation and failed-worker UI acceptance remain pending']}
+            result = {'status': 'passed', 'engine': 'Chromium', 'checks': ['keyboard dialog', 'malformed ZIP recovery', 'real offline ZIP scan', 'finding search/detail', 'all navigation views', 'JSON download', 'mobile overflow', 'no uncaught JavaScript errors', 'failed worker diagnostic', 'running crawler cancellation'], 'limitations': ['Not a full accessibility audit']}
             (artifacts / 'result.json').write_text(json.dumps(result, indent=2) + '\n')
             print(json.dumps(result))
         finally:
