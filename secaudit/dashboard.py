@@ -81,7 +81,7 @@ def serve(root,port=8765):
                     self.send(sorted(rows,key=lambda r:r.get('started',''),reverse=True)[:200]);return
                 match=re.fullmatch(r'/api/runs/([a-f0-9]{32})',path)
                 if match: self.send(run(match[1]));return
-                match=re.fullmatch(r'/reports/([a-f0-9]{32})/([a-zA-Z0-9.-]+)',path)
+                match=re.fullmatch(r'/reports/([a-f0-9]{32})/([a-zA-Z0-9_.-]+)',path)
                 if match and match[2] in DOWNLOADS:
                     run(match[1]);p=root/match[1]/match[2]
                     if p.is_symlink() or p.stat().st_size>30_000_000: raise PolicyError('report unavailable')
