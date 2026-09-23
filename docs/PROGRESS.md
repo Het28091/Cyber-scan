@@ -132,3 +132,11 @@ is not rescanned on ordinary pushes or during release publication.
 
 Earlier unchecked entries above describe historical checkpoints. Current release
 status is tracked by V1_RELEASE_CHECKLIST.md and the latest GitHub Actions run.
+
+
+## Next milestone — v1.1 verification
+
+Scope: [V1_1_SCOPE.md](V1_1_SCOPE.md). Start with real Semgrep positive/clean controls
+and invalid-rule rejection inside mandatory Bubblewrap. No active exploitation,
+AI-provider work or additional Grid Guard scanning is included. Stable v1.0.0 is
+unchanged; v1.1 is not released and Semgrep acceptance is pending its CI result.

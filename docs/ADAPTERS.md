@@ -31,11 +31,11 @@ updates are intentionally not performed by assessment or preflight.
 | Trivy | 0.x | Filesystem plus local DB; JSON | Updates and version checks off; offline scan; memory scan cache |
 | Syft | 1.x | Local directory; CycloneDX JSON | Update checks off; no image registry input |
 
-*These are parser gates, **not claims that every release is compatible**. Actual
-binaries were unavailable during verification. Use a tested pinned release in your
-own deployment and record its version. Output fixtures and isolation failures are
-tested in this repository. A tool that cannot start or returns malformed output
-never produces a clean result.
+*These are parser gates, **not claims that every release is compatible**. Gitleaks
+8.24.2 is live-verified in Bubblewrap. Semgrep 1.175.0 acceptance is in progress;
+Trivy and Syft remain fixture-tested. Use a tested pinned release and record its
+version. A tool that cannot start or returns malformed output never produces a
+clean result.
 
 Every launch requires a successful Bubblewrap probe. The sandbox unshares namespaces,
 clears the environment, drops capabilities, supplies temporary HOME, mounts tools

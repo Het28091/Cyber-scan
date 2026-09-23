@@ -5,7 +5,7 @@ import platform
 import tempfile
 from pathlib import Path
 
-from secaudit.adapters import execute, probe
+from secaudit.adapters import bounded, sandbox_command, execute, probe
 from secaudit.models import now
 from secaudit.security import PolicyError, write_json
 
@@ -37,6 +37,10 @@ def main():
             rules.write_text(RULES)
             options = {'executable': EXE, 'rules': str(rules)}
             result['stage'] = 'version-probe'
+            # Fixed version-only diagnostic; no user source or credentials are mounted.
+            code, diagnostic = bounded(sandbox_command('/bin/sh') + ['-c', EXE+' --version 2>&1'], 10, 65536)
+            if code:
+                result['startup_diagnostic'] = diagnostic.decode('utf-8', 'replace')[-4000:]
             _, version = probe('semgrep', options)
             if version != result['expected_version']:
                 raise RuntimeError('Unexpected Semgrep version')
