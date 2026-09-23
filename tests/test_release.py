@@ -82,6 +82,11 @@ class ReleaseTests(unittest.TestCase):
                 self.assertEqual(job['status'],'COMPLETED',job)
                 status,body=request('GET','/api/runs/'+ident);self.assertEqual(status,200);self.assertIn('technical.pdf',json.loads(body)['available_reports'])
                 status,body=request('GET','/reports/'+ident+'/technical.pdf');self.assertEqual(status,200);self.assertTrue(body.startswith(b'%PDF-'))
+                for name in ('findings.json','inventory.json','sbom.cdx.json','run.json','preflight_report.json'):
+                    status,body=request('GET','/reports/'+ident+'/'+name)
+                    self.assertEqual(status,200,(name,body))
+                    self.assertEqual(body,(Path(t)/ident/name).read_bytes())
+                    self.assertIsInstance(json.loads(body),(dict,list))
                 self.assertEqual(request('GET','/reports/'+ident+'/../../secret')[0],404)
             finally:process.terminate();process.communicate(timeout=5)
 

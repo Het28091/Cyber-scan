@@ -54,7 +54,8 @@ def serve(root,port=8765):
                 self.send_error(403);return False
             return True
         def send(self,data,kind='application/json',code=200,filename=None):
-            if kind=='application/json': data=json.dumps(redact(data)).encode()
+            # Report bytes are already serialized and redacted at persistence time.
+            if kind=='application/json' and not isinstance(data,bytes): data=json.dumps(redact(data)).encode()
             if isinstance(data,str): data=data.encode('utf-8')
             self.send_response(code);self.send_header('Content-Type',kind);self.send_header('Content-Length',str(len(data)));self.send_header('Cache-Control','no-store');self.send_header('X-Content-Type-Options','nosniff');self.send_header('Referrer-Policy','no-referrer')
             self.send_header('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'")
