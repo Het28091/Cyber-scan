@@ -1,6 +1,6 @@
 # v1.0 release acceptance
 
-Status: **not released**. Feature development remains frozen. This checklist defines
+Status: **v1.0.0 prepared; publication gated on final CI**. Feature development remains frozen. This checklist defines
 completion of the existing Linux governance/orchestration workflow, not exhaustive
 vulnerability detection or certification.
 
@@ -14,11 +14,12 @@ vulnerability detection or certification.
   findings, PDFs and CycloneDX output from paths containing spaces and a different cwd.
 - [x] Complete real-browser acceptance, including report downloads, failed jobs and cancellation.
 - [x] Review desktop/mobile screenshots and bounded accessibility (contrast, keyboard, accessible names); see [record](ACCESSIBILITY.md).
-- [ ] Complete an externally hosted, explicitly authorized target assessment.
+- [x] Complete an externally hosted, explicitly authorized target assessment; [evidence](evidence/v1-external-target.json).
 - [x] Record a green acceptance commit and durable [evidence](evidence/v1-acceptance.json).
-- [ ] Keep the final versioned release candidate green.
+- [ ] Final v1.0.0 CI and gated publication (check the latest Actions run).
 - [x] Build candidate archives with source metadata, locked wheels and checksums on all eight matrix jobs.
-- [ ] Finalize stable version/release notes and publish a tag/release after target acceptance.
+- [x] Finalize stable version and [release notes](RELEASE_1.0.0.md).
+- [ ] Publish the tag/release after all final CI gates pass.
 
 Acceptance evidence: [Actions run 35815308853](https://github.com/Het28091/Cyber-scan/actions/runs/35815308853),
 commit `9d58fd714e1ca93718a72b0c30fd3d3b32659756`. All eleven jobs passed, including
@@ -48,8 +49,8 @@ the only durable release record.
 Browser acceptance means testing the local dashboard; it does not add browser-based
 scanning of target applications. Login automation, role comparison, active exploitation,
 new detection engines and AI-provider support remain outside this milestone. Semgrep,
-Trivy and Syft are not yet live-verified. An externally hosted authorized target test
-also remains outstanding; local owned fixtures and live OSV are not substitutes for it.
+Trivy and Syft are not yet live-verified. The owner-authorized external Grid Guard login-page test passed on 2026-09-23.
+Its narrow unauthenticated coverage does not establish backend or login security.
 
 
 ## Candidate archives
@@ -72,4 +73,6 @@ remaining acceptance gates and publication.
 
 Candidate archive verification: downloaded the Ubuntu 24.04/Python 3.12 artifact from
 run 35816620962, verified every SHA256SUMS entry and every file in its bundle manifest.
-All eleven jobs passed. Stable publication remains blocked by the external-target test.
+All eleven jobs passed at that checkpoint. The external-target test subsequently
+passed in [run 35817803689](https://github.com/Het28091/Cyber-scan/actions/runs/35817803689).
+Stable publication is now gated only on final versioned CI and archive verification.

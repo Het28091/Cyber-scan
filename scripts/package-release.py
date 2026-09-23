@@ -1,4 +1,4 @@
-"""Build reviewable candidate archives; does not tag or publish a stable release."""
+"""Build reviewable archives; does not tag or publish a release."""
 import argparse
 import hashlib
 import json
@@ -18,6 +18,7 @@ def main():
     parser.add_argument('--commit', required=True)
     parser.add_argument('--output', required=True)
     parser.add_argument('--with-wheels', action='store_true')
+    parser.add_argument('--channel', choices=['candidate', 'stable'], default='candidate')
     args = parser.parse_args()
     if not re.fullmatch('[0-9a-f]{40}', args.commit):
         parser.error('--commit must be the full source commit SHA')
@@ -25,13 +26,13 @@ def main():
     if output.exists():
         parser.error('--output must be a new directory')
     output.mkdir(parents=True)
-    name = f'secaudit-{__version__}-candidate-{args.commit[:12]}-linux-{platform.machine()}-py{sys.version_info.major}.{sys.version_info.minor}'
+    name = f'secaudit-{__version__}-{args.channel}-{args.commit[:12]}-linux-{platform.machine()}-py{sys.version_info.major}.{sys.version_info.minor}'
     with tempfile.TemporaryDirectory() as temporary:
         bundle = Path(temporary) / name
         manifest = prepare(bundle, args.with_wheels)
         verify(bundle)
         # Keep metadata outside the installer's strict bundle manifest.
-        metadata = {'app_version': __version__, 'source_commit': args.commit, 'release_channel': 'candidate',
+        metadata = {'app_version': __version__, 'source_commit': args.commit, 'release_channel': args.channel,
                     'platform': 'Linux', 'architecture': platform.machine(),
                     'python': list(sys.version_info[:2]), 'pdf_wheels': manifest['pdf_wheels'],
                     'authenticity': 'Unsigned checksums detect corruption, not publisher authenticity',

@@ -1,4 +1,4 @@
-# Progress — 0.6.0
+# Progress — 1.0.0 release preparation
 
 Updated 2026-09-23. Project direction: Linux-only, non-AI scanning with optional
 internet access. Scope is recorded in [SCOPE.md](SCOPE.md).
@@ -109,3 +109,21 @@ verified; their presence is not evidence of end-to-end support.
 
 Candidates remain version 0.6.0 with an explicit candidate channel. No stable v1.0 or
 publisher-signature claim is made. CI artifact retention is 14 days.
+
+
+## External acceptance and release preparation — 2026-09-23
+
+The owner provided Grid Guard and authorized its use. A one-page HTTPS assessment
+passed in [run 35817803689](https://github.com/Het28091/Cyber-scan/actions/runs/35817803689):
+HTTP 200, one HEAD plus one GET budget, two low-severity missing-header observations,
+PDF generation passed, no AI/credentials/forms/account changes. See
+[evidence](evidence/v1-external-target.json). This is not an authenticated application pentest.
+
+The source is now version 1.0.0 with stable release notes. Publication is explicitly
+gated behind all recurring CI jobs, verified source metadata, four Python wheel bundles,
+archive checksums and internal manifests. The publishing job creates a draft, uploads
+assets, then publishes; it refuses to replace an existing release. The external site
+is not rescanned on ordinary pushes or during release publication.
+
+Earlier unchecked entries above describe historical checkpoints. Current release
+status is tracked by V1_RELEASE_CHECKLIST.md and the latest GitHub Actions run.

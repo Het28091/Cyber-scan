@@ -1,6 +1,9 @@
 # Changelog
 
-## Unreleased — v1.0 acceptance work
+## 1.0.0 — Linux non-AI workflow acceptance
+
+- Passed owner-authorized external HTTPS login-page scan and PDF generation.
+- Added gated publication of versioned source and four Python wheel bundles.
 
 - Improved dashboard contrast, supporting text sizes and responsive wrapping.
 - Added axe accessibility checks across eight browser states and documented bounded review.
@@ -11,7 +14,7 @@
 - Fixed JSON report downloads and underscore-containing preflight report URLs.
 - Added report byte-integrity regressions and accessible dialog names.
 - Removed misleading dashboard version placeholder.
-- Stable v1.0 release remains blocked by the release checklist.
+- Owner-authorized external login-page acceptance passed; scoped release gates completed.
 
 ## 0.6.0 — Verified integrations and static authentication
 

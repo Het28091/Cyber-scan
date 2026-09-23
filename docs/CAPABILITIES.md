@@ -1,4 +1,4 @@
-# Capability matrix — 0.6.0
+# Capability matrix — 1.0.0
 
 The original brief is a design target. This release implements a usable bounded
 assessment workflow; it does not satisfy every advanced capability in that brief.
@@ -14,7 +14,7 @@ assessment workflow; it does not satisfy every advanced capability in that brief
 | API inventory | JSON OpenAPI declarations | No full schema validator or endpoint fuzzing |
 | Dependencies | Exact versions from operator snapshot | Integrity/staleness/CLI tests |
 | SBOM | Quantified Python declarations and npm lock v1/v2/v3; optional Syft | Not exhaustive environment inventory |
-| Web | Scoped static bearer/cookie GET/HEAD, headers, cookie flags, TLS certificate validation | Local HTTP fixture; no full TLS vulnerability audit |
+| Web | Scoped static bearer/cookie GET/HEAD, headers, cookie flags, TLS certificate validation | Owned local fixtures plus authorized external login page; no full TLS vulnerability audit |
 | External tools | Gitleaks/Semgrep/Trivy/Syft isolated adapters | Gitleaks 8.24.2 verified live in Bubblewrap; others fixture-tested |
 | Frameworks | Selected NIST CSF 2.0 and WSTG 4.2 evidence mappings | Referenced official pages; no complete control assessment |
 | Reports | HTML, PDF, Markdown, JSON, CSV, SARIF, CycloneDX, retest plans | Generated and parsed; PDF visual check |

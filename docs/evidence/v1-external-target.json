@@ -1,0 +1,44 @@
+{
+  "started": "2026-09-23T04:18:45.934647+00:00",
+  "status": "PASSED",
+  "target": "https://grid-guard-ai-ibm.vercel.app/login",
+  "authorization": "Project owner explicitly authorized this deployment in the maintainer session, 2026-09-23.",
+  "profile": "Unauthenticated passive GET/HEAD; login page only",
+  "host": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+  "request_budget": {
+    "preflight_HEAD": 1,
+    "crawl_GET": 1
+  },
+  "limitations": [
+    "No JavaScript execution, login, form submission or account changes",
+    "No authenticated, backend or business-logic coverage",
+    "Findings are candidate deployment-header observations, not proof of exploitability"
+  ],
+  "http_status": 200,
+  "assets": 1,
+  "finding_count": 2,
+  "findings": [
+    {
+      "rule": "HTTP-content-security-policy",
+      "severity": "LOW",
+      "title": "Missing content-security-policy"
+    },
+    {
+      "rule": "HTTP-x-content-type-options",
+      "severity": "LOW",
+      "title": "Missing x-content-type-options"
+    }
+  ],
+  "coverage": [
+    {
+      "module": "web",
+      "status": "PARTIAL",
+      "reason": "Bounded GET crawl and header/cookie checks; no browser, login automation or role-comparison checks. Static credentials are sent only when configured."
+    }
+  ],
+  "ai_enabled": false,
+  "pdf_reports": "passed",
+  "finished": "2026-09-23T04:18:48.189407+00:00",
+  "source_commit": "7f646eef4eeb91e4b1b25459de6f8e499ee085e8",
+  "workflow_run": 35817803689
+}
