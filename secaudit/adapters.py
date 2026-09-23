@@ -24,6 +24,18 @@ def sandbox_command(executable,source=None,extra=None):
     for host,guest in (extra or []): cmd+=['--ro-bind',str(Path(host).resolve()),guest]
     return cmd+['--',str(executable)]
 
+def runtime_mounts(name):
+    """Semgrep initializes its TLS library even when all network access is denied."""
+    if name!='semgrep': return []
+    for candidate in ('/etc/ssl/certs/ca-certificates.crt',
+                      '/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem',
+                      '/etc/ssl/ca-bundle.pem'):
+        path=Path(candidate)
+        if path.is_file():
+            # Public CA certificates only, never the whole /etc or private-key directories.
+            return [(str(path.resolve()),'/etc/ssl/certs/ca-certificates.crt')]
+    raise PolicyError('DATA_MISSING: system CA certificate bundle required for Semgrep startup')
+
 def bounded(command,timeout=60,max_bytes=10_000_000,max_address_bytes=2*1024**3):
     """Drain both streams without unbounded buffers; terminate the whole process group."""
     import selectors
@@ -58,7 +70,7 @@ def probe(name,options):
     if not exe: raise PolicyError('REQUIRED_MISSING: '+name)
     code,_=bounded(sandbox_command('/bin/true'),5,65536)
     if code: raise PolicyError('POLICY_BLOCKED: kernel does not permit Bubblewrap isolation')
-    code,raw=bounded(sandbox_command(exe)+(['version'] if name in ('gitleaks','syft') else ['--version']),10,65536,max_address_bytes=ADDRESS_LIMITS.get(name,2*1024**3))
+    code,raw=bounded(sandbox_command(exe,extra=runtime_mounts(name))+(['version'] if name in ('gitleaks','syft') else ['--version']),10,65536,max_address_bytes=ADDRESS_LIMITS.get(name,2*1024**3))
     if code: raise PolicyError('INCOMPATIBLE: tool cannot start inside sandbox')
     match=re.search(VERSIONS[name],raw.decode('utf-8','replace'))
     if not match: raise PolicyError('INCOMPATIBLE: unsupported scanner version output')
@@ -96,10 +108,10 @@ def _parse(name,raw,version):
     return fs,None
 
 def execute(name,source,options,timeout):
-    exe,version=probe(name,options);extra=[]
+    exe,version=probe(name,options);extra=runtime_mounts(name)
     if name=='gitleaks': args=['dir','/input','--no-banner','--redact=100','--report-format','json','--report-path','-','--exit-code','0']
     elif name=='semgrep':
-        extra=[(options['rules'],'/rules.yaml')];args=['scan','--config','/rules.yaml','--metrics=off','--disable-version-check','--json','--no-git-ignore','/input']
+        extra+=[(options['rules'],'/rules.yaml')];args=['scan','--config','/rules.yaml','--metrics=off','--disable-version-check','--json','--no-git-ignore','/input']
     elif name=='trivy':
         extra=[(options['cache'],'/cache')];args=['fs','--cache-dir','/cache','--scan-cache','memory','--skip-version-check','--offline-scan','--skip-db-update','--skip-java-db-update','--scanners','vuln','--format','json','/input']
     else: args=['dir:/input','-o','cyclonedx-json','--check-for-app-update=false']

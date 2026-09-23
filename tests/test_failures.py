@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch, MagicMock
-from secaudit.adapters import ADDRESS_LIMITS, parse, execute, probe, sandbox_command
+from secaudit.adapters import ADDRESS_LIMITS, parse, execute, probe, sandbox_command, runtime_mounts
 from secaudit.config import Config
 from secaudit.network import PinnedHTTP, request, scan_web
 from secaudit.scanners import source_scan
@@ -40,6 +40,22 @@ class FailureTests(unittest.TestCase):
             with self.assertRaisesRegex(PolicyError,'POLICY_BLOCKED'):probe('gitleaks',{})
             self.assertEqual(run.call_count,1)
         with patch('shutil.which',return_value=None),self.assertRaises(PolicyError):sandbox_command('/bin/true')
+
+    def test_semgrep_requires_a_narrow_public_trust_bundle_mount(self):
+        with patch('secaudit.adapters.Path.is_file',return_value=False):
+            with self.assertRaisesRegex(PolicyError,'CA certificate bundle'):
+                runtime_mounts('semgrep')
+        with patch('secaudit.adapters.Path.is_file',return_value=True):
+            mounts=runtime_mounts('semgrep')
+            self.assertEqual(len(mounts),1)
+            self.assertEqual(mounts[0][1],'/etc/ssl/certs/ca-certificates.crt')
+            with patch('shutil.which',return_value='/usr/bin/bwrap'):
+                command=sandbox_command('/usr/bin/true',extra=mounts)
+            self.assertIn('--unshare-all',command)
+            self.assertIn('--clearenv',command)
+            self.assertEqual(command[command.index(mounts[0][0])-1],'--ro-bind')
+            self.assertNotIn('/etc',command)
+        self.assertEqual(runtime_mounts('gitleaks'),[])
 
     def test_tls_and_socket_failure_closes_socket(self):
         for secure in (False,True):

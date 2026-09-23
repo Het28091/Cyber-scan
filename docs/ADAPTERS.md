@@ -95,3 +95,12 @@ Gitleaks reports use the upstream stdout sentinel `--report-path -`. `/dev/stdou
 is not equivalent: report initialization may unlink/recreate that path in the
 sandbox, causing JSON to be written to a file rather than the captured pipe.
 The live positive and clean controls exercise the actual stream/parser boundary.
+
+## Semgrep startup trust bundle
+
+Real Semgrep 1.175.0 initializes its TLS library even for `--version` and aborts
+without a CA bundle. Its adapter mounts one system public CA certificate bundle
+read-only at `/etc/ssl/certs/ca-certificates.crt`. It does not expose the rest of
+`/etc`, private keys or user configuration. Missing bundles fail preflight.
+Network namespaces, dropped capabilities, cleared credentials and resource limits
+remain mandatory; availability of trust anchors does not enable network access.
