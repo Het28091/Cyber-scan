@@ -64,6 +64,15 @@ class FailureTests(unittest.TestCase):
             self.assertNotIn('/etc',command)
         self.assertEqual(runtime_mounts('gitleaks'),[])
 
+    def test_trivy_empty_report_requires_a_valid_envelope(self):
+        report={'SchemaVersion':2,'ArtifactType':'filesystem','ArtifactName':'/input'}
+        self.assertEqual(parse('trivy',json.dumps(report),'0.74.0'),([],None))
+        for invalid in ({}, {**report,'Results':None}, {**report,'Results':{}},
+                        {**report,'SchemaVersion':99}, {**report,'ArtifactName':''},
+                        {**report,'ArtifactType':'unknown'}):
+            with self.subTest(invalid=invalid),self.assertRaises(PolicyError):
+                parse('trivy',json.dumps(invalid),'0.74.0')
+
     def test_inventory_adapter_offline_controls(self):
         with patch('shutil.which',return_value='/usr/bin/bwrap'),patch('secaudit.adapters.probe',return_value=('/usr/local/bin/tool','test')),patch('secaudit.adapters.bounded') as run:
             run.return_value=(0,b'{"bomFormat":"CycloneDX","components":[]}')

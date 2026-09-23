@@ -102,8 +102,13 @@ def _parse(name,raw,version):
         for r in data['results']:
             fs.append(Finding('SEMGREP-'+r['check_id'],'Static analysis candidate',r['path'].removeprefix('/input/'),'Local Semgrep rule matched. Source snippet omitted.','Review the rule and remove the unsafe data flow.',line=int(r['start']['line']),scanner=name,scanner_version=version,evidence=['Rule: '+r['check_id']]))
     elif name=='trivy':
-        if not isinstance(data.get('Results'),list): raise PolicyError('invalid Trivy JSON')
-        for result in data['Results']:
+        results=data.get('Results')
+        # Trivy v0.74 omits Results for an empty artifact. Require its report
+        # envelope before accepting absence; arbitrary {} is still invalid.
+        if 'Results' not in data and data.get('SchemaVersion')==2 and data.get('ArtifactType')=='filesystem' and isinstance(data.get('ArtifactName'),str) and data['ArtifactName']:
+            results=[]
+        if not isinstance(results,list): raise PolicyError('invalid Trivy JSON')
+        for result in results:
             for v in result.get('Vulnerabilities') or []:
                 fs.append(Finding('TRIVY-'+v['VulnerabilityID'],'Dependency vulnerability: '+v['VulnerabilityID'],result['Target'],str(v.get('Title','Local vulnerability database match')), 'Upgrade '+v['PkgName']+' to '+str(v.get('FixedVersion') or 'a vendor-confirmed unaffected version'),severity=v.get('Severity','MEDIUM') if v.get('Severity') in ('CRITICAL','HIGH','MEDIUM','LOW') else 'MEDIUM',confidence='HIGH',scanner=name,scanner_version=version,evidence=['Package: '+v['PkgName'],'Installed version: '+v['InstalledVersion']]))
     elif name=='syft':
