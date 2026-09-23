@@ -1,8 +1,8 @@
 # Secaudit — Linux assessment orchestration and evidence
 
-**1.0.0 · Linux only · Non-AI by default.**
+**1.1.0 · Linux only · Non-AI by default.**
 
-[Download v1.0.0](https://github.com/Het28091/Cyber-scan/releases/tag/v1.0.0) · [Release notes](docs/RELEASE_1.0.0.md)
+[Releases](https://github.com/Het28091/Cyber-scan/releases) · [1.1 release notes](docs/RELEASE_1.1.0.md)
 
 Secaudit coordinates scoped security checks and produces reviewable evidence.
 Use local source or an explicitly authorized URL, then review findings in a local dashboard.
@@ -246,3 +246,15 @@ capabilities also passed. See [machine-readable evidence](docs/evidence/v0.6-liv
 This closes the v0.6 gates; browser and distribution acceptance remain before v1.0.
 
 Stable release scope and installation/upgrade notes: [RELEASE_1.0.0.md](docs/RELEASE_1.0.0.md).
+
+
+## Verified external scanner workflows (1.1)
+
+Real Bubblewrap acceptance covers Gitleaks 8.24.2, Semgrep 1.175.0,
+Syft 1.52.0 and Trivy 0.74.0. Use the CLI examples in
+[the release notes](docs/RELEASE_1.1.0.md#external-scanner-configurations) and
+[adapter setup instructions](docs/ADAPTERS.md). External binaries/rules/databases
+require explicit preparation; the core release bundles do not contain them.
+The dashboard retains its supported built-in workflows. No extra preset or AI
+feature is required to use this release. Current acceptance: 104 tests, 94% statement
+coverage, all 14 recurring CI jobs passing at the documented implementation baseline.

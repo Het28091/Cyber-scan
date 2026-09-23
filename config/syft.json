@@ -1,0 +1,15 @@
+{
+  "mode": "offline",
+  "source": "demo/source",
+  "output": "runs",
+  "modules": [
+    "syft"
+  ],
+  "strict": true,
+  "pdf_required": true,
+  "scanners": {
+    "syft": {
+      "executable": "/usr/local/bin/syft"
+    }
+  }
+}

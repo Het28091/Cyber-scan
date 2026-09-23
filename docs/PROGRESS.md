@@ -176,3 +176,12 @@ remained skipped. Regression suite: 102 tests, 94% statement coverage.
 - Evidence: [Syft](evidence/v1_1-syft.json), [Trivy](evidence/v1_1-trivy.json).
 - Stable v1.0.0 remains published. v1.1 release packaging/publication and the
   dashboard-preset decision remain; see [scope](V1_1_SCOPE.md).
+
+
+### 1.1.0 release closure
+
+Configuration examples and release notes are complete. External scanners use the
+CLI; adding dashboard presets is outside this release. The publication workflow
+now requires Semgrep and both inventory acceptance jobs in addition to all existing
+gates. Version is 1.1.0; publication is pending the explicitly requested release run.
+All advanced features listed as deferred remain outside the completed scope.

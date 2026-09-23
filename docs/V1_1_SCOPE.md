@@ -49,3 +49,14 @@ dashboard-preset decision, prepare versioned release notes/assets, and update th
 publication gate to require the new scanner jobs before tagging/publishing.
 AI-provider verification, active exploitation, interactive login and a universal
 pentest/compliance guarantee remain outside this milestone.
+
+
+## Final release decision
+
+The 1.1.0 release uses CLI configuration for external scanners. No new dashboard
+presets are required: the existing dashboard remains the supported interface for
+built-in workflows. `config/syft.json`, `config/trivy.json`, and the Semgrep example
+cover external tools, with strict failure behavior for the new inventory examples.
+Release notes: [RELEASE_1.1.0.md](RELEASE_1.1.0.md). Publication requires all 14
+recurring jobs, verified bundles and checksums. The earlier remaining-work list
+above is a historical checkpoint; only actual publication awaits the release run.

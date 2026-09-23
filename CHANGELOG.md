@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased — v1.1 verification
+## 1.1.0 — Verified external scanner workflows
 
 - Verified real Semgrep 1.175.0 in Bubblewrap with positive/clean/invalid-rule controls.
 - Fixed Semgrep CA-bundle startup, version-probe network flags and address-space compatibility.
@@ -9,7 +9,8 @@
 - Fixed unsupported scanner flags, Trivy database address-space requirements and empty-report parsing.
 - Added missing/corrupt-database controls, full PDF/SBOM acceptance and pinned binary hashes.
 - 104 tests pass with 94% statement coverage; all 14 recurring CI jobs pass.
-- v1.1 packaging, release gate updates and publication remain outstanding.
+- Added strict Syft/Trivy CLI examples and required all scanner acceptance jobs before release publication.
+- Kept external scanner dashboard presets outside this release; CLI is the supported interface.
 
 ## 1.0.0 — Linux non-AI workflow acceptance
 

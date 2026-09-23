@@ -118,7 +118,7 @@ jobs:
       - name: Build versioned candidate bundle
         env:
           PYTHONPATH: .
-          SECAUDIT_RELEASE_CHANNEL: ${{ contains(github.event.head_commit.message, '[publish-v1.0]') && 'stable' || 'candidate' }}
+          SECAUDIT_RELEASE_CHANNEL: ${{ contains(github.event.head_commit.message, '[publish-v1.1]') && 'stable' || 'candidate' }}
         run: .venv/bin/python scripts/package-release.py --commit "$GITHUB_SHA" --output artifacts/release --with-wheels --channel "$SECAUDIT_RELEASE_CHANNEL"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
@@ -153,8 +153,8 @@ jobs:
 
   publish-release:
     # Publishing is explicit and can run only after every recurring acceptance gate passes.
-    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[publish-v1.0]')
-    needs: [test, live-acceptance, browser-acceptance, distribution-acceptance]
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[publish-v1.1]')
+    needs: [test, live-acceptance, browser-acceptance, distribution-acceptance, semgrep-acceptance, inventory-acceptance]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
@@ -175,17 +175,17 @@ jobs:
         env:
           PYTHONPATH: .
         run: python scripts/collect-release.py
-      - name: Publish verified v1.0.0 release
+      - name: Publish verified v1.1.0 release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          python -c "from secaudit import __version__; assert __version__ == '1.0.0'"
-          if gh release view v1.0.0 >/dev/null 2>&1; then
+          python -c "from secaudit import __version__; assert __version__ == '1.1.0'"
+          if gh release view v1.1.0 >/dev/null 2>&1; then
             echo 'Release already exists; refusing to replace it.'
             exit 1
           fi
-          gh release create v1.0.0 release-assets/* --target "$GITHUB_SHA" --title 'Secaudit 1.0.0' --notes-file docs/RELEASE_1.0.0.md --draft
-          gh release edit v1.0.0 --draft=false --latest
+          gh release create v1.1.0 release-assets/* --target "$GITHUB_SHA" --title 'Secaudit 1.1.0' --notes-file docs/RELEASE_1.1.0.md --draft
+          gh release edit v1.1.0 --draft=false --latest
 
   semgrep-acceptance:
     runs-on: ubuntu-22.04

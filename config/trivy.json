@@ -1,0 +1,16 @@
+{
+  "mode": "offline",
+  "source": "demo/source",
+  "output": "runs",
+  "modules": [
+    "trivy"
+  ],
+  "strict": true,
+  "pdf_required": true,
+  "scanners": {
+    "trivy": {
+      "executable": "/usr/local/bin/trivy",
+      "cache": "/absolute/path/trivy-cache"
+    }
+  }
+}
