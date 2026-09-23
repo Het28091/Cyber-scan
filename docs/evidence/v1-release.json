@@ -1,0 +1,66 @@
+{
+  "version": "1.0.0",
+  "source_commit": "9fa48ad48d02cadbd74ceda46924c1377ca40c91",
+  "release_url": "https://github.com/Het28091/Cyber-scan/releases/tag/v1.0.0",
+  "published_at": "2026-09-23T04:23:50Z",
+  "workflow_run": 35818090522,
+  "workflow_conclusion": "success",
+  "external_acceptance_run": 35817803689,
+  "assets": [
+    {
+      "name": "release-python3.11.json",
+      "size": 409,
+      "digest": "sha256:6e6f99eaae7fe2687a705543639dce6f5a317a47720670785616581b74b36bbc"
+    },
+    {
+      "name": "release-python3.12.json",
+      "size": 409,
+      "digest": "sha256:dc4eb4e8e2879dfa456cb8fafee6cdf10ab63bc67a4b8fbd585d8b200f29ed3e"
+    },
+    {
+      "name": "release-python3.13.json",
+      "size": 409,
+      "digest": "sha256:6187b6f5c39605242e5fe70848286601707e02e9060a4ff50a6b2f8284dcfa30"
+    },
+    {
+      "name": "release-python3.14.json",
+      "size": 409,
+      "digest": "sha256:7568018ac8a13ae3f35a90615e39ed64442a8968770a15b78e1605185a8c317e"
+    },
+    {
+      "name": "secaudit-1.0.0-source.tar.gz",
+      "size": 211517,
+      "digest": "sha256:9a4273739636c2be95617bd705e9707f7d9fa66b2f8285acb6daabf561999dbe"
+    },
+    {
+      "name": "secaudit-1.0.0-stable-9fa48ad48d02-linux-x86_64-py3.11.tar.gz",
+      "size": 9228649,
+      "digest": "sha256:0c012d62f332e720d80894f8c94d8eb14f2b2f5e58f73612a934f5b5675fc520"
+    },
+    {
+      "name": "secaudit-1.0.0-stable-9fa48ad48d02-linux-x86_64-py3.12.tar.gz",
+      "size": 9237149,
+      "digest": "sha256:04631f3388cacaec897b03c1c45e0c2de06b4cb7f9be74cd150e28e6bb4efeb7"
+    },
+    {
+      "name": "secaudit-1.0.0-stable-9fa48ad48d02-linux-x86_64-py3.13.tar.gz",
+      "size": 9233061,
+      "digest": "sha256:f22c8074e399ab354d76f2b269bca1e597e737451b7ffe3b6785e6750863b5d1"
+    },
+    {
+      "name": "secaudit-1.0.0-stable-9fa48ad48d02-linux-x86_64-py3.14.tar.gz",
+      "size": 9231508,
+      "digest": "sha256:8a7c806ab2c98d4146995bb3db3b0df7d2ada2540527b3af768dcf53df9c7d40"
+    },
+    {
+      "name": "SHA256SUMS",
+      "size": 967,
+      "digest": "sha256:731e87c7d5918ea913fc1b67097e2b69774ff180b59e990b28d797106c59f57b"
+    }
+  ],
+  "limits": [
+    "Bounded governance/orchestration release, not comprehensive autonomous pentesting",
+    "Unsigned bundles",
+    "Externally hosted acceptance covered one unauthenticated login page only"
+  ]
+}

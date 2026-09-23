@@ -2,6 +2,8 @@
 
 **1.0.0 · Linux only · Non-AI by default.**
 
+[Download v1.0.0](https://github.com/Het28091/Cyber-scan/releases/tag/v1.0.0) · [Release notes](docs/RELEASE_1.0.0.md)
+
 Secaudit coordinates scoped security checks and produces reviewable evidence.
 Use local source or an explicitly authorized URL, then review findings in a local dashboard.
 Built-in checks are a heuristic baseline; isolated external scanners extend detection.

@@ -1,6 +1,11 @@
-# Progress — 1.0.0 release preparation
+# Progress — 1.0.0 published
 
-Updated 2026-09-23. Project direction: Linux-only, non-AI scanning with optional
+Updated 2026-09-23. **The scoped v1.0.0 milestone is complete and [published](https://github.com/Het28091/Cyber-scan/releases/tag/v1.0.0).**
+Final CI: [35818090522](https://github.com/Het28091/Cyber-scan/actions/runs/35818090522).
+Source: `9fa48ad48d02cadbd74ceda46924c1377ca40c91`. Historical checkpoint lists below
+are retained for traceability; deferred advanced features remain outside this release.
+
+ Project direction: Linux-only, non-AI scanning with optional
 internet access. Scope is recorded in [SCOPE.md](SCOPE.md).
 
 ## Completed in 0.6.0

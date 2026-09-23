@@ -1,6 +1,6 @@
 # v1.0 release acceptance
 
-Status: **v1.0.0 prepared; publication gated on final CI**. Feature development remains frozen. This checklist defines
+Status: **v1.0.0 published on 2026-09-23**. [Release and downloads](https://github.com/Het28091/Cyber-scan/releases/tag/v1.0.0). Feature development remains frozen. This checklist defines
 completion of the existing Linux governance/orchestration workflow, not exhaustive
 vulnerability detection or certification.
 
@@ -16,10 +16,10 @@ vulnerability detection or certification.
 - [x] Review desktop/mobile screenshots and bounded accessibility (contrast, keyboard, accessible names); see [record](ACCESSIBILITY.md).
 - [x] Complete an externally hosted, explicitly authorized target assessment; [evidence](evidence/v1-external-target.json).
 - [x] Record a green acceptance commit and durable [evidence](evidence/v1-acceptance.json).
-- [ ] Final v1.0.0 CI and gated publication (check the latest Actions run).
+- [x] Final v1.0.0 CI and gated publication: [run 35818090522](https://github.com/Het28091/Cyber-scan/actions/runs/35818090522).
 - [x] Build candidate archives with source metadata, locked wheels and checksums on all eight matrix jobs.
 - [x] Finalize stable version and [release notes](RELEASE_1.0.0.md).
-- [ ] Publish the tag/release after all final CI gates pass.
+- [x] Published v1.0.0 with source archive, four Python wheel bundles, metadata and SHA256SUMS.
 
 Acceptance evidence: [Actions run 35815308853](https://github.com/Het28091/Cyber-scan/actions/runs/35815308853),
 commit `9d58fd714e1ca93718a72b0c30fd3d3b32659756`. All eleven jobs passed, including
@@ -68,11 +68,11 @@ sha256sum --check SHA256SUMS
 The archive contains a bundle directory usable with the documented `bundle verify`
 and `bundle install` commands. System Python/venv and libseccomp must already be
 available; the bundle does not provision system packages offline. Use the same Python
-minor version as the candidate metadata. The final stable release still requires the
-remaining acceptance gates and publication.
+minor version as the candidate metadata. The published stable release provides durable downloads; CI candidates remain temporary.
 
 Candidate archive verification: downloaded the Ubuntu 24.04/Python 3.12 artifact from
 run 35816620962, verified every SHA256SUMS entry and every file in its bundle manifest.
 All eleven jobs passed at that checkpoint. The external-target test subsequently
 passed in [run 35817803689](https://github.com/Het28091/Cyber-scan/actions/runs/35817803689).
-Stable publication is now gated only on final versioned CI and archive verification.
+Final versioned CI and archive verification passed; v1.0.0 was published from
+commit `9fa48ad48d02cadbd74ceda46924c1377ca40c91`. See [release evidence](evidence/v1-release.json).
