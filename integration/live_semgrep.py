@@ -5,7 +5,7 @@ import platform
 import tempfile
 from pathlib import Path
 
-from secaudit.adapters import bounded, sandbox_command, runtime_mounts, execute, probe
+from secaudit.adapters import ADDRESS_LIMITS, bounded, sandbox_command, runtime_mounts, execute, probe
 from secaudit.models import now
 from secaudit.security import PolicyError, write_json
 
@@ -26,6 +26,7 @@ RULES = '''rules:
 
 def main():
     result = {'started': now(), 'status': 'FAILED', 'host': platform.platform(),
+              'virtual_address_limit_bytes': ADDRESS_LIMITS['semgrep'],
               'tool': 'semgrep', 'expected_version': '1.175.0',
               'scope': 'Two local fixture rules; no general ruleset effectiveness claim'}
     try:
@@ -38,7 +39,7 @@ def main():
             options = {'executable': EXE, 'rules': str(rules)}
             result['stage'] = 'version-probe'
             # Fixed version-only diagnostic; no user source or credentials are mounted.
-            code, diagnostic = bounded(sandbox_command('/bin/sh', extra=runtime_mounts('semgrep')) + ['-c', EXE+' --version --disable-version-check --metrics=off 2>&1'], 10, 65536)
+            code, diagnostic = bounded(sandbox_command('/bin/sh', extra=runtime_mounts('semgrep')) + ['-c', EXE+' --version --disable-version-check --metrics=off 2>&1'], 10, 65536, max_address_bytes=ADDRESS_LIMITS['semgrep'])
             if code:
                 result['startup_diagnostic'] = diagnostic.decode('utf-8', 'replace')[-4000:]
             _, version = probe('semgrep', options)
@@ -56,7 +57,7 @@ def main():
             except PolicyError:
                 # Synthetic fixtures only. Production execute continues discarding raw diagnostics.
                 command = EXE+' scan --config /rules.yaml --metrics=off --disable-version-check --jobs 1 --max-memory 512 --json --no-git-ignore /input 2>&1'
-                code, diagnostic = bounded(sandbox_command('/bin/sh', source, runtime_mounts('semgrep')+[(rules, '/rules.yaml')])+['-c', command], 60, 65536)
+                code, diagnostic = bounded(sandbox_command('/bin/sh', source, runtime_mounts('semgrep')+[(rules, '/rules.yaml')])+['-c', command], 60, 65536, max_address_bytes=ADDRESS_LIMITS['semgrep'])
                 result['fixture_exit_code'] = code
                 result['fixture_diagnostic'] = diagnostic.decode('utf-8','replace')[-8000:]
                 raise
