@@ -77,7 +77,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install --require-hashes -r requirements.lock
-      - run: python -m pip install playwright==1.51.1
+      - run: python -m pip install playwright==1.63.0
       - run: python -m playwright install --with-deps chromium
       - name: Real dashboard browser acceptance
         env:
