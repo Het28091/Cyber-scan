@@ -214,3 +214,48 @@ jobs:
           name: semgrep-acceptance
           path: artifacts/semgrep
           retention-days: 14
+
+  inventory-acceptance:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        tool: [syft, trivy]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install pinned scanner binaries and Bubblewrap
+        env:
+          SCANNER: ${{ matrix.tool }}
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y bubblewrap
+          if [ "$SCANNER" = syft ]; then
+            curl --fail --location --retry 2 -o /tmp/scanner.tar.gz https://github.com/anchore/syft/releases/download/v1.52.0/syft_1.52.0_linux_amd64.tar.gz
+            echo 'caeedb81fb0491615f1ebd1761e4145d41ee86dd2cc7bf80669f9f5ad9d6133d  /tmp/scanner.tar.gz' | sha256sum -c -
+          else
+            curl --fail --location --retry 2 -o /tmp/scanner.tar.gz https://github.com/aquasecurity/trivy/releases/download/v0.74.0/trivy_0.74.0_Linux-64bit.tar.gz
+            echo '2ae6fe3ee734b7fdf11335663e18c75ea12dccc76062f09f164a3b0f8be4371a  /tmp/scanner.tar.gz' | sha256sum -c -
+          fi
+          tar -xzf /tmp/scanner.tar.gz -C /tmp "$SCANNER"
+          sudo install -m 0755 "/tmp/$SCANNER" "/usr/local/bin/$SCANNER"
+          python -m pip install --require-hashes -r requirements.lock
+      - name: Explicit connected Trivy database preparation
+        if: matrix.tool == 'trivy'
+        run: trivy fs --download-db-only --cache-dir "$RUNNER_TEMP/trivy-cache" --skip-version-check
+      - name: Real isolated inventory and reporting controls
+        env:
+          PYTHONPATH: .
+          SCANNER: ${{ matrix.tool }}
+        run: python integration/live_inventory.py "$SCANNER" "$RUNNER_TEMP/trivy-cache"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: inventory-${{ matrix.tool }}-acceptance
+          path: artifacts/${{ matrix.tool }}
+          retention-days: 14
