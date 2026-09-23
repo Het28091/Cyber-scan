@@ -73,3 +73,19 @@ Current acceptance and remaining v1.0 work: [V06_ACCEPTANCE.md](V06_ACCEPTANCE.m
 Prioritize browser, distribution and release acceptance before v1.0; new features stay frozen.
 Browser scanning and authenticated role testing require their own tested scope and
 network controls. No percentage-complete estimate is used to hide unverified work.
+
+## v1.0 acceptance in progress — 2026-09-23
+
+New features remain frozen. Added blocking CI acceptance for:
+
+- Real Chromium: keyboard dialogs, malformed-upload recovery, an owned ZIP source
+  assessment, finding search/detail, all views, report download and mobile overflow.
+- Ubuntu 22.04/24.04 × Python 3.11–3.14: clean setup, repeat offline setup and tests.
+- Locked-wheel bundle installation with inherited seccomp network denial, scanning
+  from another working directory, paths containing spaces and PDF/SBOM exports.
+
+These are new gates, not yet recorded as passed. Browser screenshots/results are
+retained as CI artifacts for 14 days. Full accessibility review, browser cancellation
+and worker-failure flows, externally hosted authorized-target acceptance and release
+packaging/publication remain open. Other optional scanners remain experimental until
+verified; their presence is not evidence of end-to-end support.
