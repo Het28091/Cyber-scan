@@ -9,7 +9,7 @@ Reports expose coverage, inventory gaps, provenance and untested controls.
 Offline scans use local data; internet mode can query package advisories without AI.
 Static authenticated GET/HEAD is supported; login automation, role comparison, a full SAST engine and compliance certification are outside this milestone.
 
-[Project scope](docs/SCOPE.md) · [Progress](docs/PROGRESS.md) ·
+[v1.0 release checklist](docs/V1_RELEASE_CHECKLIST.md) · [Project scope](docs/SCOPE.md) · [Progress](docs/PROGRESS.md) ·
 [Verification](docs/VERIFICATION.md) · [Capabilities](docs/CAPABILITIES.md) · [Security review](docs/SECURITY_REVIEW.md) · [Review response](docs/REVIEW_RESPONSE.md)
 
 ## Quick start

@@ -1,0 +1,49 @@
+{
+  "status": "passed",
+  "engine": "Chromium",
+  "checks": [
+    "keyboard dialog",
+    "malformed ZIP recovery",
+    "real offline ZIP scan",
+    "finding search/detail",
+    "all navigation views",
+    "JSON download",
+    "mobile overflow",
+    "no uncaught JavaScript errors",
+    "failed worker diagnostic",
+    "running crawler cancellation"
+  ],
+  "limitations": [
+    "Not a full accessibility audit"
+  ],
+  "date": "2026-09-23",
+  "commit": "9d58fd714e1ca93718a72b0c30fd3d3b32659756",
+  "workflow_run": 35815308853,
+  "workflow_conclusion": "success",
+  "distribution_matrix": {
+    "ubuntu": [
+      "22.04",
+      "24.04"
+    ],
+    "python": [
+      "3.11",
+      "3.12",
+      "3.13",
+      "3.14"
+    ],
+    "architecture": "x86_64",
+    "passed": 8
+  },
+  "regressions": {
+    "tests": 100,
+    "statement_coverage_percent": 93
+  },
+  "visual_review": {
+    "desktop": "reviewed",
+    "mobile": "reviewed",
+    "remaining": [
+      "Contrast and small-text accessibility review",
+      "Submission notice still says queued after completion"
+    ]
+  }
+}

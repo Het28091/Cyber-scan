@@ -63,12 +63,15 @@ Current acceptance and remaining v1.0 work: [V06_ACCEPTANCE.md](V06_ACCEPTANCE.m
 
 - [x] Successful real OSV lookup on Linux CI.
 - [ ] Actual externally hosted authorized target test; local fixtures cover client behavior.
-- [ ] Browser-level UI verification; Chromium installation was unavailable in this environment.
+- [x] Real Chromium UI verification on Linux CI; screenshots reviewed.
 - [x] End-to-end Gitleaks verification on Linux CI with mandatory Bubblewrap.
 - [ ] Other optional scanner binaries remain unverified end to end.
-- [ ] Supported Linux/Python installation matrix and release packaging acceptance.
+- [x] Supported Linux/Python installation matrix and offline bundle acceptance.
+- [ ] Final versioned release packaging/publication.
 
 ## Next milestone
+
+Use the [v1.0 release checklist](V1_RELEASE_CHECKLIST.md) for current completion gates.
 
 Prioritize browser, distribution and release acceptance before v1.0; new features stay frozen.
 Browser scanning and authenticated role testing require their own tested scope and
@@ -84,8 +87,10 @@ New features remain frozen. Added blocking CI acceptance for:
 - Locked-wheel bundle installation with inherited seccomp network denial, scanning
   from another working directory, paths containing spaces and PDF/SBOM exports.
 
-These are new gates, not yet recorded as passed. Browser screenshots/results are
-retained as CI artifacts for 14 days. Full accessibility review, browser cancellation
-and worker-failure flows, externally hosted authorized-target acceptance and release
-packaging/publication remain open. Other optional scanners remain experimental until
+All gates passed on [run 35815308853](https://github.com/Het28091/Cyber-scan/actions/runs/35815308853).
+Browser cancellation and worker-failure diagnostics also passed. Download testing exposed
+and fixed JSON serialization and underscore-filename routing bugs. Durable results are
+in [acceptance evidence](evidence/v1-acceptance.json); screenshots are retained for 14 days.
+Full accessibility review, externally hosted authorized-target
+acceptance and final release packaging/publication remain open. Other optional scanners remain experimental until
 verified; their presence is not evidence of end-to-end support.

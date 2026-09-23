@@ -67,6 +67,7 @@ def main():
                 page.locator('#submit-scan').click()
                 expect(page.locator('#scan-dialog')).not_to_be_visible()
                 expect(page.locator('#all-runs .run-name')).to_have_count(1, timeout=90000)
+                expect(page.locator('#notice')).to_contain_text('completed', timeout=30000)
                 page.locator('#all-runs .run-name').click()
                 expect(page.locator('.finding-button').first).to_be_visible()
                 page.locator('#finding-search').fill('no-such-rule-acceptance')

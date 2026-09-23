@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased — v1.0 acceptance work
+
+- Added real Chromium workflow acceptance and Linux/Python distribution matrix.
+- Verified clean/repeat setup and network-denied wheel-bundle installation on eight combinations.
+- Fixed JSON report downloads and underscore-containing preflight report URLs.
+- Added report byte-integrity regressions and accessible dialog names.
+- Removed misleading dashboard version placeholder.
+- Stable v1.0 release remains blocked by the release checklist.
+
 ## 0.6.0 — Verified integrations and static authentication
 
 - Passed genuine live OSV and real Bubblewrap/Gitleaks acceptance on Linux CI.
