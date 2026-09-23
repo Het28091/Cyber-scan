@@ -7,6 +7,7 @@ import tempfile
 from pathlib import Path
 
 from secaudit.adapters import execute, probe
+from secaudit import adapters
 from secaudit.cli import scan
 from secaudit.config import Config
 from secaudit.models import now
@@ -18,6 +19,21 @@ def main(name, cache=None):
     result = {'started': now(), 'status': 'FAILED', 'tool': name,
               'expected_version': expected, 'host': platform.platform(),
               'scope': 'Synthetic npm lockfile; no package installation or target traffic'}
+    original_bounded = adapters.bounded
+
+    def fixture_bounded(command, *args, **kwargs):
+        # This harness mounts synthetic inputs only. Never enable raw diagnostics
+        # in production scanning: they may contain source or credentials.
+        code, raw = original_bounded(command, *args, **kwargs)
+        if code and '--' in command:
+            split = command.index('--') + 1
+            diagnostic_command = command[:split] + ['/bin/sh', '-c', 'exec "$@" 2>&1', 'fixture'] + command[split:]
+            diagnostic_code, diagnostic = original_bounded(diagnostic_command, *args, **kwargs)
+            result['fixture_exit_code'] = diagnostic_code
+            result['fixture_diagnostic'] = diagnostic.decode('utf-8', 'replace')[-8000:]
+        return code, raw
+
+    adapters.bounded = fixture_bounded
     try:
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
@@ -89,6 +105,8 @@ def main(name, cache=None):
     except Exception as error:
         result['failure_type'] = type(error).__name__
         result['failure'] = str(error)
+    finally:
+        adapters.bounded = original_bounded
     result['finished'] = now()
     output = Path('artifacts')/name
     output.mkdir(parents=True, exist_ok=True)
