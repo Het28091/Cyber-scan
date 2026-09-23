@@ -38,7 +38,7 @@ def main():
             options = {'executable': EXE, 'rules': str(rules)}
             result['stage'] = 'version-probe'
             # Fixed version-only diagnostic; no user source or credentials are mounted.
-            code, diagnostic = bounded(sandbox_command('/bin/sh', extra=runtime_mounts('semgrep')) + ['-c', EXE+' --version 2>&1'], 10, 65536)
+            code, diagnostic = bounded(sandbox_command('/bin/sh', extra=runtime_mounts('semgrep')) + ['-c', EXE+' --version --disable-version-check --metrics=off 2>&1'], 10, 65536)
             if code:
                 result['startup_diagnostic'] = diagnostic.decode('utf-8', 'replace')[-4000:]
             _, version = probe('semgrep', options)

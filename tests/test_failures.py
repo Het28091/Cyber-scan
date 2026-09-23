@@ -41,6 +41,13 @@ class FailureTests(unittest.TestCase):
             self.assertEqual(run.call_count,1)
         with patch('shutil.which',return_value=None),self.assertRaises(PolicyError):sandbox_command('/bin/true')
 
+    def test_semgrep_version_probe_disables_optional_network_features(self):
+        with patch('secaudit.adapters.sandbox_command',return_value=['sandbox']),patch('secaudit.adapters.bounded',return_value=(0,b'1.175.0')) as run:
+            probe('semgrep',{'executable':'/usr/bin/semgrep','rules':__file__})
+            command=run.call_args_list[-1].args[0]
+            self.assertIn('--disable-version-check',command)
+            self.assertIn('--metrics=off',command)
+
     def test_semgrep_requires_a_narrow_public_trust_bundle_mount(self):
         with patch('secaudit.adapters.Path.is_file',return_value=False):
             with self.assertRaisesRegex(PolicyError,'CA certificate bundle'):

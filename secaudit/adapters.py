@@ -70,7 +70,9 @@ def probe(name,options):
     if not exe: raise PolicyError('REQUIRED_MISSING: '+name)
     code,_=bounded(sandbox_command('/bin/true'),5,65536)
     if code: raise PolicyError('POLICY_BLOCKED: kernel does not permit Bubblewrap isolation')
-    code,raw=bounded(sandbox_command(exe,extra=runtime_mounts(name))+(['version'] if name in ('gitleaks','syft') else ['--version']),10,65536,max_address_bytes=ADDRESS_LIMITS.get(name,2*1024**3))
+    version_args=['version'] if name in ('gitleaks','syft') else ['--version']
+    if name=='semgrep': version_args+=['--disable-version-check','--metrics=off']
+    code,raw=bounded(sandbox_command(exe,extra=runtime_mounts(name))+version_args,10,65536,max_address_bytes=ADDRESS_LIMITS.get(name,2*1024**3))
     if code: raise PolicyError('INCOMPATIBLE: tool cannot start inside sandbox')
     match=re.search(VERSIONS[name],raw.decode('utf-8','replace'))
     if not match: raise PolicyError('INCOMPATIBLE: unsupported scanner version output')
@@ -111,7 +113,7 @@ def execute(name,source,options,timeout):
     exe,version=probe(name,options);extra=runtime_mounts(name)
     if name=='gitleaks': args=['dir','/input','--no-banner','--redact=100','--report-format','json','--report-path','-','--exit-code','0']
     elif name=='semgrep':
-        extra+=[(options['rules'],'/rules.yaml')];args=['scan','--config','/rules.yaml','--metrics=off','--disable-version-check','--json','--no-git-ignore','/input']
+        extra+=[(options['rules'],'/rules.yaml')];args=['scan','--config','/rules.yaml','--metrics=off','--disable-version-check','--jobs','1','--max-memory','512','--json','--no-git-ignore','/input']
     elif name=='trivy':
         extra=[(options['cache'],'/cache')];args=['fs','--cache-dir','/cache','--scan-cache','memory','--skip-version-check','--offline-scan','--skip-db-update','--skip-java-db-update','--scanners','vuln','--format','json','/input']
     else: args=['dir:/input','-o','cyclonedx-json','--check-for-app-update=false']
