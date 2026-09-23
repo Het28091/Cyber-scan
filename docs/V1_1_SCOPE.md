@@ -16,15 +16,15 @@ connected preparation step. The Semgrep top-level version is pinned; its transit
 installation dependencies are not hash-locked. This is not yet a certified offline
 Semgrep distribution or a general detection-quality benchmark.
 
-Later increments: Syft inventory and Trivy/local-database verification, then decide
-which verified tools should be offered through supported dashboard presets. Those
-remain deferred until their own acceptance passes. No automatic rescan of Grid Guard.
+Syft inventory and Trivy/local-database verification are now complete; see the
+results below. Dashboard presets remain a separate product decision, and no
+automatic rescan of Grid Guard is included.
 
 The next acceptance increment exercises Syft 1.52.0 and Trivy 0.74.0 on
 Ubuntu 22.04 x86_64. Binary SHA-256 digests are pinned in CI from the official
 release assets. Trivy DB preparation is explicitly connected; all adapter scans
 use the mandatory network-isolated sandbox and a read-only DB. These checks
-remain pending until a successful CI result is recorded. Checksums establish
+passed in CI run 35874656948. Checksums establish
 artifact identity, not an independent code audit or signature verification.
 
 The synthetic fixture is an npm lockfile containing lodash 4.17.20. Acceptance
@@ -37,3 +37,15 @@ merged into the built-in inventory or OSV queries.
 Release selection reviewed the upstream Trivy incident advisory
 [GHSA-69fq-xp46-6x23](https://github.com/aquasecurity/trivy/security/advisories/GHSA-69fq-xp46-6x23).
 The compromised 0.69.4 release and mutable Trivy Actions are not used.
+
+Results: [Syft evidence](evidence/v1_1-syft.json),
+[Trivy evidence](evidence/v1_1-trivy.json). All 14 recurring jobs passed at commit
+`bc68f079be13f9977639c9084f8534aad1bca5c1`: 104 regression tests, 94% statement
+coverage, browser acceptance and eight distribution combinations. Release and
+external-target jobs were correctly skipped. v1.1 remains unreleased.
+
+Remaining for a v1.1 release: finalize supported configuration examples and the
+dashboard-preset decision, prepare versioned release notes/assets, and update the
+publication gate to require the new scanner jobs before tagging/publishing.
+AI-provider verification, active exploitation, interactive login and a universal
+pentest/compliance guarantee remain outside this milestone.

@@ -33,7 +33,7 @@ updates are intentionally not performed by assessment or preflight.
 
 *These are parser gates, **not claims that every release is compatible**. Gitleaks
 8.24.2 is live-verified in Bubblewrap. Semgrep 1.175.0 is also live-verified;
-Trivy and Syft remain fixture-tested. Use a tested pinned release and record its
+Trivy 0.74.0 and Syft 1.52.0 now also pass real sandboxed acceptance on main. Use a tested pinned release and record its
 version. A tool that cannot start or returns malformed output never produces a
 clean result.
 
@@ -87,7 +87,8 @@ redistributed; ATT&CK is not a sequential testing workflow.
 Live testing of Gitleaks 8.24.2 exposed a startup panic under the generic 2 GiB
 virtual-address limit: its WASM regex runtime reserves 4 GiB before scanning.
 Gitleaks has a finite 8 GiB RLIMIT_AS ceiling. Semgrep also uses 8 GiB after
-its live acceptance exposed a core crash at 2 GiB; Trivy and Syft retain 2 GiB.
+its live acceptance exposed a core crash at 2 GiB. Trivy also uses 8 GiB because
+its current database could not be memory-mapped at 2 GiB. Syft retains 2 GiB.
 This limit measures virtual address space, not resident memory. It is not a cgroup
 RSS limit. CPU/time, output/file/descriptor limits and mandatory Bubblewrap
 network/input/environment/capability isolation remain enforced.
@@ -134,3 +135,38 @@ assessment. Top-level Semgrep is pinned; its transitive dependencies are not
 hash-locked. An installation under the operator's home or a Python interpreter
 outside the sandbox-visible system paths is not covered by this acceptance.
 No package installation or remote-rule download occurs during the scan.
+
+## Verified Syft and Trivy acceptance (post-v1.0 development)
+
+CI pins Syft 1.52.0 and Trivy 0.74.0 release archive hashes. Live execution
+exposed unsupported historical flags: Syft now receives
+`SYFT_CHECK_FOR_APP_UPDATE=false` inside the cleared sandbox environment;
+Trivy uses `--cache-backend memory` and `--disable-telemetry`.
+Connected database preparation is separate from assessment. The scanner receives
+a read-only database, no network, and no operator credentials. Missing or corrupt
+databases must fail instead of producing an empty clean report.
+
+The harness uses an npm lockfile with lodash 4.17.20 and checks the known
+CVE-2021-23337 for Trivy. Empty input is a separate control. This is adapter
+compatibility evidence, not a benchmark covering every ecosystem or archive.
+External Syft CycloneDX remains separate from built-in dependency inventory.
+
+Acceptance passed in [run 35874656948](https://github.com/Het28091/Cyber-scan/actions/runs/35874656948).
+Durable results: [Syft](evidence/v1_1-syft.json) and [Trivy](evidence/v1_1-trivy.json).
+Both tools generated the pipeline PDFs with AI disabled. Trivy produced five
+advisory findings, including the required CVE, and rejected both missing and
+corrupt databases. Empty Trivy reports omit `Results`; Secaudit requires the
+schema-v2 filesystem envelope before accepting that omission as empty.
+
+To prepare Trivy's database explicitly while connected, after installing the
+reviewed pinned binary:
+
+```bash
+trivy fs --download-db-only --cache-dir /absolute/path/trivy-cache --skip-version-check
+```
+
+Then select the `trivy` module and that cache path in the configuration above.
+The CI evidence records DB metadata and SHA-256; the database is not bundled with
+Secaudit and coverage changes with its contents. These binaries were hash-checked;
+CI does not independently verify their publisher signatures. No universal version
+compatibility, archive-parser safety, or complete vulnerability coverage is claimed.

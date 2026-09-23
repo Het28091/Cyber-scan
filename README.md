@@ -196,8 +196,10 @@ node --check secaudit/static/app.js
 - External tools unavailable: see [adapter requirements](docs/ADAPTERS.md). Isolation
   is mandatory; installation alone does not establish compatible execution.
 
-CI runs on Ubuntu; tests use synthetic local targets and provider fixtures, not public
-scan targets. Optional AI backend code is retained for later development, but is
+Recurring CI runs on Ubuntu with synthetic local targets, real isolated scanners,
+and one live OSV advisory query. The separately gated, owner-authorized external
+login-page acceptance is recorded in the release evidence; ordinary pushes do not
+rescan that target. Optional AI backend code is retained for later development, but is
 excluded from the first milestone and from the dashboard's available modes. Both AI
 modes and the provider require explicit `SECAUDIT_EXPERIMENTAL_AI=1`; real providers
 remain unverified.

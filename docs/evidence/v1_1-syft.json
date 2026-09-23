@@ -1,0 +1,24 @@
+{
+  "started": "2026-09-23T14:30:46.100598+00:00",
+  "status": "PASSED",
+  "tool": "syft",
+  "expected_version": "1.52.0",
+  "host": "Linux-6.8.0-1064-azure-x86_64-with-glibc2.35",
+  "scope": "Synthetic npm lockfile; no package installation or target traffic",
+  "stage": "reporting-pipeline",
+  "version": "1.52.0",
+  "matched_components": 1,
+  "empty_control": "passed",
+  "pipeline": {
+    "pdf_reports": "passed",
+    "ai_enabled": false
+  },
+  "finished": "2026-09-23T14:30:50.178253+00:00",
+  "commit": "bc68f079be13f9977639c9084f8534aad1bca5c1",
+  "workflow_run": 35874656948,
+  "regressions": {
+    "tests": 104,
+    "statement_coverage_percent": 94
+  },
+  "virtual_address_limit_bytes": 2147483648
+}

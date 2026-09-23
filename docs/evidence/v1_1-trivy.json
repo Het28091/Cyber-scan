@@ -1,0 +1,35 @@
+{
+  "started": "2026-09-23T14:30:53.664693+00:00",
+  "status": "PASSED",
+  "tool": "trivy",
+  "expected_version": "0.74.0",
+  "host": "Linux-6.8.0-1064-azure-x86_64-with-glibc2.35",
+  "scope": "Synthetic npm lockfile; no package installation or target traffic",
+  "database_sha256": "779370a79257ff2384790625b52f6daace2fed7be5fd2ffa158710f179587dc6",
+  "database_metadata": {
+    "Version": 2,
+    "NextUpdate": "2026-09-24T12:53:55.96484865Z",
+    "UpdatedAt": "2026-09-23T12:53:55.964849051Z",
+    "DownloadedAt": "2026-09-23T14:30:53.437443383Z"
+  },
+  "stage": "reporting-pipeline",
+  "version": "0.74.0",
+  "positive_findings": 5,
+  "empty_control": "passed",
+  "missing_database": "rejected",
+  "fixture_exit_code": 1,
+  "fixture_diagnostic": "2026-09-23T14:30:55Z\tFATAL\tFatal error\trun error: init error: DB error: error in vulnerability DB initialize: failed to open db: invalid database\n",
+  "corrupt_database": "rejected",
+  "pipeline": {
+    "pdf_reports": "passed",
+    "ai_enabled": false
+  },
+  "finished": "2026-09-23T14:30:56.514734+00:00",
+  "commit": "bc68f079be13f9977639c9084f8534aad1bca5c1",
+  "workflow_run": 35874656948,
+  "regressions": {
+    "tests": 104,
+    "statement_coverage_percent": 94
+  },
+  "virtual_address_limit_bytes": 8589934592
+}

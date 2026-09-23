@@ -139,7 +139,7 @@ status is tracked by V1_RELEASE_CHECKLIST.md and the latest GitHub Actions run.
 Scope: [V1_1_SCOPE.md](V1_1_SCOPE.md). Start with real Semgrep positive/clean controls
 and invalid-rule rejection inside mandatory Bubblewrap. No active exploitation,
 AI-provider work or additional Grid Guard scanning is included. Stable v1.0.0 is
-unchanged; v1.1 is not released and Semgrep acceptance is pending its CI result.
+unchanged; v1.1 is not released. Acceptance results are recorded below.
 
 
 ### Semgrep increment completed — 2026-09-23
@@ -162,3 +162,17 @@ on commit `ca347fb8393bd997f828540118d8d670f893c405`: one normalized Semgrep fin
 and both PDF reports produced through the real offline pipeline, AI disabled.
 All 12 recurring CI jobs passed; the external-target and publication jobs correctly
 remained skipped. Regression suite: 102 tests, 94% statement coverage.
+
+
+### Syft/Trivy increment completed — 2026-09-23
+
+- Syft 1.52.0 inventories the exact lodash fixture and emits external CycloneDX.
+- Trivy 0.74.0 detects the known CVE with a real, separately prepared advisory DB;
+  empty input passes, and missing/corrupt DBs fail closed.
+- Both full offline pipelines produce both PDFs with AI disabled.
+- Fixed unsupported flags, Trivy memory-map allowance and omitted empty Results.
+- [CI 35874656948](https://github.com/Het28091/Cyber-scan/actions/runs/35874656948):
+  all 14 recurring jobs passed; 104 tests, 94% statement coverage.
+- Evidence: [Syft](evidence/v1_1-syft.json), [Trivy](evidence/v1_1-trivy.json).
+- Stable v1.0.0 remains published. v1.1 release packaging/publication and the
+  dashboard-preset decision remain; see [scope](V1_1_SCOPE.md).

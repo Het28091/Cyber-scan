@@ -5,7 +5,11 @@
 - Verified real Semgrep 1.175.0 in Bubblewrap with positive/clean/invalid-rule controls.
 - Fixed Semgrep CA-bundle startup, version-probe network flags and address-space compatibility.
 - Bounded Semgrep to one worker and added a runnable local-rule configuration example.
-- Syft/Trivy verification and v1.1 publication remain outstanding.
+- Verified Syft 1.52.0 inventory and Trivy 0.74.0 offline advisory scanning with real binaries and database.
+- Fixed unsupported scanner flags, Trivy database address-space requirements and empty-report parsing.
+- Added missing/corrupt-database controls, full PDF/SBOM acceptance and pinned binary hashes.
+- 104 tests pass with 94% statement coverage; all 14 recurring CI jobs pass.
+- v1.1 packaging, release gate updates and publication remain outstanding.
 
 ## 1.0.0 — Linux non-AI workflow acceptance
 
