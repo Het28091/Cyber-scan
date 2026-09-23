@@ -116,8 +116,12 @@ def execute(name,source,options,timeout):
     elif name=='semgrep':
         extra+=[(options['rules'],'/rules.yaml')];args=['scan','--config','/rules.yaml','--metrics=off','--disable-version-check','--jobs','1','--max-memory','512','--json','--no-git-ignore','/input']
     elif name=='trivy':
-        extra=[(options['cache'],'/cache')];args=['fs','--cache-dir','/cache','--scan-cache','memory','--skip-version-check','--offline-scan','--skip-db-update','--skip-java-db-update','--scanners','vuln','--format','json','/input']
-    else: args=['dir:/input','-o','cyclonedx-json','--check-for-app-update=false']
-    code,raw=bounded(sandbox_command(exe,source,extra)+args,timeout,max_address_bytes=ADDRESS_LIMITS.get(name,2*1024**3))
+        extra=[(options['cache'],'/cache')];args=['fs','--cache-dir','/cache','--cache-backend','memory','--disable-telemetry','--skip-version-check','--offline-scan','--skip-db-update','--skip-java-db-update','--scanners','vuln','--format','json','/input']
+    else: args=['dir:/input','-o','cyclonedx-json']
+    command=sandbox_command(exe,source,extra)
+    if name=='syft':
+        index=command.index('--')
+        command[index:index]=['--setenv','SYFT_CHECK_FOR_APP_UPDATE','false']
+    code,raw=bounded(command+args,timeout,max_address_bytes=ADDRESS_LIMITS.get(name,2*1024**3))
     if code: raise PolicyError('scanner failed; raw output discarded')
     return parse(name,raw,version)

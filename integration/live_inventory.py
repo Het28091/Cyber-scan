@@ -83,7 +83,18 @@ def main(name, cache=None):
                     result['missing_database'] = 'rejected'
                 else:
                     raise RuntimeError('Missing database accepted')
-            result['stage'] = 'reporting-pipeline'
+                result['stage'] = 'corrupt-database-control'
+                corrupt = root/'corrupt/db'
+                corrupt.mkdir(parents=True)
+                (corrupt/'trivy.db').write_bytes(b'invalid database')
+                (corrupt/'metadata.json').write_text((Path(cache)/'db/metadata.json').read_text())
+                try:
+                    execute(name, source, {**options, 'cache': str(corrupt.parent)}, 30)
+                except PolicyError:
+                    result['corrupt_database'] = 'rejected'
+                else:
+                    raise RuntimeError('Corrupt database accepted')
+            result['stage'] = 'reporting-pipeline' 
             cfg = Config(mode='offline', source=str(source), output=str(root/'runs'),
                          modules=[name], scanners={name: options}, strict=True,
                          pdf_required=True).validate()

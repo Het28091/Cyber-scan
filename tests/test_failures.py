@@ -30,7 +30,7 @@ class FailureTests(unittest.TestCase):
 
     def test_scanner_crash_never_returns_clean_result(self):
         for name in ('gitleaks','semgrep','trivy','syft'):
-            with self.subTest(name=name),patch('secaudit.adapters.sandbox_command',return_value=['isolated-tool']),patch('secaudit.adapters.probe',return_value=('/usr/bin/true','1.0.0')),patch('secaudit.adapters.bounded',return_value=(139,b'sensitive raw data')) as invocation:
+            with self.subTest(name=name),patch('secaudit.adapters.sandbox_command',return_value=['bwrap','--','isolated-tool']),patch('secaudit.adapters.probe',return_value=('/usr/bin/true','1.0.0')),patch('secaudit.adapters.bounded',return_value=(139,b'sensitive raw data')) as invocation:
                 with self.assertRaisesRegex(PolicyError,'raw output discarded'):
                     execute(name,ROOT/'demo/source',{'rules':__file__,'cache':str(ROOT)},2)
                 self.assertEqual(invocation.call_args.kwargs['max_address_bytes'],ADDRESS_LIMITS.get(name,2*1024**3))
@@ -63,6 +63,21 @@ class FailureTests(unittest.TestCase):
             self.assertEqual(command[command.index(mounts[0][0])-1],'--ro-bind')
             self.assertNotIn('/etc',command)
         self.assertEqual(runtime_mounts('gitleaks'),[])
+
+    def test_inventory_adapter_offline_controls(self):
+        with patch('shutil.which',return_value='/usr/bin/bwrap'),patch('secaudit.adapters.probe',return_value=('/usr/local/bin/tool','test')),patch('secaudit.adapters.bounded') as run:
+            run.return_value=(0,b'{"bomFormat":"CycloneDX","components":[]}')
+            execute('syft',ROOT/'demo/source',{},2)
+            command=run.call_args.args[0]
+            self.assertIn('SYFT_CHECK_FOR_APP_UPDATE',command[:command.index('--')])
+            self.assertNotIn('--check-for-app-update=false',command)
+            run.return_value=(0,b'{"Results":[]}')
+            execute('trivy',ROOT/'demo/source',{'cache':str(ROOT)},2)
+            command=run.call_args.args[0]
+            self.assertEqual(command[command.index('--cache-backend')+1],'memory')
+            for flag in ('--disable-telemetry','--offline-scan','--skip-db-update','--skip-java-db-update'):
+                self.assertIn(flag,command)
+            self.assertNotIn('--scan-cache',command)
 
     def test_tls_and_socket_failure_closes_socket(self):
         for secure in (False,True):
