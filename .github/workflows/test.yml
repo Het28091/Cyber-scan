@@ -79,10 +79,12 @@ jobs:
       - run: python -m pip install --require-hashes -r requirements.lock
       - run: python -m pip install playwright==1.63.0
       - run: python -m playwright install --with-deps chromium
+      - name: Install pinned accessibility checker
+        run: npm install --prefix "$RUNNER_TEMP/axe" --ignore-scripts --no-audit --no-fund axe-core@4.10.3
       - name: Real dashboard browser acceptance
         env:
           PYTHONPATH: .
-        run: python integration/browser_acceptance.py
+        run: AXE_SCRIPT="$RUNNER_TEMP/axe/node_modules/axe-core/axe.min.js" python integration/browser_acceptance.py
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:

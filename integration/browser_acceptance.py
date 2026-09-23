@@ -43,6 +43,15 @@ def main():
                                               viewport={'width': 1440, 'height': 1000})
                 page = context.new_page()
                 errors = []
+                accessibility = []
+                axe_script = Path(os.environ['AXE_SCRIPT']).read_text()
+                def audit(label):
+                    page.evaluate(axe_script)
+                    result = page.evaluate("async () => await axe.run(document, {runOnly: {type: 'tag', values: ['wcag2a','wcag2aa','wcag21aa']}})")
+                    accessibility.append({'view': label, 'violations': result['violations'], 'incomplete': result['incomplete']})
+                    (artifacts / 'accessibility.json').write_text(json.dumps(accessibility, indent=2))
+                    assert not result['violations'], json.dumps({'view': label, 'violations': result['violations']})
+
                 page.on('pageerror', lambda error: errors.append(str(error)))
                 page.goto(f'http://127.0.0.1:{port}')
                 expect(page.locator('#version')).to_have_text('v'+__version__)
@@ -50,6 +59,7 @@ def main():
                 page.locator('#new-scan').focus()
                 page.keyboard.press('Enter')
                 expect(page.get_by_role('dialog', name='Start with a defined scope.')).to_be_visible()
+                audit('assessment-dialog')
                 page.keyboard.press('Escape')
                 expect(page.locator('#new-scan')).to_be_focused()
                 page.locator('#new-scan').click()
@@ -76,10 +86,12 @@ def main():
                 page.locator('.finding-button').first.click()
                 expect(page.locator('#finding-dialog')).to_be_visible()
                 expect(page.locator('#finding-detail')).to_contain_text('Remediation')
+                audit('finding-dialog')
                 page.keyboard.press('Escape')
                 for view in ('overview', 'assessments', 'findings', 'coverage', 'reports'):
                     page.locator(f'.nav[data-view="{view}"]').click()
                     expect(page.locator(f'#view-{view}')).to_be_visible()
+                    audit(view)
                 card = page.locator('.report-card').filter(has=page.get_by_role('heading', name='Normalized findings'))
                 with page.expect_download() as downloaded:
                     card.locator('a').click()
@@ -90,6 +102,7 @@ def main():
                 page.set_viewport_size({'width': 390, 'height': 844})
                 page.locator('.nav[data-view="overview"]').click()
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth'), 'Mobile horizontal overflow'
+                audit('mobile-overview')
                 page.screenshot(path=str(artifacts / 'mobile.png'), full_page=True)
                 page.set_viewport_size({'width': 1440, 'height': 1000})
                 page.locator('#new-scan').click()
