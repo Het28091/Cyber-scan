@@ -154,3 +154,11 @@ unchanged; v1.1 is not released and Semgrep acceptance is pending its CI result.
 - [Evidence](evidence/v1_1-semgrep.json), [CI](https://github.com/Het28091/Cyber-scan/actions/runs/35841025866),
   and installation/limits in ADAPTERS.md. These changes are on main after v1.0.0;
   v1.1 is not released. Syft/Trivy verification remains next.
+
+
+Final Semgrep pipeline acceptance passed in
+[run 35841479704](https://github.com/Het28091/Cyber-scan/actions/runs/35841479704)
+on commit `ca347fb8393bd997f828540118d8d670f893c405`: one normalized Semgrep finding
+and both PDF reports produced through the real offline pipeline, AI disabled.
+All 12 recurring CI jobs passed; the external-target and publication jobs correctly
+remained skipped. Regression suite: 102 tests, 94% statement coverage.

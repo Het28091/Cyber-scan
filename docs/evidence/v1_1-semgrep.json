@@ -1,18 +1,27 @@
 {
-  "started": "2026-09-23T09:07:49.994801+00:00",
+  "started": "2026-09-23T09:12:30.625871+00:00",
   "status": "PASSED",
   "host": "Linux-6.8.0-1064-azure-x86_64-with-glibc2.35",
   "virtual_address_limit_bytes": 8589934592,
   "tool": "semgrep",
   "expected_version": "1.175.0",
   "scope": "Two local fixture rules; no general ruleset effectiveness claim",
-  "stage": "invalid-rules-control",
+  "stage": "reporting-pipeline",
   "version": "1.175.0",
   "rules_sha256": "8579267f9f6b6ea946ca3ba6f6ed8d181312dbd20ee8e29db70920c408211478",
   "positive_findings": 2,
   "clean_findings": 0,
   "invalid_rules": "rejected",
-  "finished": "2026-09-23T09:08:00.858788+00:00",
-  "commit": "16dc3a8fb86fab51b90db4b1a9761acc41ba3b53",
-  "workflow_run": 35841025866
+  "pipeline": {
+    "findings": 1,
+    "pdf_reports": "passed",
+    "ai_enabled": false
+  },
+  "finished": "2026-09-23T09:12:45.927854+00:00",
+  "commit": "ca347fb8393bd997f828540118d8d670f893c405",
+  "workflow_run": 35841479704,
+  "regressions": {
+    "tests": 102,
+    "statement_coverage_percent": 94
+  }
 }
