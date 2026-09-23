@@ -91,6 +91,21 @@ All gates passed on [run 35815308853](https://github.com/Het28091/Cyber-scan/act
 Browser cancellation and worker-failure diagnostics also passed. Download testing exposed
 and fixed JSON serialization and underscore-filename routing bugs. Durable results are
 in [acceptance evidence](evidence/v1-acceptance.json); screenshots are retained for 14 days.
-Full accessibility review, externally hosted authorized-target
-acceptance and final release packaging/publication remain open. Other optional scanners remain experimental until
+At that checkpoint, accessibility review, externally hosted target acceptance and
+release preparation remained open; see the newer acceptance entry below. Other optional scanners remain experimental until
 verified; their presence is not evidence of end-to-end support.
+
+
+## Accessibility and candidate packaging — 2026-09-23
+
+- [x] Improved supporting text sizes, focus visibility and contrast; responsive wrapping.
+- [x] Zero axe violations across eight browser states; bounded manual review documented
+  in [ACCESSIBILITY.md](ACCESSIBILITY.md), with limitations preserved.
+- [x] Eight downloadable CI candidate archives with source commit, locked wheels and checksums.
+- [x] Downloaded one generated candidate and verified archive and bundle checksums.
+- [x] All eleven jobs passed in [run 35816620962](https://github.com/Het28091/Cyber-scan/actions/runs/35816620962).
+- [ ] Externally hosted authorized target acceptance: awaiting owner-provided URL and scope.
+- [ ] Final stable version, release notes and GitHub tag/release after acceptance.
+
+Candidates remain version 0.6.0 with an explicit candidate channel. No stable v1.0 or
+publisher-signature claim is made. CI artifact retention is 14 days.

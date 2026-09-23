@@ -1,0 +1,72 @@
+{
+  "source_commit": "2931acccf97640f1edd2fa894449b1277e229131",
+  "run": 35816620962,
+  "checker": "axe-core 4.10.3",
+  "tags": [
+    "wcag2a",
+    "wcag2aa",
+    "wcag21aa"
+  ],
+  "views": [
+    {
+      "view": "assessment-dialog",
+      "violations": 0,
+      "manual_review_rules": [
+        "color-contrast"
+      ]
+    },
+    {
+      "view": "finding-dialog",
+      "violations": 0,
+      "manual_review_rules": [
+        "color-contrast"
+      ]
+    },
+    {
+      "view": "overview",
+      "violations": 0,
+      "manual_review_rules": [
+        "color-contrast"
+      ]
+    },
+    {
+      "view": "assessments",
+      "violations": 0,
+      "manual_review_rules": [
+        "color-contrast"
+      ]
+    },
+    {
+      "view": "findings",
+      "violations": 0,
+      "manual_review_rules": [
+        "color-contrast"
+      ]
+    },
+    {
+      "view": "coverage",
+      "violations": 0,
+      "manual_review_rules": [
+        "color-contrast"
+      ]
+    },
+    {
+      "view": "reports",
+      "violations": 0,
+      "manual_review_rules": [
+        "color-contrast"
+      ]
+    },
+    {
+      "view": "mobile-overview",
+      "violations": 0,
+      "manual_review_rules": [
+        "color-contrast"
+      ]
+    }
+  ],
+  "limitations": [
+    "Automated checks are not WCAG certification",
+    "No screen-reader user study or comprehensive assistive-technology matrix"
+  ]
+}

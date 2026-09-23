@@ -2,6 +2,10 @@
 
 ## Unreleased — v1.0 acceptance work
 
+- Improved dashboard contrast, supporting text sizes and responsive wrapping.
+- Added axe accessibility checks across eight browser states and documented bounded review.
+- Built downloadable candidate bundles with source metadata, locked wheels and checksums.
+
 - Added real Chromium workflow acceptance and Linux/Python distribution matrix.
 - Verified clean/repeat setup and network-denied wheel-bundle installation on eight combinations.
 - Fixed JSON report downloads and underscore-containing preflight report URLs.

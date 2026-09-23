@@ -13,15 +13,17 @@ vulnerability detection or certification.
 - [x] Matching wheel bundles install with seccomp network denial; installed CLI produces
   findings, PDFs and CycloneDX output from paths containing spaces and a different cwd.
 - [x] Complete real-browser acceptance, including report downloads, failed jobs and cancellation.
-- [ ] Review desktop/mobile screenshots and accessibility (contrast, keyboard, accessible names).
+- [x] Review desktop/mobile screenshots and bounded accessibility (contrast, keyboard, accessible names); see [record](ACCESSIBILITY.md).
+- [ ] Complete an externally hosted, explicitly authorized target assessment.
 - [x] Record a green acceptance commit and durable [evidence](evidence/v1-acceptance.json).
 - [ ] Keep the final versioned release candidate green.
-- [ ] Create versioned release archives, checksums and migration/release notes; publish a tag/release.
+- [x] Build candidate archives with source metadata, locked wheels and checksums on all eight matrix jobs.
+- [ ] Finalize stable version/release notes and publish a tag/release after target acceptance.
 
 Acceptance evidence: [Actions run 35815308853](https://github.com/Het28091/Cyber-scan/actions/runs/35815308853),
 commit `9d58fd714e1ca93718a72b0c30fd3d3b32659756`. All eleven jobs passed, including
 eight distribution combinations, real Chromium, live integrations and security/coverage gates.
-Desktop/mobile screenshots were reviewed. Contrast/small-text accessibility remains a UI follow-up. The stale submission notice
+Desktop/mobile screenshots were reviewed. Contrast/small-text accessibility fixes and bounded acceptance passed in run 35816620962. The stale submission notice
 found in screenshot review has been fixed; its browser assertion passed in [run 35815527454](https://github.com/Het28091/Cyber-scan/actions/runs/35815527454).
 
 ## Migration and artifact requirements
@@ -67,3 +69,7 @@ and `bundle install` commands. System Python/venv and libseccomp must already be
 available; the bundle does not provision system packages offline. Use the same Python
 minor version as the candidate metadata. The final stable release still requires the
 remaining acceptance gates and publication.
+
+Candidate archive verification: downloaded the Ubuntu 24.04/Python 3.12 artifact from
+run 35816620962, verified every SHA256SUMS entry and every file in its bundle manifest.
+All eleven jobs passed. Stable publication remains blocked by the external-target test.
