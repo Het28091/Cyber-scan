@@ -1,50 +1,49 @@
-# Current scope — Linux non-AI milestone
+# Current scope — Linux assessment with optional AI
 
-## Agreed direction
+Updated 29 September 2026. Final delivery target: **14 October 2026**.
+The owner restored the original project scope, including AI and non-AI modes.
+The earlier non-AI-only freeze is superseded. The implementation and acceptance
+matrix is maintained in [FINAL_HANDOVER.md](FINAL_HANDOVER.md).
 
-Linux only. Run locally with an automatic virtual environment and a local dashboard.
-Internet access during a non-AI scan is allowed. The first milestone is deterministic
-assessment without model installation, tokens, provider keys or AI reasoning.
-Strict-offline execution remains a separate option.
+## Published baseline
 
-## Included
+v1.1.0 provides Linux setup and preflight, source/ZIP and passive URL assessments,
+static scoped authentication, package inventory/advisories, verified external
+scanner integrations, dashboard workflows and evidence/report exports.
+Its published verification applies to that baseline only.
 
-- Native Linux setup/launch, pinned PDF dependencies and mandatory preflight.
-- Authorized local/public URL checks with exact scope and DNS pins.
-- Bounded crawl, HTTP headers, cookie attributes and HTTPS certificate validation.
-- Read-only Python/config/secret checks, ZIP inputs and JSON OpenAPI inventory.
-- Basic Python/npm package inventory and optional online OSV advisory queries.
-- Local advisory snapshots for offline dependency checking.
-- Local authenticated dashboard, queue, cancellation, evidence exploration and reports.
-- Explicit coverage, network disclosure, redaction and reproducible synthetic tests.
+## Expanded delivery scope
 
-## Network permissions
+- Preserve independent offline and internet-enabled non-AI workflows.
+- Complete optional local-model and API-model assistance, including real-provider
+  acceptance, provider readiness, budgets, disclosure and failure handling.
+- Add dashboard access to supported AI workflows and scanner configurations.
+- Develop controlled login/session, role-comparison and target-browser workflows.
+- Add bounded non-destructive active checks and broaden detection coverage.
+- Reconcile original workflow, reporting, remediation and framework requirements
+  against implemented features and test evidence.
+- Finish owner-machine verification and publish a versioned, gated release.
 
-Internet mode permits only the scoped target client and the selected fixed advisory
-provider. No AI request is allowed in this mode. OSV receives only package ecosystem,
-name and version; its response is data and cannot execute commands. There is no
-ambient network permission for arbitrary subprocesses or scanned project code.
-Private package identities should use offline snapshots instead of OSV.
+These items are planned, not claims of current functionality. AI remains
+experimental until its gates pass. Previously deferred functionality is reopened
+for this delivery; the original brief must be reconciled before final sign-off.
 
-Target authorization does not expand through links, redirects or advisory content.
-Scanner installations and updates remain explicit preparation tasks. Offline mode
-rejects public target IPs and online dependency modules. Local target hostname DNS
-uses the system resolver; disconnected deployments should use local DNS/IP literals.
+## Network and evidence boundaries
 
-## Deferred
+Non-AI modes must never call an AI provider. Strict-offline mode must retain its
+network restrictions. Local AI and API AI need separately documented data flows.
+Scoped targets, advisory services and approved providers do not grant arbitrary
+network access to uploaded code or subprocesses. Downloads occur during explicit
+preparation. Secrets remain environment references and are redacted from evidence.
 
-Real external-tool certification, browser-assisted testing, dedicated-account role
-comparisons, active test profiles, broad container/IaC coverage, complete framework
-assessments and real AI-provider validation. No autonomous exploitation, persistence,
-credential attacks, destructive actions or compliance certification are promised.
+Target authorization does not expand through links or redirects. New active and
+authenticated tests use controlled fixtures first; production tests require
+appropriate scope and test accounts. AI output is untrusted assistance, not proof
+of a finding or authority to execute commands.
 
-## Acceptance evidence
+## Completion rules
 
-See PROGRESS.md and VERIFICATION.md. A passed fixture test is not a successful live
-provider test. A usable first pipeline is not complete security coverage.
-
-## Static authentication amendment
-
-Passive GET/HEAD now supports an existing bearer/session credential from an environment
-reference, scoped to one origin and explicit paths. See [authentication](AUTHENTICATION.md).
-Login automation and role comparison remain outside this milestone.
+See [delivery plan](FINAL_HANDOVER.md), [progress](PROGRESS.md) and
+[verification](VERIFICATION.md). Report unsupported checks explicitly.
+No guarantee of exhaustive vulnerability discovery, autonomous destructive
+exploitation or compliance certification is made.
