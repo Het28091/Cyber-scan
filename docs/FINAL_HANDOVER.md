@@ -1,35 +1,68 @@
-# Final handover — 25 October 2026
+# Final delivery target — 14 October 2026
 
-Updated 29 September 2026. Owner-requested deadline: **25 October 2026
-(Asia/Kolkata)**, replacing 14 October. This is a delivery plan, not a scheduled
-background task. Work and feedback are handled in active sessions.
+Updated 29 September 2026. The owner corrected 25 October as a typo.
+**Target: 14 October 2026 (Asia/Kolkata), including AI and non-AI workflows
+and the original project goals.** This supersedes the non-AI-only feature freeze.
+This is a delivery target, not a guarantee or a scheduled background task.
+Implementation proceeds during active work sessions.
 
 ## Baseline and finish line
 
-v1.1.0 is already published. Its recorded acceptance is 104 tests, 94% statement
-coverage, all 14 recurring CI jobs, and gated release publication. These are dated
-results, not a guarantee of future service availability or zero defects.
+v1.1.0 is the published Linux non-AI baseline. Its recorded 104 tests, 94%
+coverage and 14 acceptance jobs validate that release, not the expanded scope.
+The original project is not complete merely because v1.1 shipped.
 
-The remaining milestone is owner-machine acceptance and final handover.
-Freeze new features. Fix reproducible failures in the existing Linux, non-AI
-workflow; retain explicit preparation of external scanners and databases.
-AI, automated login, role comparison, active exploitation, new dashboard scanner
-presets and exhaustive pentest/compliance claims remain outside scope.
+Keep Linux-only setup, automatic virtual environments, dependency preflight,
+optional preparation downloads, scoped internet access without AI, and strict
+offline operation. Add optional local-model and API-model workflows without
+requiring a model or API key for non-AI use.
 
-## Schedule
+## Required work and acceptance
 
-| Window | Deliverable | Completion evidence |
+| Workstream | Current gap | Required evidence |
 | --- | --- | --- |
-| 29 September–4 October | Owner installation and workflow feedback; prioritize blockers | Redacted reproduction details, Linux/Python versions |
-| 5–14 October | Batch confirmed fixes; update affected instructions | Targeted regressions and reviewed changes |
-| 15–20 October | Freeze release candidate; complete owner retest | Checklist below, with failures resolved or explicitly scoped |
-| 21–24 October | Final CI, release packaging if code changed, handover review | Passing required gates; matching tag, assets and checksums |
-| 25 October | Final handover | Release link, setup/demo instructions, known limitations and backlog |
+| Non-AI foundation | Owner-machine feedback pending | Clean installation, deterministic scanning and complete reports without any model or provider credential |
+| Local AI | Experimental provider, fixture-tested; no dashboard controls | Real local model through preflight, scan and report; missing model, timeout, malformed output and cancellation tests |
+| API AI | Experimental compatible-provider code; live path unverified | Real configured provider with explicit data disclosure, environment-based credentials, budgets, redaction and failure-policy tests |
+| AI trust boundary | Existing metadata-only suggestions are not the complete original AI workflow | Document each supported AI function; evidence-linked outputs, untrusted-content tests, no unsupported finding confirmation or AI-issued shell execution |
+| Dashboard | Non-AI modes only; external scanner presets are CLI-only | Tested provider selection/configuration, scanner presets, readiness, failures and report provenance |
+| Authentication and state | Static scoped credentials only | Test-account login/session lifecycle, expired credentials and role comparisons against controlled applications |
+| Browser and active checks | Dashboard browser tests do not scan applications | Scoped target-browser workflow and bounded non-destructive checks, positive/negative controls and request limits |
+| Detection breadth | Built-in heuristics and verified adapters do not provide comprehensive detection | Coverage matrix and positive/clean controls for selected web/API, source, dependency, TLS and configuration checks; quantify gaps |
+| Workflow and reporting | Existing mappings are partial | Original-brief requirement traceability, assessment stages, evidence/remediation/retest workflow and explicit NIST/OWASP/MITRE mapping coverage |
+| Delivery | No expanded-scope release exists | Updated instructions, owner-machine acceptance, mandatory CI, versioned source/bundles/checksums and handover |
 
-If no code changes are required, keep the verified v1.1.0 release instead of
-manufacturing a new version. If fixes are required, choose the next appropriate
-version and update the version-specific publication gate before release.
-Never overwrite the existing release/tag.
+The first implementation batch is provider hardening and real local-AI acceptance,
+followed by API-provider acceptance and dashboard integration. Do not enable an
+experimental mode merely by removing its gate.
+
+Reconcile the original master brief against this matrix before marking final
+completion. Requirements discovered there remain tracked; they are not silently
+dropped to meet the date. MITRE ATT&CK mapping is not itself an execution sequence,
+and framework mappings do not constitute compliance certification.
+
+## Target schedule
+
+| Window | Planned outcome |
+| --- | --- |
+| 29 September–3 October | Requirement traceability, AI provider hardening and real-provider acceptance; incorporate owner installation feedback |
+| 4–8 October | Dashboard integration, authentication/session/role workflows, scoped browser and bounded active checks |
+| 9–11 October | Detection and framework coverage reconciliation; end-to-end tests and reporting |
+| 12–13 October | Release-candidate freeze, security/regression/installation checks and owner retest |
+| 14 October | Final acceptance and versioned handover if required gates pass |
+
+These dates express priority, not completed work. Surface blocked requirements
+early with impact and the smallest needed owner input. Do not describe incomplete
+features as complete or silently reduce scope. Existing release tags remain intact.
+
+## Inputs that may become necessary
+
+A real API-provider acceptance run requires a supported endpoint/model and a
+credential supplied securely in the execution environment, never in chat or Git.
+Local-model acceptance requires a suitable runtime/model and sufficient hardware.
+Authenticated tests use controlled fixtures first; deployed application testing
+needs dedicated test accounts and allowed actions. The earlier read-only Grid Guard
+acceptance does not authorize unrelated state-changing tests.
 
 ## Owner acceptance checklist
 
@@ -80,13 +113,18 @@ not require repeated manual full-suite runs. Avoid status-only polling, repeated
 external scans and cosmetic redesigns. A failing mandatory release gate blocks
 publication; efficiency does not justify removing safety or correctness checks.
 
-## Final acceptance
 
-- [ ] Owner-machine checklist recorded; reproducible in-scope blockers resolved.
-- [ ] Setup, scope/authentication and report instructions reflect actual behavior.
-- [ ] Every code fix has appropriate validation; required release gates pass.
-- [ ] Published tag and downloaded assets match the release commit/checksums.
-- [ ] Final version, limitations and genuinely deferred items are clearly identified.
+## Expanded final acceptance
 
-The checklist is pending owner feedback; publication of v1.1.0 alone does not mark
-owner-machine acceptance complete.
+- [ ] Original-brief requirements mapped to implementation and evidence.
+- [ ] Non-AI offline and internet modes verified independently of AI.
+- [ ] Real local-model and API-model workflows verified end to end.
+- [ ] AI/dashboard failure handling, redaction and disclosure verified.
+- [ ] Authenticated, role, browser and bounded active workflows verified.
+- [ ] Detection and framework coverage documented with explicit unsupported cases.
+- [ ] Owner-machine blockers resolved and required release gates pass.
+- [ ] Final tag, downloadable assets, documentation and checksums agree.
+
+No scanner can guarantee discovery of every vulnerability or automatic compliance.
+Any unresolved requirement remains visible and prevents an unqualified claim that
+the full original idea is finished.
