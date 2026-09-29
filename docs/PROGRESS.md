@@ -1,10 +1,24 @@
-# Progress — 1.1.0 published; final handover scheduled
+# Progress — expanded AI and non-AI delivery
 
-Updated 29 September 2026: final owner handover is **25 October 2026**.
-See [delivery plan and owner acceptance checklist](FINAL_HANDOVER.md).
-v1.1.0 remains the published baseline. New features are frozen; remaining work
-is owner-machine feedback, reproducible fixes and final acceptance. Earlier release
-completion statements below describe the published scope, not owner-machine sign-off.
+Updated 29 September 2026: the owner corrected the deadline to **14 October 2026**
+and restored the original scope, including local/API AI and non-AI operation.
+The earlier 25 October date and feature freeze are superseded.
+
+v1.1.0 remains the published non-AI baseline. It is not completion of the expanded
+project. AI is currently experimental and fixture-tested, and the dashboard still
+exposes non-AI modes only. No new feature or test result is claimed by this update.
+
+See [current scope](SCOPE.md) and [delivery/acceptance plan](FINAL_HANDOVER.md).
+Next implementation batch: provider hardening and real local-AI acceptance, then
+API-provider acceptance and dashboard integration. Authenticated/stateful testing,
+target-browser checks, broader detection and framework traceability are required
+workstreams in the delivery plan.
+
+## Historical milestone record
+
+The dated entries below describe their contemporary release scope. Their feature
+freezes, deferred-work decisions and completion statements do not override the
+29 September expanded scope above.
 
 Updated 2026-09-23. **The agreed project scope is complete with
 [v1.1.0 published](https://github.com/Het28091/Cyber-scan/releases/tag/v1.1.0).**
