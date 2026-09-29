@@ -1,4 +1,10 @@
-# Progress — 1.1.0 published
+# Progress — 1.1.0 published; final handover scheduled
+
+Updated 29 September 2026: final owner handover is **25 October 2026**.
+See [delivery plan and owner acceptance checklist](FINAL_HANDOVER.md).
+v1.1.0 remains the published baseline. New features are frozen; remaining work
+is owner-machine feedback, reproducible fixes and final acceptance. Earlier release
+completion statements below describe the published scope, not owner-machine sign-off.
 
 Updated 2026-09-23. **The agreed project scope is complete with
 [v1.1.0 published](https://github.com/Het28091/Cyber-scan/releases/tag/v1.1.0).**
