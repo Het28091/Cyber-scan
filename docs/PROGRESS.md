@@ -1,18 +1,32 @@
 # Progress — expanded AI and non-AI delivery
 
+30 September continuation: release evidence validation, complete checksum/archive
+verification and exact source-commit packaging checks are implemented. Source bundles
+now include acceptance tools. Role comparisons support bounded JSON-field invariants
+without persisting response values. Actual expanded release acceptance remains open;
+see [release requirements](RELEASE_ACCEPTANCE.md) and the implementation ledger.
+
 Updated 29 September 2026: the owner corrected the deadline to **14 October 2026**
 and restored the original scope, including local/API AI and non-AI operation.
 The earlier 25 October date and feature freeze are superseded.
 
 v1.1.0 remains the published non-AI baseline. It is not completion of the expanded
-project. AI is currently experimental and fixture-tested, and the dashboard still
-exposes non-AI modes only. No new feature or test result is claimed by this update.
+project. Unreleased provider hardening, gated dashboard AI/scanner controls,
+bounded session/role/CORS workflows, static browser snapshot code and additional
+source checks are detailed in [the implementation ledger](EXPANDED_IMPLEMENTATION.md).
+Portable fixture tests pass; real providers and Linux/browser/owner acceptance
+remain unverified. The experimental AI gate remains enabled by explicit opt-in only.
+
+Continuation: persistent operator triage, remediation ownership, revision history,
+CLI/dashboard retest comparisons and review report exports are implemented.
+Resolution requires operator evidence and an eligible later retest; it is never
+inferred automatically from missing findings. Provider readiness failures retain
+budget accounting. See the ledger for the updated portable verification results.
 
 See [current scope](SCOPE.md) and [delivery/acceptance plan](FINAL_HANDOVER.md).
-Next implementation batch: provider hardening and real local-AI acceptance, then
-API-provider acceptance and dashboard integration. Authenticated/stateful testing,
-target-browser checks, broader detection and framework traceability are required
-workstreams in the delivery plan.
+Next acceptance inputs: original master brief, a Linux execution environment,
+prepared local model and configured API provider. Remaining gaps, including
+interactive browser/business workflows and final release gates, remain open.
 
 ## Historical milestone record
 

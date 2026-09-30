@@ -1,4 +1,6 @@
 .venv/
+.test-tools/
+artifacts/checkpoints/
 __pycache__/
 *.pyc
 .env

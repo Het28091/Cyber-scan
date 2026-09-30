@@ -6,7 +6,7 @@ from . import __version__
 
 EXTERNAL={'gitleaks','semgrep','trivy','syft'}
 def doctor(cfg,scope=None,check_target=False):
-    rows=[];provider=None
+    rows=[];provider=None;ai_usage={}
     def row(component,status,version='',resolution='',required=True): rows.append({'component':component,'required_for':'assessment' if required else 'optional module','version':version,'status':status,'resolution':resolution,'required':required})
     cfg.validate()
     row('runtime','READY' if (3,11)<=sys.version_info[:2]<(3,15) and platform.system()=='Linux' else 'INCOMPATIBLE',platform.python_version(), 'Use Linux with Python 3.11+.' )
@@ -32,7 +32,10 @@ def doctor(cfg,scope=None,check_target=False):
             scope.allow_public=cfg.mode in ('internet','connected-ai')
             scope.check(cfg.target)
             row('target scope','READY')
-            if check_target:
+            if cfg.target_workflow:
+                from .target_workflow import prepare
+                prepare(cfg.target_workflow,scope)
+            if check_target and not cfg.target_workflow:
                 from .network import request
                 status,_,_=request(cfg.target,scope,method='HEAD',max_bytes=0)
                 if status in (401,403) and scope.auth and scope.auth.matches(cfg.target): raise PolicyError('authentication rejected during preflight')
@@ -60,8 +63,8 @@ def doctor(cfg,scope=None,check_target=False):
                 row('dependency database','DATA_STALE' if ds.stale else 'READY',ds.manifest['version'], 'Exact enumerated versions only; not complete ecosystem coverage.',required=cfg.strict and (not ds.stale or cfg.block_stale_data))
             except Exception as e:
                 row('dependency database','DATA_MISSING',resolution=str(e) if isinstance(e,PolicyError) else 'Invalid dataset/manifest',required=cfg.strict)
-        elif name=='web' and not cfg.target: row(name,'OPTIONAL_UNAVAILABLE',resolution='Provide --target and --scope.',required=cfg.strict)
-        elif name!='web' and not cfg.source: row(name,'OPTIONAL_UNAVAILABLE',resolution='Provide --source.',required=cfg.strict)
+        elif name in ('web','target_workflow') and not cfg.target: row(name,'OPTIONAL_UNAVAILABLE',resolution='Provide --target and --scope.',required=cfg.strict)
+        elif name not in ('web','target_workflow') and not cfg.source: row(name,'OPTIONAL_UNAVAILABLE',resolution='Provide --source.',required=cfg.strict)
         else: row(name,'READY',__version__)
     try:
         import reportlab
@@ -69,10 +72,12 @@ def doctor(cfg,scope=None,check_target=False):
     except ImportError:
         row('PDF renderer','OPTIONAL_UNAVAILABLE',resolution='Run setup to install locked report dependencies.',required=cfg.pdf_required)
     if cfg.ai.enabled:
-        try: provider=Provider(cfg);provider.health();row('AI','READY',cfg.ai.model,required=cfg.ai.failure_policy=='required')
+        attempt=None
+        try: attempt=Provider(cfg);attempt.health();provider=attempt;row('AI','READY',cfg.ai.model,required=cfg.ai.failure_policy=='required')
         except Exception:
             provider=None;row('AI','OPTIONAL_UNAVAILABLE',resolution='Check endpoint, credentials, advertised model and budgets. No provider response logged.',required=cfg.ai.failure_policy=='required')
-    result={'ready':all(x['status']=='READY' for x in rows if x['required']), 'mode':cfg.mode,'components':rows,'limitations':['Optional modules are NOT TESTED when unavailable. External scanners require working Bubblewrap isolation.']}
+        ai_usage={'readiness':'READY' if provider else 'UNAVAILABLE','requests':attempt.requests if attempt else 0,'reserved_tokens':attempt.tokens if attempt else 0,'estimated_upper_cost':attempt.cost if attempt else 0}
+    result={'ready':all(x['status']=='READY' for x in rows if x['required']), 'mode':cfg.mode,'components':rows,'ai_usage':ai_usage,'limitations':['Optional modules are NOT TESTED when unavailable. External scanners require working Bubblewrap isolation.']}
     write_json(Path(cfg.output)/'preflight_report.json',result)
     atomic(Path(cfg.output)/'preflight_report.txt','Component | Required for | Detected version | Status | Resolution\n'+'\n'.join(' | '.join(str(r[k]) for k in ('component','required_for','version','status','resolution')) for r in rows)+'\n')
     return result,provider

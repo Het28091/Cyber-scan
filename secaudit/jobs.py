@@ -70,15 +70,19 @@ class Jobs:
         except (OSError,ValueError): pass
         return result
     def submit(self,data):
-        if set(data)-{'source','target','scope','preset','archive_base64','archive_name'}: raise PolicyError('unknown job fields')
+        from .dashboard_config import configure,presets
+        if set(data)-{'source','target','scope','preset','archive_base64','archive_name','ai','ai_disclosure_accepted','scanners','target_workflow'}: raise PolicyError('unknown job fields')
         preset=data.get('preset','internet')
-        if preset not in ('offline','internet'): raise PolicyError('invalid preset')
+        if preset not in presets(): raise PolicyError('invalid or disabled preset')
         project=Path(__file__).resolve().parent.parent
-        cfg=load(project/'config'/(preset+'.json'))
+        cfg=load(project/'config'/(('api-ai' if preset=='connected-ai' else preset)+'.json'))
+        configure(cfg,data)
         ident=uuid.uuid4().hex
         source=data.get('source','');target=data.get('target','')
         if not isinstance(source,str) or not isinstance(target,str): raise PolicyError('invalid source or target')
         cfg.source=source;cfg.target=target;cfg.output=str(self.root)
+        cfg.target_workflow=data.get('target_workflow',{})
+        if cfg.target_workflow:cfg.modules.append('target_workflow')
         archive=None;raw=None;scope=None
         if data.get('archive_base64'):
             if source: raise PolicyError('choose source or archive')
@@ -95,7 +99,7 @@ class Jobs:
             if not isinstance(scope,dict): raise PolicyError('scope JSON is required for a web target')
             Scope(scope)
             cfg.scope=str(self.folder/(ident+'.scope'))
-            if 'web' not in cfg.modules: cfg.modules.append('web')
+            if 'web' not in cfg.modules and not cfg.target_workflow: cfg.modules.append('web')
         cfg.validate()
         config=self.folder/(ident+'.config.json')
         job={'id':ident,'status':'QUEUED','created':now(),'mode':cfg.mode,'kind':'source + web' if (source or archive) and target else 'web' if target else 'source','run_id':ident}

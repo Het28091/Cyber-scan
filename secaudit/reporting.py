@@ -2,7 +2,7 @@ import csv,html,io,json
 from pathlib import Path
 from .security import atomic,write_json,csv_safe,redact
 
-LIMITATIONS=['Findings require manual validation; no compliance certification or complete vulnerability detection.', 'Browser execution, login automation, state-changing active attacks, business-logic verification and role comparisons are not supported. Static bearer/cookie authentication is scope-bound when configured.', 'Dependency matching is limited by supplied snapshots and inventory coverage; missing data remains NOT TESTED.', 'Framework mappings are a reviewed subset of related evidence, not complete ASVS/NIST/ATT&CK control assessments.', 'Source rules are syntax/regex heuristics; external scanners require a working isolated execution profile.']
+LIMITATIONS=['Findings require manual validation; no compliance certification or complete vulnerability detection.', 'Target workflows are opt-in: JSON bearer login/logout, declared role HTTP-status comparisons, CORS preflights and isolated static browser snapshots only. Application JavaScript, arbitrary login flows, exploitation and business-logic verification remain unsupported.', 'Dependency matching is limited by supplied snapshots and inventory coverage; missing data remains NOT TESTED.', 'Framework mappings are a reviewed subset of related evidence, not complete ASVS/NIST/ATT&CK control assessments.', 'Source rules are syntax/regex heuristics; external scanners require a working isolated execution profile.']
 
 def export_csv(path,rows,keys):
     s=io.StringIO();w=csv.writer(s);w.writerow(keys)
@@ -20,6 +20,9 @@ def reports(directory,run):
     md=['# Secaudit technical assessment',f"Run: {run['id']}",f"Mode: {run['mode']} | State: {run['status']}",f"Findings: {len(run['findings'])}",'','## Limitations',*['- '+x for x in LIMITATIONS],'','## Coverage']
     md+=['- '+r['module']+': '+r['status']+' — '+r['reason'] for r in run['coverage']]
     md+=['','## Declaration inventory',json.dumps(run.get('inventory_completeness',[]))]
+    if run.get('operator_review'):
+        write_json(d/'operator-review.json',run['operator_review'])
+        md+=['','## Operator review (separate from scanner evidence)',json.dumps(run['operator_review'],indent=2)]
     for f in run['findings']:
         md += ['',f"## {f['title']}",f"{f['severity']} / {f['confidence']} / {f['validation_status']}",f"Location: {f['asset']}:{f['line']}",f['description'], 'Remediation: '+f['remediation'],'Retest: '+f['retest']]
     md+=['','## Network policy',json.dumps(run.get('network_policy',{})), '','## Online advisory usage',json.dumps(run.get('online_advisories',{})), '','## AI usage',json.dumps(run.get('ai_usage',{})), '','## Framework snapshot',json.dumps(run.get('framework_snapshot',{}))]

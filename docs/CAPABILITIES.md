@@ -1,5 +1,8 @@
 # Capability matrix — 1.0.0
 
+This is the historical baseline matrix. For unreleased expanded implementation,
+verification and unsupported cases, see [EXPANDED_IMPLEMENTATION.md](EXPANDED_IMPLEMENTATION.md).
+
 The original brief is a design target. This release implements a usable bounded
 assessment workflow; it does not satisfy every advanced capability in that brief.
 

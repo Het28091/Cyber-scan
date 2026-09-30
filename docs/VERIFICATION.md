@@ -51,3 +51,8 @@ Do not interpret fixture verification as external-service or production certific
 
 Prior release GitHub CI completed successfully. The new release CI status is tracked
 in GitHub Actions after publication; local results above were executed before upload.
+## Unreleased expanded changes
+
+See [the expanded ledger](EXPANDED_IMPLEMENTATION.md) for portable test results,
+new acceptance commands and unverified Linux/provider/browser gates. The historical
+release results above do not validate the expanded changes.

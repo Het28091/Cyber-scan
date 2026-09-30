@@ -81,6 +81,15 @@ class ReleaseTests(unittest.TestCase):
                     time.sleep(.05)
                 self.assertEqual(job['status'],'COMPLETED',job)
                 status,body=request('GET','/api/runs/'+ident);self.assertEqual(status,200);self.assertIn('technical.pdf',json.loads(body)['available_reports'])
+                finding_id=json.loads(body)['findings'][0]['id']
+                review_path='/api/runs/'+ident+'/reviews/'+finding_id
+                decision={'status':'CONFIRMED','revision':0,'note':'Reviewed owned fixture','evidence':'fixture source'}
+                self.assertEqual(request('POST',review_path,decision)[0],403)
+                status,body=request('POST',review_path,decision,csrf);self.assertEqual(status,200,body)
+                self.assertEqual(json.loads(body)['revision'],1)
+                self.assertEqual(request('POST',review_path,decision,csrf)[0],400)
+                status,body=request('GET','/api/runs/'+ident+'/reviews');self.assertEqual(status,200)
+                self.assertEqual(len(json.loads(body)['history']),1)
                 status,body=request('GET','/reports/'+ident+'/technical.pdf');self.assertEqual(status,200);self.assertTrue(body.startswith(b'%PDF-'))
                 for name in ('findings.json','inventory.json','sbom.cdx.json','run.json','preflight_report.json'):
                     status,body=request('GET','/reports/'+ident+'/'+name)

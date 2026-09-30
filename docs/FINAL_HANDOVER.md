@@ -1,12 +1,55 @@
 # Final delivery target — 14 October 2026
 
+**30 September checkpoint:** feature development is paused for owner testing.
+See [TEST_CHECKPOINT.md](TEST_CHECKPOINT.md) for startup commands, expected manual
+flows and feedback format. No new tests or debugging were performed to label this
+checkpoint working; the latest implementation remains unverified.
+
 Updated 29 September 2026. The owner corrected 25 October as a typo.
 **Target: 14 October 2026 (Asia/Kolkata), including AI and non-AI workflows
 and the original project goals.** This supersedes the non-AI-only feature freeze.
 This is a delivery target, not a guarantee or a scheduled background task.
 Implementation proceeds during active work sessions.
 
+Unreleased implementation status and test results are recorded in
+[EXPANDED_IMPLEMENTATION.md](EXPANDED_IMPLEMENTATION.md). The gap descriptions
+below are the original delivery-plan baseline; use that ledger for subsequent
+progress. No expanded acceptance checkbox is closed by fixture-only evidence.
+Stable builds and asset collection now enforce the separately prepared evidence
+described in [RELEASE_ACCEPTANCE.md](RELEASE_ACCEPTANCE.md). No expanded acceptance
+records or new release have been created.
+
 ## Baseline and finish line
+
+### Feature-first spiral pass — 30 September 2026
+
+Per the owner's latest direction, prioritize building the remaining project
+workflows and defer testing/debugging to a later improvement pass. The latest
+dashboard implementation adds guided target scope, login/logout, role probes,
+CORS probes, offline browser snapshots, scanner selection and provider setup.
+Advanced JSON remains available for response assertions, detailed AI budgets
+and static scope authentication. This pass has **not been tested or debugged**.
+Completion percentages are not asserted: implementation breadth and verified
+acceptance remain separate, and the original brief is still unavailable.
+
+The subsequent remediation pass adds an assessment-level work list in Reports &
+evidence, optional due dates on operator reviews, UTC overdue and unassigned
+counts, owner/status/due-date filters, and JSON/CSV action-plan exports from the
+dashboard and CLI. It preserves scanner evidence and the existing revision/retest
+requirements. This implementation is also unverified; testing/debugging remain
+deferred under the owner's spiral-development direction.
+
+The following detection pass implements JSON OpenAPI security/transport declarations
+and selected Kubernetes workload isolation settings. Findings include JSON-pointer
+evidence and enter the existing remediation/report pipeline. See
+[DECLARATION_CHECKS.md](DECLARATION_CHECKS.md) for the rule catalogue and unsupported
+cases. This pass has not been tested or debugged and closes no acceptance gate.
+
+The reusable-setup pass adds named assessment profiles, revision-controlled
+updates/deletions, loading into the advanced editor, and a readable configuration
+summary. Consent and ZIP data are not retained. Saving does not start an assessment
+or establish readiness. See [ASSESSMENT_PROFILES.md](ASSESSMENT_PROFILES.md).
+This further feature-first implementation remains unverified.
 
 v1.1.0 is the published Linux non-AI baseline. Its recorded 104 tests, 94%
 coverage and 14 acceptance jobs validate that release, not the expanded scope.

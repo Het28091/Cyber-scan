@@ -1,4 +1,4 @@
-import argparse,json,os,signal,sys,tempfile,uuid,zipfile
+import argparse,json,os,signal,sys,tempfile,uuid,zipfile,sqlite3
 from pathlib import Path
 from . import __version__
 from .config import load
@@ -24,6 +24,15 @@ def scan(cfg,run_id=None):
     if cfg.mode=='internet':
         run['events'].append('Internet mode: scoped target access enabled; AI disabled.')
         if 'online_dependencies' in cfg.modules: run['events'].append('OSV lookups enabled: package ecosystem, name and version may leave this machine; source and credentials are excluded.')
+    if cfg.ai.enabled:
+        run['ai_usage'].update(result.get('ai_usage',{}))
+        run['ai_usage'].update(model=cfg.ai.model,disclosed_categories=cfg.ai.permitted_data_categories,
+            function='remediation suggestions linked to existing finding IDs',trust='Untrusted assistance; never finding confirmation or executable instructions',
+            failure_policy=cfg.ai.failure_policy,request_budget=cfg.ai.request_budget,token_budget=cfg.ai.token_budget)
+        run['events'].append('AI disclosure: up to ten finding IDs, rule identifiers and severities are sent to the configured provider. Source, locations and raw evidence are excluded.')
+    run['network_policy']['bounded_target_workflow']=bool(cfg.target_workflow)
+    from .review import context
+    run['assessment_context']=context(cfg)
     for row in result['components']:
         if row['status']!='READY': run['events'].append(row['component']+': '+row['status'])
     for name in cfg.modules:
@@ -99,6 +108,14 @@ def scan(cfg,run_id=None):
                     if row['module']=='web': row.update(status='PARTIAL' if any(a['status'] not in (401,403) for a in assets) else 'NOT TESTED',reason='Authentication/access rejected; protected content coverage incomplete.')
                 checkpoint([],[])
                 if cfg.strict: raise PolicyError('Required authenticated assessment rejected')
+        if cfg.target_workflow:
+            from .target_workflow import execute as workflow
+            fs,assets,events,complete=workflow(cfg.target_workflow,scope,checkpoint)
+            all_findings+=fs;all_assets+=assets;run['events']+=events
+            for row in run['coverage']:
+                if row['module']=='target_workflow': row.update(status='PARTIAL' if assets else 'NOT TESTED',execution_complete=complete,reason='Bounded explicit session, role-status and CORS probes; no general business-logic verification. '+('Plan completed.' if complete else 'Plan incomplete.'))
+            checkpoint([],[])
+            if cfg.strict and not complete: raise PolicyError('Required target workflow incomplete')
         run['findings']=[f.to_dict() for f in dedup(all_findings)];run['assets']=all_assets
         if provider:
             try:
@@ -112,6 +129,7 @@ def scan(cfg,run_id=None):
         run['status']='COMPLETED_WITH_LIMITATIONS'
     except KeyboardInterrupt:
         run['status']='CANCELLED';run['events'].append('Cancelled; partial evidence retained.')
+        if cfg.target_workflow.get('login'):run['events'].append('Session cleanup is unverified after cancellation; revoke any dedicated test session manually.')
     except Exception as e:
         run['status']='FAILED';run['events'].append(type(e).__name__+': assessment module failed; partial evidence retained.')
     finally:
@@ -134,6 +152,10 @@ def main(argv=None):
             q.add_argument('--archive');q.add_argument('--run-id')
     q=sub.add_parser('dashboard');q.add_argument('--output',default='runs');q.add_argument('--port',type=int,default=8765)
     q=sub.add_parser('resume',help='Recover interrupted state and regenerate saved reports; never repeat requests');q.add_argument('run_id');q.add_argument('--output',default='runs')
+    q=sub.add_parser('review',help='Record an operator decision without modifying scanner evidence');q.add_argument('run_id');q.add_argument('finding_id');q.add_argument('--output',default='runs');q.add_argument('--decision',required=True,help='Path to JSON status, note, evidence, owner, retest_run and revision')
+    q=sub.add_parser('compare',help='Compare two saved runs without rescanning or resolving findings');q.add_argument('baseline');q.add_argument('retest');q.add_argument('--output',default='runs')
+    q=sub.add_parser('remediation',help='Export the current operator action plan without rescanning');q.add_argument('run_id');q.add_argument('--output',default='runs');q.add_argument('--format',choices=['json','csv'],default='json')
+    q=sub.add_parser('release-check',help='Validate expanded acceptance evidence without publishing');q.add_argument('--manifest',required=True);q.add_argument('--commit',required=True)
     q=sub.add_parser('scope',help='Create an authorization record and current DNS pins; no scan');q.add_argument('--origin',required=True);q.add_argument('--authorization',required=True);q.add_argument('--exclude',action='append',default=[]);q.add_argument('--output',required=True)
     q=sub.add_parser('dataset',help='Build an integrity manifest for an operator-supplied advisory snapshot');q.add_argument('--input',required=True);q.add_argument('--output',required=True);q.add_argument('--source',required=True);q.add_argument('--version',required=True);q.add_argument('--published-at',required=True)
     q=sub.add_parser('bundle');b=q.add_subparsers(dest='action',required=True)
@@ -143,6 +165,24 @@ def main(argv=None):
         if name=='install': r.add_argument('--destination',default='installed')
     a=p.parse_args(argv)
     try:
+        if a.cmd=='release-check':
+            from .release_gate import verify
+            print(json.dumps(verify(a.manifest,a.commit,__version__),indent=2));return 0
+        if a.cmd=='review':
+            from .review import Reviews
+            reviews=Reviews(a.output)
+            try:result=reviews.update(a.run_id,a.finding_id,json.loads(Path(a.decision).read_text()))
+            finally:reviews.close()
+            print(json.dumps(result));return 0
+        if a.cmd=='compare':
+            from .review import compare,load_run
+            print(json.dumps(compare(load_run(a.output,a.baseline),load_run(a.output,a.retest)),indent=2));return 0
+        if a.cmd=='remediation':
+            from .remediation import action_plan,action_csv
+            plan=action_plan(a.output,a.run_id)
+            if a.format=='csv':sys.stdout.buffer.write(action_csv(plan))
+            else:print(json.dumps(plan,indent=2))
+            return 0
         if a.cmd=='scope':
             from .scopefile import create
             create(a.origin,a.authorization,a.exclude,a.output);print('Scope file created. Review paths and IP pins before scanning.');return 0
@@ -158,11 +198,12 @@ def main(argv=None):
             serve(a.output,a.port);return 0
         if a.cmd=='resume':
             if len(a.run_id)!=32 or any(c not in '0123456789abcdef' for c in a.run_id): raise PolicyError('invalid run ID')
-            s=Store(a.output);s.recover(a.run_id);run=s.get(a.run_id);reports(Path(a.output)/a.run_id,run);s.db.close();print('Reports regenerated from saved evidence; no checks repeated.');return 0
+            from .review import with_reviews
+            s=Store(a.output);s.recover(a.run_id);run=s.get(a.run_id);reports(Path(a.output)/a.run_id,with_reviews(a.output,run));s.db.close();print('Reports regenerated from saved evidence; no checks repeated.');return 0
         cfg=load(a.config)
         for name in ('source','target','scope','output'):
             if getattr(a,name,None) is not None: setattr(cfg,name,getattr(a,name))
-        if cfg.target and 'web' not in cfg.modules: cfg.modules.append('web')
+        if cfg.target and 'web' not in cfg.modules and not cfg.target_workflow: cfg.modules.append('web')
         cfg.validate()
         if a.cmd=='doctor':
             scope=Scope(json.loads(Path(cfg.scope).read_text()),allow_public=cfg.mode in ('internet','connected-ai')) if cfg.target else None
@@ -173,7 +214,7 @@ def main(argv=None):
             with tempfile.TemporaryDirectory(prefix='secaudit-input-') as temp:
                 cfg.source=str(extract_zip(a.archive,Path(temp)/'source',cfg.max_total_bytes,cfg.max_files));return scan(cfg,a.run_id)
         return scan(cfg,a.run_id)
-    except (ValueError,OSError,KeyError,TypeError,zipfile.BadZipFile,RecursionError) as e:
+    except (ValueError,OSError,KeyError,TypeError,zipfile.BadZipFile,RecursionError,sqlite3.Error) as e:
         # Do not expose URLs, credentials, raw scanner/provider errors or source contents.
         print('Secaudit: '+(str(e) if isinstance(e,PolicyError) else type(e).__name__+'; check configuration and local paths.'),file=sys.stderr);return 2
 

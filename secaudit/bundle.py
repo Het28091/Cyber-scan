@@ -5,7 +5,7 @@ from .security import PolicyError,atomic,digest,write_json,extract_zip
 from . import __version__
 
 ALLOWED=['secaudit.pyz','source.zip','LICENSE','README.md','requirements.lock']
-SOURCE_PATHS=['secaudit','scripts','config','demo/source','demo/server.py','tests','docs','setup.sh','run.sh','Makefile','scope.json','requirements.lock','LICENSE','README.md']
+SOURCE_PATHS=['secaudit','scripts','config','demo/source','demo/server.py','tests','integration','docs','.github','setup.sh','run.sh','Makefile','scope.json','requirements.lock','requirements-dev.txt','LICENSE','README.md','CHANGELOG.md','CONTRIBUTING.md','SECURITY.md']
 def prepare(output,download_dependencies=False):
     out=Path(output)
     if out.exists(): raise PolicyError('bundle output must not already exist')
@@ -15,7 +15,7 @@ def prepare(output,download_dependencies=False):
     import tempfile
     with tempfile.TemporaryDirectory() as temp:
         stage=Path(temp)
-        shutil.copytree(root/'secaudit',stage/'secaudit',ignore=shutil.ignore_patterns('__pycache__'))
+        shutil.copytree(root/'secaudit',stage/'secaudit',ignore=shutil.ignore_patterns('__pycache__','*.pyc'))
         (stage/'__main__.py').write_text('from secaudit.cli import main\nraise SystemExit(main())\n')
         zipapp.create_archive(stage,out/'secaudit.pyz',interpreter='/usr/bin/env python3')
     with zipfile.ZipFile(out/'source.zip','w',zipfile.ZIP_DEFLATED) as z:

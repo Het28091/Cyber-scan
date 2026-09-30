@@ -36,6 +36,13 @@ def pdf_reports(directory,run):
         items += [para('Coverage','Heading2')]
         for c in run['coverage']: items+=[KeepTogether([para(c['module']+' - '+c['status'])]+([para(c['reason'])] if kind=='technical' else []))]
         if run.get('events'): items+=[para('Execution notes','Heading2'),*[para(x) for x in run['events']]]
+        review=run.get('operator_review',{})
+        if review:
+            items+=[para('Operator review','Heading2'),para('Operator assertions are separate from scanner observations. Saved review history is available in operator-review.json.')]
+            for decision in review.get('decisions',{}).values():
+                items.append(para(decision['finding_id']+' / '+decision['status']+' / revision '+str(decision['revision'])))
+                if kind=='technical':
+                    items.extend(para(label+': '+str(decision.get(key,''))) for label,key in [('Rationale','note'),('Owner','owner'),('Verification reference','evidence'),('Retest run','retest_run')])
         if kind=='technical':
             items+=[Spacer(1,18),para('Technical findings','Title')]
             for i,f in enumerate(run['findings'],1):

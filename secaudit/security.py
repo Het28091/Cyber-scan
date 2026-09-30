@@ -90,7 +90,7 @@ class Scope:
         if not isinstance(data.get('environment'),str) or not data['environment'].strip(): raise PolicyError('environment must be a nonempty string')
         if not required<=data.keys(): raise PolicyError('scope is incomplete')
         if not isinstance(data['authorization'],str) or len(data['authorization'].strip())<5: raise PolicyError('authorization reference required')
-        if data['profiles']!=['passive']: raise PolicyError('only passive profile supported')
+        if data['profiles'] not in (['passive'],['passive','bounded']): raise PolicyError('unsupported scope profiles')
         if type(data['max_requests']) is not int or not 1<=data['max_requests']<=100: raise PolicyError('request limit must be 1..100')
         if type(data['max_seconds']) is not int or not 1<=data['max_seconds']<=300: raise PolicyError('time limit must be 1..300')
         if not data['origins'] or not data['allowed_ips']: raise PolicyError('explicit origins and IP pins required')

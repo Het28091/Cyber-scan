@@ -1,11 +1,33 @@
 # Current scope — Linux assessment with optional AI
 
+**Current stopping point:** owner-testing checkpoint, 30 September 2026.
+Follow [TEST_CHECKPOINT.md](TEST_CHECKPOINT.md). Feature additions are paused;
+testing feedback will drive the next improvement pass.
+
 Updated 29 September 2026. Final delivery target: **14 October 2026**.
 The owner restored the original project scope, including AI and non-AI modes.
 The earlier non-AI-only freeze is superseded. The implementation and acceptance
 matrix is maintained in [FINAL_HANDOVER.md](FINAL_HANDOVER.md).
 
 ## Published baseline
+
+### Current implementation approach — 30 September 2026
+
+The owner requested feature-first spiral development: assemble the end-to-end
+project first, then improve it in later iterations. Testing and debugging are
+deferred at the owner's request. Newly added features are **unverified**; historical
+results do not validate this pass or close expanded acceptance requirements.
+The dashboard now includes guided configuration for the implemented target,
+scanner and AI workflows, with advanced JSON retained for detailed options.
+The next spiral pass adds a remediation work list, review due dates, owner/status
+filters and current action-plan exports through the dashboard and CLI. Both
+feature-first passes remain unverified.
+The detection pass additionally implements JSON OpenAPI and Kubernetes declaration
+checks, documented in [DECLARATION_CHECKS.md](DECLARATION_CHECKS.md). This pass is
+also unverified and does not provide runtime or broad IaC assurance.
+Reusable local assessment profiles and a configuration-summary panel are now
+implemented in a further unverified pass; details are in
+[ASSESSMENT_PROFILES.md](ASSESSMENT_PROFILES.md).
 
 v1.1.0 provides Linux setup and preflight, source/ZIP and passive URL assessments,
 static scoped authentication, package inventory/advisories, verified external
@@ -27,6 +49,11 @@ Its published verification applies to that baseline only.
 These items are planned, not claims of current functionality. AI remains
 experimental until its gates pass. Previously deferred functionality is reopened
 for this delivery; the original brief must be reconciled before final sign-off.
+
+The unreleased implementation and explicit remaining gaps are tracked in
+[EXPANDED_IMPLEMENTATION.md](EXPANDED_IMPLEMENTATION.md). Provider hardening,
+dashboard controls and bounded target workflows now have code and fixture tests;
+this does not close real-provider, Linux/browser, original-brief or owner acceptance.
 
 ## Network and evidence boundaries
 

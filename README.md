@@ -2,6 +2,11 @@
 
 **1.1.0 · Linux only · Non-AI by default.**
 
+**Current development checkpoint (30 September 2026):** feature work is paused
+for owner testing. The working tree includes unreleased, unverified additions;
+follow [the checkpoint test guide](docs/TEST_CHECKPOINT.md) for Linux startup and
+the first manual pass. The published v1.1.0 download does not contain this work.
+
 [Download v1.1.0](https://github.com/Het28091/Cyber-scan/releases/tag/v1.1.0) · [1.1 release notes](docs/RELEASE_1.1.0.md)
 
 Secaudit coordinates scoped security checks and produces reviewable evidence.
@@ -258,3 +263,9 @@ require explicit preparation; the core release bundles do not contain them.
 The dashboard retains its supported built-in workflows. No extra preset or AI
 feature is required to use this release. Current acceptance: 104 tests, 94% statement
 coverage, all 14 recurring CI jobs passing at the documented implementation baseline.
+## Unreleased expanded workflows
+
+Provider hardening, optional dashboard AI/scanner configuration and explicit
+session/role/CORS/static-browser workflows are under acceptance. See
+[setup, boundaries and verification](docs/EXPANDED_IMPLEMENTATION.md).
+The expanded scope is not release-accepted; AI remains experimental.

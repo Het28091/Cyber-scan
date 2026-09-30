@@ -27,7 +27,8 @@ def main():
             port = sock.getsockname()[1]
         process = subprocess.Popen(
             [sys.executable, '-m', 'secaudit', 'dashboard', '--port', str(port), '--output', temp],
-            cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
+            cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True,
+            env=dict(os.environ,SECAUDIT_EXPERIMENTAL_AI='1'))
         lines = queue.Queue()
         def read_startup():
             for _ in range(3):
@@ -86,6 +87,12 @@ def main():
                 page.locator('.finding-button').first.click()
                 expect(page.locator('#finding-dialog')).to_be_visible()
                 expect(page.locator('#finding-detail')).to_contain_text('Remediation')
+                expect(page.get_by_label('Review status',exact=True)).to_be_visible()
+                page.get_by_label('Review status',exact=True).select_option('CONFIRMED')
+                page.get_by_label('Rationale',exact=True).fill('Reviewed the owned eval fixture.')
+                page.get_by_label('Evidence or verification reference',exact=True).fill('Fixture app.py:1')
+                page.get_by_role('button',name='Save review',exact=True).click()
+                expect(page.locator('#finding-detail')).to_contain_text('Revision 1')
                 audit('finding-dialog')
                 page.keyboard.press('Escape')
                 for view in ('overview', 'assessments', 'findings', 'coverage', 'reports'):
@@ -151,11 +158,61 @@ def main():
                     release.set()
                     target.shutdown()
                     target.server_close()
+                # Protocol fixture only: exercise the real dashboard/provider/report
+                # path, but never label this real-model acceptance.
+                class AIEndpoint(BaseHTTPRequestHandler):
+                    def log_message(self,*args):pass
+                    def do_GET(self):
+                        self.send_response(200);self.end_headers()
+                        self.wfile.write(b'{"models":[{"name":"dashboard-fixture"}]}')
+                    def do_POST(self):
+                        body=json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+                        metadata=json.loads(body['messages'][1]['content'])
+                        if any(set(item)!={'id','rule','severity'} for item in metadata):
+                            self.send_response(400);self.end_headers();return
+                        self.send_response(200);self.end_headers()
+                        self.wfile.write(json.dumps({'message':{'content':json.dumps({'suggestions':[{'id':metadata[0]['id'],'text':'Review the referenced deterministic finding.'}]})}}).encode())
+                provider=ThreadingHTTPServer(('127.0.0.1',0),AIEndpoint)
+                threading.Thread(target=provider.serve_forever,daemon=True).start()
+                try:
+                    page.locator('#new-scan').click()
+                    page.locator('#scan-target').fill('')
+                    page.locator('#scan-source').fill(str(ROOT/'demo/source'))
+                    page.locator('#scan-preset').select_option('local-ai')
+                    expect(page.locator('#ai-controls')).to_be_visible()
+                    page.locator('#submit-scan').click()
+                    expect(page.locator('#scan-dialog')).to_be_visible()
+                    expect(page.locator('#ai-consent')).not_to_be_checked()
+                    config={'enabled':True,'provider':'ollama','endpoint':f'http://127.0.0.1:{provider.server_port}',
+                            'model':'dashboard-fixture','approved_ips':['127.0.0.1'],'failure_policy':'required'}
+                    page.locator('#scan-ai').fill(json.dumps(config))
+                    page.locator('#ai-consent').check()
+                    page.locator('#scan-scanners').fill('{"shell":{}}')
+                    page.locator('#submit-scan').click()
+                    expect(page.locator('#scan-error')).not_to_be_empty()
+                    page.locator('#scan-scanners').fill('{}')
+                    audit('ai-configuration')
+                    page.locator('#submit-scan').click()
+                    expect(page.locator('#scan-dialog')).not_to_be_visible()
+                    page.wait_for_function("async () => (await (await fetch('/api/jobs')).json()).some(j => j.mode === 'local-ai' && j.status === 'COMPLETED')",timeout=90000)
+                    rows=page.evaluate("async () => await (await fetch('/api/runs')).json()")
+                    ai_run=next(row['id'] for row in rows if row['mode']=='local-ai')
+                    saved=page.evaluate("async id => await (await fetch('/api/runs/'+id)).json()",ai_run)
+                    assert saved['ai_usage']['verified']=='inference response validated'
+                    assert saved['ai_suggestions']['suggestions']
+                    assert 'ai-suggestions.json' in saved['available_reports']
+                    page.locator('#new-scan').click()
+                    config['model']='not-installed'
+                    page.locator('#scan-ai').fill(json.dumps(config))
+                    page.locator('#submit-scan').click()
+                    page.wait_for_function("async () => (await (await fetch('/api/jobs')).json()).some(j => j.mode === 'local-ai' && j.status === 'FAILED')",timeout=30000)
+                finally:
+                    provider.shutdown();provider.server_close()
                 failures = [{'view': a['view'], 'violations': a['violations']} for a in accessibility if a['violations']]
                 assert not failures, json.dumps(failures)
                 assert not errors, errors
                 browser.close()
-            result = {'status': 'passed', 'engine': 'Chromium', 'checks': ['keyboard dialog', 'malformed ZIP recovery', 'real offline ZIP scan', 'finding search/detail', 'all navigation views', 'JSON download', 'mobile overflow', 'no uncaught JavaScript errors', 'failed worker diagnostic', 'running crawler cancellation'], 'limitations': ['Not a full accessibility audit']}
+            result = {'status': 'passed', 'engine': 'Chromium', 'checks': ['keyboard dialog', 'malformed ZIP recovery', 'real offline ZIP scan', 'finding search/detail','saved operator review', 'all navigation views', 'JSON download', 'mobile overflow', 'no uncaught JavaScript errors', 'failed worker diagnostic', 'running crawler cancellation','AI disclosure consent','invalid scanner configuration','AI protocol fixture through reports','missing model failure'], 'limitations': ['Not a full accessibility audit','AI protocol fixture is not real-model acceptance']}
             (artifacts / 'result.json').write_text(json.dumps(result, indent=2) + '\n')
             print(json.dumps(result))
         finally:

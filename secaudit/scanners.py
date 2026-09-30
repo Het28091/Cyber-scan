@@ -48,6 +48,12 @@ def source_scan(root,cfg,checkpoint):
                             add('PY-SHELL','Shell subprocess requires review',name,node.lineno,'shell=True enables shell interpretation.','Use an argument list with shell=False.','HIGH')
                         if fname=='loads' and isinstance(node.func,ast.Attribute) and isinstance(node.func.value,ast.Name) and node.func.value.id=='pickle':
                             add('PY-PICKLE','Unsafe deserialization candidate',name,node.lineno,'Pickle can execute code when loading untrusted input.','Use a data-only format such as JSON.','HIGH')
+                        if fname in ('execute','executemany') and node.args and (isinstance(node.args[0],ast.JoinedStr) or isinstance(node.args[0],ast.BinOp) and isinstance(node.args[0].op,(ast.Add,ast.Mod))):
+                            add('PY-SQL-DYNAMIC','Constructed SQL argument requires review',name,node.lineno,'An execute call receives an interpolated or concatenated argument; database identity and untrusted input are not proven.','Use the database driver parameter-binding API and verify the input data flow.','HIGH')
+                        if fname=='load' and isinstance(node.func,ast.Attribute) and isinstance(node.func.value,ast.Name) and node.func.value.id=='yaml':
+                            loader=next((k.value for k in node.keywords if k.arg=='Loader'),node.args[1] if len(node.args)>1 else None)
+                            if loader is None or isinstance(loader,ast.Attribute) and loader.attr in ('Loader','UnsafeLoader'):
+                                add('PY-YAML-LOAD','Potential unsafe YAML deserialization',name,node.lineno,'yaml.load uses an omitted or known unsafe loader; actual library version and input trust need review.','Use yaml.safe_load or an explicitly reviewed SafeLoader.','HIGH')
         for ln,line in enumerate(text.splitlines(),1):
             if 'secrets' in cfg.modules and re.search(r'''(?i)(?:password|api[_-]?key|secret|token)\s*[:=]\s*["'][^"']{8,}["']''',line):
                 add('SECRET-LITERAL','Potential hardcoded credential',name,ln,'A credential-like assignment contains a literal. Value intentionally discarded.','Review whether the value is sensitive; rotate exposed credentials and use a secret store.','HIGH')
@@ -61,16 +67,13 @@ def source_scan(root,cfg,checkpoint):
         if parsed is not None:
             cs,summary=parsed;components.extend(cs);inventory.append(summary)
             events.append(f"Inventory {name}: {summary['pinned']}/{summary['total']} exact pins; {summary['unresolved']} unresolved, {summary['invalid']} invalid, {summary['unsupported']} unsupported; {summary['conditional']} conditional declarations retained. This is declaration coverage, not installed-package completeness.")
-        if 'openapi' in cfg.modules and name.endswith('.json'):
-            try: spec=json.loads(text)
-            except ValueError: continue
-            if isinstance(spec,dict) and 'openapi' in spec:
-                for path,methods in (spec.get('paths',{}) if isinstance(spec.get('paths',{}),dict) else {}).items():
-                    if not isinstance(methods,dict): continue
-                    for method,op in methods.items():
-                        if method not in ('get','post','put','delete','patch','head','options') or not isinstance(op,dict): continue
-                        inventory.append({'asset':str(path),'method':method,'type':'declared-api'})
-                        if not op.get('security',spec.get('security')):
-                            add('API-SECURITY','API operation has no declared security',name,1,f'{method.upper()} {path} has no non-empty security requirement; public endpoints may be intentional.','Verify the intended authorization policy and document it.')
+        if {'openapi','config'} & set(cfg.modules) and name.endswith('.json'):
+            try: document=json.loads(text)
+            except (ValueError,RecursionError):
+                events.append('JSON declaration could not be parsed: '+name)
+            else:
+                from .declarations import inspect_document
+                declared,assets,limitations=inspect_document(name,document,cfg.modules)
+                findings.extend(declared);inventory.extend(assets);events.extend(limitations)
         checkpoint(findings,inventory)
     return findings,inventory,components,events

@@ -1,12 +1,18 @@
 {
-  "version": "secaudit-mappings-2026-09-22",
-  "reviewed_at": "2026-09-22",
+  "version": "secaudit-mappings-2026-09-29",
+  "reviewed_at": "2026-09-29",
   "sources": [
     "https://csrc.nist.gov/projects/cybersecurity-framework/filters",
+    "https://attack.mitre.org/techniques/T1552/001/",
+    "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/05-Authorization_Testing/02-Testing_for_Bypassing_Authorization_Schema/",
+    "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/11-Client-side_Testing/07-Testing_Cross_Origin_Resource_Sharing/",
     "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/07-Test_HTTP_Strict_Transport_Security/",
     "https://owasp.github.io/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/06-Session_Management_Testing/02-Testing_for_Cookies_Attributes"
   ],
   "rules": {
+    "SECRET-LITERAL": [{"framework":"MITRE ATT&CK Enterprise","version":"T1552.001 revision 1.3","control":"T1552.001","rationale":"Potential credential material in source relates to credentials-in-files exposure. This does not establish credential validity, attacker activity or an executed technique."}],
+    "ROLE-STATUS": [{"framework":"OWASP WSTG","version":"4.2","control":"WSTG-v42-ATHZ-02","rationale":"Declared role/status mismatch supports authorization review; response content and business authorization are not confirmed."}],
+    "CORS-CREDENTIALS": [{"framework":"OWASP WSTG","version":"4.2","control":"WSTG-v42-CLNT-07","rationale":"Credentialed synthetic-origin preflight reflection supports CORS review; browser exploitability remains unverified."}],
     "HTTP-HSTS": [{"framework":"OWASP WSTG","version":"4.2","control":"WSTG-v42-CONF-07","rationale":"Observed HSTS response-header absence; policy coverage requires manual review."}],
     "COOKIE-FLAGS": [{"framework":"OWASP WSTG","version":"4.2","control":"WSTG-v42-SESS-02","rationale":"Cookie-attribute observation; purpose and session sensitivity require review."}]
   }

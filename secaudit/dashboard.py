@@ -1,4 +1,4 @@
-import base64,json,secrets,mimetypes,re,threading
+import base64,json,secrets,mimetypes,re,threading,sqlite3
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -22,7 +22,7 @@ class BoundedHTTPServer(ThreadingHTTPServer):
         try: super().process_request_thread(request,client_address)
         finally: self.slots.release()
 
-DOWNLOADS={'inventory.json','technical.html','technical.md','technical.pdf','executive.html','executive.pdf','findings.json','findings.csv','findings.sarif','coverage.csv','framework-mappings.csv','sbom.cdx.json','external-sbom.cdx.json','assets.json','preflight_report.json','preflight_report.txt','remediation-retest.md','run.json','audit.jsonl','ai-suggestions.json'}
+DOWNLOADS={'inventory.json','technical.html','technical.md','technical.pdf','executive.html','executive.pdf','findings.json','findings.csv','findings.sarif','coverage.csv','framework-mappings.csv','sbom.cdx.json','external-sbom.cdx.json','assets.json','preflight_report.json','preflight_report.txt','remediation-retest.md','run.json','audit.jsonl','ai-suggestions.json','operator-review.json'}
 def serve(root,port=8765):
     root=Path(root).resolve();root.mkdir(parents=True,exist_ok=True,mode=0o700)
     static=Path(__file__).parent/'static';jobs=Jobs(root)
@@ -69,8 +69,16 @@ def serve(root,port=8765):
                     name='index.html' if path=='/' else path.split('/')[-1]
                     kind={'index.html':'text/html; charset=utf-8','app.js':'text/javascript; charset=utf-8','style.css':'text/css; charset=utf-8'}[name]
                     self.send((static/name).read_bytes(),kind);return
-                if path=='/api/bootstrap': self.send({'csrf':csrf,'version':__version__,'presets':['internet','offline'],'network':'Local dashboard','max_upload_bytes':10_000_000});return
+                if path=='/api/bootstrap':
+                    from .dashboard_config import presets
+                    self.send({'csrf':csrf,'version':__version__,'presets':presets(),'network':'Local dashboard','max_upload_bytes':10_000_000});return
                 if path=='/api/jobs': self.send(jobs.list());return
+                if path=='/api/profiles':
+                    from .profiles import Profiles
+                    profiles=Profiles(root)
+                    try:self.send(profiles.list())
+                    finally:profiles.close()
+                    return
                 if path=='/api/runs':
                     rows=[]
                     for p in root.iterdir():
@@ -81,13 +89,31 @@ def serve(root,port=8765):
                     self.send(sorted(rows,key=lambda r:r.get('started',''),reverse=True)[:200]);return
                 match=re.fullmatch(r'/api/runs/([a-f0-9]{32})',path)
                 if match: self.send(run(match[1]));return
+                match=re.fullmatch(r'/api/runs/([a-f0-9]{32})/reviews',path)
+                if match:
+                    from .review import Reviews
+                    reviews=Reviews(root)
+                    try:self.send(reviews.snapshot(match[1]))
+                    finally:reviews.close()
+                    return
+                match=re.fullmatch(r'/api/runs/([a-f0-9]{32})/remediation(?:\.(json|csv))?',path)
+                if match:
+                    from .remediation import action_plan,action_csv
+                    plan=action_plan(root,match[1])
+                    if match[2]=='csv':self.send(action_csv(plan),'text/csv; charset=utf-8',filename='remediation-plan.csv')
+                    else:self.send(plan,filename='remediation-plan.json' if match[2] else None)
+                    return
+                match=re.fullmatch(r'/api/compare/([a-f0-9]{32})/([a-f0-9]{32})',path)
+                if match:
+                    from .review import compare,load_run
+                    self.send(compare(load_run(root,match[1]),load_run(root,match[2])));return
                 match=re.fullmatch(r'/reports/([a-f0-9]{32})/([a-zA-Z0-9_.-]+)',path)
                 if match and match[2] in DOWNLOADS:
                     run(match[1]);p=root/match[1]/match[2]
                     if p.is_symlink() or p.stat().st_size>30_000_000: raise PolicyError('report unavailable')
                     self.send(p.read_bytes(),mimetypes.guess_type(p.name)[0] or 'application/octet-stream',filename=p.name);return
                 self.send({'error':'Not found'},code=404)
-            except (ValueError,OSError,KeyError,TypeError,RecursionError): self.send({'error':'Requested artifact unavailable'},code=404)
+            except (ValueError,OSError,KeyError,TypeError,RecursionError,sqlite3.Error): self.send({'error':'Requested artifact unavailable'},code=404)
         def do_POST(self):
             if not self.authorized(mutation=True): return
             try:
@@ -99,10 +125,34 @@ def serve(root,port=8765):
                 payload=json.loads(raw)
                 if not isinstance(payload,dict): raise PolicyError('JSON object required')
                 if self.path=='/api/jobs': self.send(jobs.submit(payload),code=202);return
+                if self.path=='/api/configuration/preview':
+                    from .profiles import preview
+                    self.send(preview(payload));return
+                if self.path=='/api/profiles':
+                    from .profiles import Profiles
+                    profiles=Profiles(root)
+                    try:self.send(profiles.save(payload))
+                    finally:profiles.close()
+                    return
+                m=re.fullmatch(r'/api/profiles/([a-f0-9]{32})/delete',self.path)
+                if m:
+                    if set(payload)!={'revision'}:raise PolicyError('profile revision required')
+                    from .profiles import Profiles
+                    profiles=Profiles(root)
+                    try:self.send(profiles.delete(m[1],payload['revision']))
+                    finally:profiles.close()
+                    return
+                m=re.fullmatch(r'/api/runs/([a-f0-9]{32})/reviews/([a-f0-9]{32})',self.path)
+                if m:
+                    from .review import Reviews
+                    reviews=Reviews(root)
+                    try:self.send(reviews.update(m[1],m[2],payload))
+                    finally:reviews.close()
+                    return
                 m=re.fullmatch(r'/api/jobs/([a-f0-9]{32})/cancel',self.path)
                 if m: self.send(jobs.cancel(m[1]));return
                 self.send({'error':'Not found'},code=404)
-            except (ValueError,OSError,KeyError,TypeError,RecursionError) as e:
+            except (ValueError,OSError,KeyError,TypeError,RecursionError,sqlite3.Error) as e:
                 self.send({'error':str(e) if isinstance(e,PolicyError) else 'Invalid request; verify input paths and configuration.'},code=400)
     try: server=BoundedHTTPServer(('127.0.0.1',port),Handler)
     except OSError:
