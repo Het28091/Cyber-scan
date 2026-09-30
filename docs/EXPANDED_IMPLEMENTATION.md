@@ -21,6 +21,15 @@ against that missing brief remains a release blocker.
 
 ## Running the supported workflows
 
+### Assessment selection pass — 30 September 2026 (UNVERIFIED)
+
+Dashboard source-module selection and assessment limits now feed the saved job
+configuration, reusable profiles and configuration summary. This adds independent
+OSV selection, local dataset paths/freshness, source traversal bounds, strict
+optional-component requirements and required PDF output. Target/adapter modules
+remain separately derived. No tests or debugging were performed. See
+[ASSESSMENT_OPTIONS.md](ASSESSMENT_OPTIONS.md) for defaults and limits.
+
 ### AI discoverability and results pass — 30 September 2026 (UNVERIFIED)
 
 Both AI mode choices now remain visible when disabled, with startup/setup guidance.

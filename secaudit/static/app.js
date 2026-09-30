@@ -24,7 +24,7 @@ async function renderCoverage(){const p=$('#coverage-list');const r=await detail
 $$('[data-view]').forEach(b=>b.onclick=()=>navigate(b.dataset.view));$('#refresh').onclick=refresh;$('#new-scan').onclick=()=>{$('#scan-error').textContent='';$('#scan-dialog').showModal();};$$('.close-dialog').forEach(b=>b.onclick=()=>$('#scan-dialog').close());$('.close-detail').onclick=()=>$('#finding-dialog').close();$('#finding-search').oninput=renderFindings;$('#finding-severity').onchange=renderFindings;for(const select of $$('#finding-run,#report-run,#coverage-run'))select.onchange=()=>{state.selected=select.value;updateSelects();navigate(state.view);};
 $('#scan-target').oninput=()=>{$('#scope-label').hidden=!$('#scan-target').value;};$('#scan-scope').value=JSON.stringify({authorization:'Operator-owned synthetic demo only',origins:['http://127.0.0.1:3000/'],exclusions:['http://127.0.0.1:3000/admin'],environment:'local-lab',profiles:['passive'],max_requests:10,max_seconds:30,allowed_ips:['127.0.0.1']},null,2);
 $('#scan-archive').onchange=()=>{if($('#scan-archive').files.length)$('#scan-source').value='';};$('#scan-preset').onchange=()=>{$('#ai-note').textContent=$('#scan-preset').value==='internet'?'Scoped targets and OSV package lookups. Package names and versions leave this machine; source and credentials stay local.':'No AI or online lookups. Public target IPs are blocked; local/private scoped targets only.';};
-$('#scan-form').onsubmit=async event=>{event.preventDefault();const b=$('#submit-scan');b.disabled=true;$('#scan-error').textContent='';try{const data={source:$('#scan-source').value.trim(),target:$('#scan-target').value.trim(),preset:$('#scan-preset').value};data.target_workflow=JSON.parse($('#scan-workflow').value);data.scanners=JSON.parse($('#scan-scanners').value);if(data.preset.endsWith('-ai')){data.ai=JSON.parse($('#scan-ai').value);data.ai_disclosure_accepted=$('#ai-consent').checked;}if(data.target)data.scope=JSON.parse($('#scan-scope').value);const f=$('#scan-archive').files[0];if(f){if(f.size>10000000)throw Error('ZIP archive exceeds 10 MB.');data.archive_base64=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result.split(',')[1]);reader.onerror=reject;reader.readAsDataURL(f);});data.archive_name=f.name;}const job=await api('/api/jobs',{method:'POST',body:JSON.stringify(data)});state.submitted=job.id;$('#scan-dialog').close();notify('Assessment '+job.id.slice(0,8)+' queued. Preflight runs before scanning.');navigate('assessments');await refresh();}catch(e){$('#scan-error').textContent=e.message;}finally{b.disabled=false;}};
+$('#scan-form').onsubmit=async event=>{event.preventDefault();const b=$('#submit-scan');b.disabled=true;$('#scan-error').textContent='';try{const data={source:$('#scan-source').value.trim(),target:$('#scan-target').value.trim(),preset:$('#scan-preset').value};Object.assign(data,assessmentControls.read());data.target_workflow=JSON.parse($('#scan-workflow').value);data.scanners=JSON.parse($('#scan-scanners').value);if(data.preset.endsWith('-ai')){data.ai=JSON.parse($('#scan-ai').value);data.ai_disclosure_accepted=$('#ai-consent').checked;}if(data.target)data.scope=JSON.parse($('#scan-scope').value);const f=$('#scan-archive').files[0];if(f){if(f.size>10000000)throw Error('ZIP archive exceeds 10 MB.');data.archive_base64=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result.split(',')[1]);reader.onerror=reject;reader.readAsDataURL(f);});data.archive_name=f.name;}const job=await api('/api/jobs',{method:'POST',body:JSON.stringify(data)});state.submitted=job.id;$('#scan-dialog').close();notify('Assessment '+job.id.slice(0,8)+' queued. Preflight runs before scanning.');navigate('assessments');await refresh();}catch(e){$('#scan-error').textContent=e.message;}finally{b.disabled=false;}};
 (async()=>{try{const b=await api('/api/bootstrap');state.csrf=b.csrf;setupAIModes(b.presets);$('#version').textContent='v'+b.version;await refresh();setInterval(()=>{if(!document.hidden)refresh();},5000);}catch(e){notify(e.message,true);}})();
 
 function setupAIModes(presets){
@@ -200,7 +200,7 @@ function setupGuidedAssessment(){
   $('#scan-preset').value=data.preset||'internet';$('#scan-preset').dispatchEvent(new Event('change'));
   $('#scan-scope').value=JSON.stringify(data.scope||{},null,2);$('#scan-workflow').value=JSON.stringify(data.target_workflow||{},null,2);
   $('#scan-scanners').value=JSON.stringify(data.scanners||{},null,2);$('#scan-ai').value=JSON.stringify(data.ai||{},null,2);
-  $('#scan-archive').value='';$('#scan-authorized').checked=false;$('#ai-consent').checked=false;visibility();
+  assessmentControls.load(data);$('#scan-archive').value='';$('#scan-authorized').checked=false;$('#ai-consent').checked=false;visibility();
  };
  // Capture runs before the existing submit handler constructs its request.
  form.addEventListener('submit',event=>{
@@ -224,6 +224,7 @@ function setupAssessmentProfiles(){
   assessmentEditor.sync();
   if($('#scan-archive').files.length)throw Error('Reusable configuration requires a source directory or target. Remove the selected ZIP; archives are not saved.');
   const data={source:$('#scan-source').value.trim(),target:$('#scan-target').value.trim(),preset:$('#scan-preset').value,scanners:JSON.parse($('#scan-scanners').value),target_workflow:JSON.parse($('#scan-workflow').value)};
+  Object.assign(data,assessmentControls.read());
   if(data.target)data.scope=JSON.parse($('#scan-scope').value);
   if(data.preset.endsWith('-ai'))data.ai=JSON.parse($('#scan-ai').value);
   return data;
@@ -242,7 +243,7 @@ function setupAssessmentProfiles(){
  button('Delete selected',async()=>{const profile=selected();await api('/api/profiles/'+profile.id+'/delete',{method:'POST',body:JSON.stringify({revision:profile.revision})});await reload('');name.value='';message.textContent='Profile deleted. Assessment evidence is unchanged.';});
  button('Review configuration',async()=>{
   const result=await api('/api/configuration/preview',{method:'POST',body:JSON.stringify(configuration())});
-  const s=result.summary;summary.textContent=[['Mode',s.mode],['Source directory',s.source||'None'],['Target',s.target||'None'],['Authorized URL prefixes',s.authorized_prefixes.join('\n')||'None'],['Excluded URL prefixes',s.excluded_prefixes.join('\n')||'None'],['Target IP pins',s.target_ip_pins.join(', ')||'None'],['Target limits',s.request_limit==null?'No target':s.request_limit+' requests / '+s.time_limit_seconds+' seconds'],['Declared workflow requests',s.workflow_requests],['Workflow operations',s.workflow_operations.join(', ')||'Passive scan'],['Additional scanners',s.scanners.join(', ')||'None'],['AI provider',s.provider],['Model',s.model||'None'],['Provider endpoint',s.provider_endpoint||'None'],['Provider IP pins',s.provider_ip_pins.join(', ')||'None'],['AI budgets',s.ai_request_budget+' requests / '+s.ai_token_budget+' tokens'],['Data disclosure',s.network_disclosure],['Review limits',s.limitation]].map(([label,value])=>label+': '+value).join('\n\n');summary.hidden=false;message.textContent='Configuration summary only. Preflight still runs when you start an assessment.';
+  const s=result.summary;summary.textContent=[['Mode',s.mode],['Selected source checks',Array.isArray(s.selected_source_modules)?s.selected_source_modules.join(', ')||'None':s.selected_source_modules],['Assessment limits',Object.entries(s.assessment_options||{}).map(([key,value])=>pretty(key)+': '+value).join('; ')||'Defaults'],['Source directory',s.source||'None'],['Target',s.target||'None'],['Authorized URL prefixes',s.authorized_prefixes.join('\n')||'None'],['Excluded URL prefixes',s.excluded_prefixes.join('\n')||'None'],['Target IP pins',s.target_ip_pins.join(', ')||'None'],['Target limits',s.request_limit==null?'No target':s.request_limit+' requests / '+s.time_limit_seconds+' seconds'],['Declared workflow requests',s.workflow_requests],['Workflow operations',s.workflow_operations.join(', ')||'Passive scan'],['Additional scanners',s.scanners.join(', ')||'None'],['AI provider',s.provider],['Model',s.model||'None'],['Provider endpoint',s.provider_endpoint||'None'],['Provider IP pins',s.provider_ip_pins.join(', ')||'None'],['AI budgets',s.ai_request_budget+' requests / '+s.ai_token_budget+' tokens'],['Data disclosure',s.network_disclosure],['Review limits',s.limitation]].map(([label,value])=>label+': '+value).join('\n\n');summary.hidden=false;message.textContent='Configuration summary only. Preflight still runs when you start an assessment.';
  });
  $('#scan-form').addEventListener('input',event=>{if(!box.contains(event.target))summary.hidden=true;});
  $('#scan-form').addEventListener('change',event=>{if(!box.contains(event.target))summary.hidden=true;});
@@ -250,3 +251,32 @@ function setupAssessmentProfiles(){
  select.append(new Option('Open or reload to list profiles',''));
 }
 setupAssessmentProfiles();
+
+const assessmentControls={};
+function setupAssessmentOptions(){
+ const box=el('fieldset','guided-settings');box.append(el('legend','','Checks and assessment limits'));
+ box.append(el('p','muted','Choose source checks explicitly. A configured target adds web checks or your target workflow; selected external scanners are added separately. Empty source selection is allowed for a target-only assessment.'));
+ const modules={};
+ for(const [id,title] of [['source','Python source patterns'],['secrets','Credential-literal candidates'],['config','Configuration and Kubernetes JSON'],['openapi','OpenAPI JSON declarations'],['dependencies','Local dependency advisory snapshot'],['online_dependencies','Online OSV package lookups (internet/no-AI mode only)']]){
+  const label=el('label','checkline',title),input=el('input');input.type='checkbox';input.checked=id!=='dependencies';label.prepend(input);box.append(label);modules[id]=input;
+ }
+ box.append(el('p','muted','OSV discloses package identifiers only when its module is selected. Local advisories require a prepared dataset. Declaration inventory may still be collected while scanning source files.'));
+ const limits=el('details');limits.append(el('summary','','Source limits and required components'));box.append(limits);
+ const inputs={},defaults={max_files:5000,max_file_bytes:1000000,max_total_bytes:50000000,timeout:60,online_package_limit:25,dataset_max_age_days:30,advisory_dataset:'',strict:false,pdf_required:false,block_stale_data:false};
+ const labels={max_files:'Maximum source files',max_file_bytes:'Maximum bytes per source file',max_total_bytes:'Maximum total source bytes',timeout:'Source traversal time limit (seconds)',online_package_limit:'Maximum OSV package queries',dataset_max_age_days:'Local dataset freshness (days)',advisory_dataset:'Local advisory dataset path',strict:'Require selected optional scanners and data',pdf_required:'Require PDF renderer',block_stale_data:'Treat a stale local dataset as unavailable'};
+ for(const [key,value] of Object.entries(defaults)){const label=el('label','',labels[key]),input=el('input');input.type=typeof value==='boolean'?'checkbox':typeof value==='number'?'number':'text';if(input.type==='checkbox'){input.checked=value;label.className='checkline';label.prepend(input);}else{input.value=value;label.append(input);}inputs[key]=input;limits.append(label);}
+ $('#scan-preset').parentElement.after(box);
+ function availability(){const online=$('#scan-preset').value==='internet';modules.online_dependencies.disabled=!online;if(!online)modules.online_dependencies.checked=false;}
+ $('#scan-preset').addEventListener('change',availability);
+ assessmentControls.read=()=>{
+  const options={};for(const [key,input] of Object.entries(inputs)){if(input.type==='checkbox')options[key]=input.checked;else if(input.type==='number'){const value=Number(input.value);if(!input.value.trim()||!Number.isInteger(value))throw Error(labels[key]+' must be a whole number.');options[key]=value;}else options[key]=input.value.trim();}
+  return {modules:Object.entries(modules).filter(([,input])=>input.checked&&!input.disabled).map(([name])=>name),assessment_options:options};
+ };
+ assessmentControls.load=data=>{
+  const mode=data.preset||'internet';const selected=data.modules||(mode==='internet'?['source','secrets','config','openapi','online_dependencies']:mode==='offline'?['source','secrets','config','dependencies','openapi']:['source','secrets','config']);
+  for(const [id,input] of Object.entries(modules))input.checked=selected.includes(id);
+  const options={...defaults,...data.assessment_options};for(const [key,input] of Object.entries(inputs)){if(input.type==='checkbox')input.checked=options[key];else input.value=options[key];}availability();
+ };
+ availability();
+}
+setupAssessmentOptions();

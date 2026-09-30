@@ -11,7 +11,7 @@ from .security import PolicyError,Scope,canonical
 
 
 def validate_configuration(data):
-    allowed={'source','target','preset','scope','scanners','target_workflow','ai'}
+    allowed={'source','target','preset','scope','scanners','target_workflow','ai','modules','assessment_options'}
     if not isinstance(data,dict) or set(data)-allowed:raise PolicyError('unsupported saved configuration fields')
     if len(json.dumps(data).encode())>100000:raise PolicyError('configuration exceeds 100 KB')
     source=data.get('source','');target=data.get('target','');mode=data.get('preset','internet')
@@ -23,7 +23,8 @@ def validate_configuration(data):
     if not isinstance(cfg.scanners,dict):raise PolicyError('invalid scanner configuration')
     cfg.modules+=list(cfg.scanners)
     if target:cfg.modules.append('target_workflow' if cfg.target_workflow else 'web')
-    cfg.validate()
+    from .dashboard_config import assessment_options
+    assessment_options(cfg,data)
     if mode in ('offline','internet') and 'ai' in data:raise PolicyError('AI configuration is forbidden in non-AI modes')
     if target:
         canonical(target)
@@ -44,11 +45,13 @@ def preview(data):
         'target_ip_pins':scope.get('allowed_ips',[]),'request_limit':scope.get('max_requests'),
         'time_limit_seconds':scope.get('max_seconds'),'workflow_requests':operations,
         'workflow_operations':list(workflow),'scanners':list(config.get('scanners',{})),
+        'selected_source_modules':config.get('modules','Preset defaults'),
+        'assessment_options':config.get('assessment_options',{}),
         'provider':ai.get('provider','none'),'model':ai.get('model',''),
         'provider_endpoint':ai.get('endpoint',''),'provider_ip_pins':ai.get('approved_ips',[]),
         'ai_request_budget':ai.get('request_budget',2) if ai else 0,
         'ai_token_budget':ai.get('token_budget',8192) if ai else 0,
-        'network_disclosure':'Package identifiers go to OSV in internet mode. Enabled AI receives finding IDs, rules and severities only.',
+        'network_disclosure':('OSV package-identifier disclosure selected. ' if 'online_dependencies' in config.get('modules',(['online_dependencies'] if config.get('preset','internet')=='internet' else [])) else 'OSV lookups not selected. ')+'Enabled AI receives finding IDs, rules and severities only.',
         'limitation':'Configuration review only. No DNS, credentials, source paths, tools, provider readiness or target access have been checked. Saved pins and authorization must be reviewed before each run.'}}
 
 

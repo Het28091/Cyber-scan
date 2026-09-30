@@ -1,5 +1,10 @@
 # Final delivery target — 14 October 2026
 
+**Assessment controls pass:** selectable source modules, local advisory settings,
+source limits and optional-component/PDF requirements are implemented in the
+dashboard and saved profiles, but remain unverified. See
+[ASSESSMENT_OPTIONS.md](ASSESSMENT_OPTIONS.md).
+
 **Post-checkpoint owner feedback:** AI enablement/discoverability work resumed.
 Visible disabled-mode guidance, `--experimental-ai` startup options and an AI
 results panel are implemented but unverified. See [AI_QUICKSTART.md](AI_QUICKSTART.md).

@@ -70,8 +70,8 @@ class Jobs:
         except (OSError,ValueError): pass
         return result
     def submit(self,data):
-        from .dashboard_config import configure,presets
-        if set(data)-{'source','target','scope','preset','archive_base64','archive_name','ai','ai_disclosure_accepted','scanners','target_workflow'}: raise PolicyError('unknown job fields')
+        from .dashboard_config import configure,presets,assessment_options
+        if set(data)-{'source','target','scope','preset','archive_base64','archive_name','ai','ai_disclosure_accepted','scanners','target_workflow','modules','assessment_options'}: raise PolicyError('unknown job fields')
         preset=data.get('preset','internet')
         if preset not in presets(): raise PolicyError('invalid or disabled preset')
         project=Path(__file__).resolve().parent.parent
@@ -100,7 +100,7 @@ class Jobs:
             Scope(scope)
             cfg.scope=str(self.folder/(ident+'.scope'))
             if 'web' not in cfg.modules and not cfg.target_workflow: cfg.modules.append('web')
-        cfg.validate()
+        assessment_options(cfg,data)
         config=self.folder/(ident+'.config.json')
         job={'id':ident,'status':'QUEUED','created':now(),'mode':cfg.mode,'kind':'source + web' if (source or archive) and target else 'web' if target else 'source','run_id':ident}
         # Reserve capacity and validate before writing; roll back every rejected submission.

@@ -1,5 +1,9 @@
 # Current scope — Linux assessment with optional AI
 
+Post-checkpoint development resumed at the owner's request. The latest unverified
+pass adds explicit assessment module/limit controls and profile persistence; see
+[ASSESSMENT_OPTIONS.md](ASSESSMENT_OPTIONS.md). Testing/debugging remain deferred.
+
 **Current stopping point:** owner-testing checkpoint, 30 September 2026.
 Follow [TEST_CHECKPOINT.md](TEST_CHECKPOINT.md). Feature additions are paused;
 testing feedback will drive the next improvement pass.
