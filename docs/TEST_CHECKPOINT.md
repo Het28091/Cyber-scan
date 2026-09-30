@@ -1,5 +1,11 @@
 # Manual testing checkpoint — 30 September 2026
 
+The source checkpoint has since been extended into the
+[first-round implementation handover](ROUND_ONE_HANDOVER.md). Use current GitHub
+`main` for that handover; the earlier ZIP remains the earlier snapshot. Tests and
+debugging are still deferred. For optional AI, restart with `--experimental-ai`.
+Also try the new job Details/preflight view and Refresh report snapshots action.
+
 Feature development is paused here for owner testing. This is an **unreleased,
 unverified source checkpoint**, including the current uncommitted changes.
 The most recent feature-first passes have not been tested or debugged. Earlier

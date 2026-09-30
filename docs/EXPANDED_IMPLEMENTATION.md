@@ -1,23 +1,33 @@
 # Expanded implementation and acceptance ledger
 
 Updated 30 September 2026. This is unreleased work after v1.1.0, not a completed
-expanded release. The original master brief is not present in the checkout.
-The table below traces the supplied SCOPE/FINAL_HANDOVER requirements; reconciliation
-against that missing brief remains a release blocker.
+expanded release. On 30 September the owner confirmed SCOPE/FINAL_HANDOVER as
+the complete first-round requirements. The missing separate brief is no longer a
+round-one blocker. See ROUND_ONE_HANDOVER.md for the consolidated implementation
+handover and explicit remaining verification.
 
 | Requirement | Implementation and evidence | Remaining acceptance |
 |---|---|---|
 | Independent non-AI modes | Existing offline/internet paths; provider and dashboard validators reject AI in both modes; `test_expanded.AIHardeningTests` verifies no transport call | Full Linux regression and owner-machine installation |
 | Local/API AI | Provider validates config directly, enforces budgets, validates envelopes and model readiness, rejects duplicate/unknown suggestion IDs and registers API secrets for exact redaction | Real prepared Ollama model and configured API provider, including Linux cancellation end to end |
-| AI trust | Only up to ten IDs, bounded rule identifiers and severities leave the process; free-form metadata is rejected. Suggestions remain separate from deterministic findings and never execute | Original brief may require additional AI functions; none are implied |
+| AI trust | Only up to ten IDs, bounded rule identifiers and severities leave the process; free-form metadata is rejected. Suggestions remain separate from deterministic findings and never execute | Real-provider acceptance pending; no broader AI function is claimed |
 | Dashboard | Gated AI modes, provider/budget JSON, explicit disclosure consent, scanner JSON, target workflow JSON, usage and suggestion downloads | Real browser acceptance of new controls and provider readiness failures |
 | Session lifecycle | Explicit JSON credential POST; bearer-token verification, logout POST and invalidation GET; no redirects/retries or cookie persistence | Linux end-to-end run and owner review of the supported login protocol |
 | Role comparison | Explicit role/account/URL/status matrix and bounded JSON-field assertions; expired credentials remain untested; response values are omitted from evidence | Arbitrary business workflows and complex authorization checks remain unsupported |
 | Target browser | Pinned HTML fetched once; Chromium renders a snapshot inside Bubblewrap with no network and application scripting disabled; DOM counts only | Real Chromium/Bubblewrap acceptance is NOT TESTED; JS applications and interactive navigation remain unsupported |
 | Active checks | Opt-in OPTIONS preflight with synthetic Origin; reflection with credentials is a candidate, not exploitation proof | Browser CORS exploitation and general active vulnerability testing remain unsupported |
 | Detection breadth | Added constructed SQL and unsafe YAML syntax candidates with positive/clean controls; CORS and role fixture controls | See coverage table below; no comprehensive discovery claim |
-| Reporting/frameworks | Persistent operator decisions and revision history; dashboard/CLI review and saved-run comparison; review JSON/HTML/PDF exports; AI usage provenance; WSTG role/CORS and ATT&CK mappings | Linux API/browser acceptance of review controls and any additional original-brief requirements remain open |
-| Delivery | Source provenance, acceptance-record gate, complete checksums and bounded archive validation implemented; source bundles include acceptance scripts | Real acceptance records, full CI, original brief, owner verification, final version and publication wiring remain blocked |
+| Reporting/frameworks | Persistent operator decisions and revision history; dashboard/CLI review and saved-run comparison; review JSON/HTML/PDF exports; AI usage provenance; WSTG role/CORS and ATT&CK mappings | Linux API/browser acceptance of review controls and confirmed requirement acceptance remain open |
+| Delivery | Source provenance, acceptance-record gate, complete checksums and bounded archive validation implemented; source bundles include acceptance scripts | Real acceptance records, full CI, owner verification, final version and publication remain pending; the gated publisher is now implemented |
+
+## First-round integration handover (UNVERIFIED)
+
+Retained per-job preflight details, terminal report refresh through the queue and
+CLI, selected/unselected module provenance, AI suggestions in technical exports,
+PDF review due dates, acceptance scaffolding and exact-commit GitHub-gated
+publication are implemented. The old v1.1 publishing marker is removed; CI builds
+candidates and can be explicitly dispatched for future verification. No tests,
+debugging or publication occurred in this pass. See [ROUND_ONE_HANDOVER.md](ROUND_ONE_HANDOVER.md).
 
 ## Running the supported workflows
 

@@ -95,6 +95,79 @@ links, duplicate entries and path traversal are rejected. Failed collection leav
 no partial `release-assets` directory. Successful collection includes the gate summary
 in the final checksums.
 
-The legacy v1.1 publishing marker cannot produce an expanded release without the new
-evidence inputs. The expanded publication job/version still needs final configuration
-once real acceptance exists; do not remove the gate to make the legacy job green.
+## First-round publication integration
+
+The old v1.1 commit-message publishing job is removed. Ordinary CI runs build
+candidate packages only. The acceptance workflow also supports manual dispatch
+for the later verification round. No CI was dispatched as part of this handover.
+
+Choose an unused final numeric application version **before** the final source
+commit and its acceptance runs. The current 1.1.0 tag already exists and cannot
+be replaced. Do not bump the version after gathering evidence: that would require
+new exact-commit acceptance. Prepare reviewed release notes for that version.
+
+After committing the final source, initialize outside the bundled source paths:
+
+```sh
+PYTHONPATH=. python scripts/acceptance-records.py init --commit FULL_SOURCE_COMMIT \
+  --directory artifacts/acceptance-final
+```
+
+This creates ten **NOT TESTED** records with unresolved requirements. Perform the
+actual acceptance, retain supporting logs and fill the records truthfully. The
+`original_brief` gate name is retained for schema compatibility; for round one its
+operator review covers the owner-confirmed SCOPE.md and FINAL_HANDOVER.md matrix.
+No separate master brief is required for that confirmed round-one boundary.
+
+After review, seal the exact record bytes and run the existing validator:
+
+```sh
+PYTHONPATH=. python scripts/acceptance-records.py seal --commit FULL_SOURCE_COMMIT \
+  --directory artifacts/acceptance-final
+python -m secaudit release-check --manifest artifacts/acceptance-final/manifest.json \
+  --commit FULL_SOURCE_COMMIT
+```
+
+Sealing preserves statuses and does not convert NOT TESTED/FAIL into PASS. It
+refuses an existing manifest. For a new commit or revised record set, use a new
+directory and retain the previous evidence history.
+
+Build stable bundles on Linux x86_64 using the same source commit, manifest and
+Python 3.11, 3.12, 3.13 and 3.14 environments. For each environment, use the earlier
+`package-release.py --channel stable --with-wheels --acceptance-manifest ...`
+command with a distinct new output directory. Copy each resulting directory into
+`incoming/python3.11/`, `incoming/python3.12/`, `incoming/python3.13/` and
+`incoming/python3.14/` on the publishing checkout. Candidate bundles cannot be
+relabeled stable: their metadata will be rejected.
+
+The GitHub CLI must be installed/authenticated. From the repository root:
+
+```sh
+PYTHONPATH=. python scripts/publish-release.py \
+  --commit FULL_SOURCE_COMMIT \
+  --manifest artifacts/acceptance-final/manifest.json \
+  --repository Het28091/Cyber-scan --ci-run SUCCESSFUL_CI_RUN_ID \
+  --notes /path/to/reviewed-release-notes.md
+```
+
+Without `--publish`, this checks and collects local `release-assets/` only. It
+reads GitHub to verify that the exact repository commit passed the actual
+`.github/workflows/test.yml` workflow and all fourteen mandatory jobs in the same
+run attempt. A skipped workflow, pull-request run, wrong SHA, missing job, failed
+job or mismatched evidence URL is rejected. It also refuses an existing version
+tag. The private raw assessment reports are not required as publication assets;
+only the reviewed, distributable acceptance envelopes are included.
+
+For publication, invoke the same command with `--publish` from a checkout where
+`release-assets/` does not already exist. If you previously prepared it, move that
+directory aside for review first. The command rechecks all gates, assembles the
+assets, creates a draft release with the exact commit and then publishes it.
+It never replaces an existing tag/release. If the final publish call fails, the
+draft may remain and requires operator inspection; the script will not silently
+overwrite it on retry.
+
+Assets include four stable bundles, source archive, metadata, exact acceptance
+record bytes in `acceptance-records.zip`, actual CI verification and checksums.
+Hashes check integrity, not whether a human attestation is truthful. This new
+publisher/scaffolding code is **UNVERIFIED**; its runtime verification belongs to
+round two. No release or PASS record was created during implementation.

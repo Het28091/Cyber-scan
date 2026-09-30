@@ -73,6 +73,8 @@ def serve(root,port=8765):
                     from .dashboard_config import presets
                     self.send({'csrf':csrf,'version':__version__,'presets':presets(),'network':'Local dashboard','max_upload_bytes':10_000_000});return
                 if path=='/api/jobs': self.send(jobs.list());return
+                match=re.fullmatch(r'/api/jobs/([a-f0-9]{32})',path)
+                if match:self.send(jobs.detail(match[1]));return
                 if path=='/api/profiles':
                     from .profiles import Profiles
                     profiles=Profiles(root)
@@ -125,6 +127,10 @@ def serve(root,port=8765):
                 payload=json.loads(raw)
                 if not isinstance(payload,dict): raise PolicyError('JSON object required')
                 if self.path=='/api/jobs': self.send(jobs.submit(payload),code=202);return
+                m=re.fullmatch(r'/api/runs/([a-f0-9]{32})/refresh-reports',self.path)
+                if m:
+                    if payload:raise PolicyError('report refresh takes no configuration')
+                    self.send(jobs.refresh_reports(m[1]),code=202);return
                 if self.path=='/api/configuration/preview':
                     from .profiles import preview
                     self.send(preview(payload));return

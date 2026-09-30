@@ -32,12 +32,13 @@ Under **Source limits and required components**, configure:
 | Source files | 5,000 | 1–50,000 |
 | Bytes per source file | 1,000,000 | 1–10,000,000 |
 | Total source bytes | 50,000,000 | 1–500,000,000 |
-| Source traversal seconds | 60 | 1–300 |
+| Assessment execution seconds | 60 | 1–300 |
 | OSV package queries | 25 | 1–100 |
 | Local dataset age in days | 30 | 0–36,500 |
 
-These source limits do not replace the separately configured target-request or
-provider budgets. The dashboard ZIP upload limit remains 10 MB. Choose a prepared
+The execution timeout covers post-preflight assessment work, not just source
+traversal. File-count and byte limits apply to source input. These limits do not
+replace the separately configured target-request or provider budgets. The dashboard ZIP upload limit remains 10 MB. Choose a prepared
 local advisory dataset path when enabling local matching; source scans do not
 download it. See [DATASETS.md](DATASETS.md) for dataset preparation.
 

@@ -11,6 +11,8 @@ def export_csv(path,rows,keys):
 
 def reports(directory,run):
     d=Path(directory);run=redact(run)
+    from .models import now
+    run['report_snapshot']={'generated_at':now(),'includes_operator_reviews':bool(run.get('operator_review')),'source':'Saved assessment evidence; no checks repeated by export'}
     write_json(d/'run.json',run);write_json(d/'findings.json',run['findings']);write_json(d/'assets.json',run['assets'])
     write_json(d/'inventory.json',run.get('inventory_completeness',[]))
     export_csv(d/'findings.csv',run['findings'],['id','title','asset','line','severity','confidence','validation_status','remediation'])
@@ -20,9 +22,12 @@ def reports(directory,run):
     md=['# Secaudit technical assessment',f"Run: {run['id']}",f"Mode: {run['mode']} | State: {run['status']}",f"Findings: {len(run['findings'])}",'','## Limitations',*['- '+x for x in LIMITATIONS],'','## Coverage']
     md+=['- '+r['module']+': '+r['status']+' — '+r['reason'] for r in run['coverage']]
     md+=['','## Declaration inventory',json.dumps(run.get('inventory_completeness',[]))]
+    md+=['','## Assessment plan',json.dumps(run.get('assessment_plan',{}),indent=2),'','## Report snapshot',json.dumps(run['report_snapshot'])]
     if run.get('operator_review'):
         write_json(d/'operator-review.json',run['operator_review'])
         md+=['','## Operator review (separate from scanner evidence)',json.dumps(run['operator_review'],indent=2)]
+    if run.get('ai_suggestions'):
+        md+=['','## AI suggestions — untrusted assistance','Suggestions do not confirm findings or replace operator review.',json.dumps(run['ai_suggestions'],indent=2)]
     for f in run['findings']:
         md += ['',f"## {f['title']}",f"{f['severity']} / {f['confidence']} / {f['validation_status']}",f"Location: {f['asset']}:{f['line']}",f['description'], 'Remediation: '+f['remediation'],'Retest: '+f['retest']]
     md+=['','## Network policy',json.dumps(run.get('network_policy',{})), '','## Online advisory usage',json.dumps(run.get('online_advisories',{})), '','## AI usage',json.dumps(run.get('ai_usage',{})), '','## Framework snapshot',json.dumps(run.get('framework_snapshot',{}))]

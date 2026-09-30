@@ -1,32 +1,21 @@
-# Progress — expanded AI and non-AI delivery
+# Progress — first spiral round
 
-30 September continuation: release evidence validation, complete checksum/archive
-verification and exact source-commit packaging checks are implemented. Source bundles
-now include acceptance tools. Role comparisons support bounded JSON-field invariants
-without persisting response values. Actual expanded release acceptance remains open;
-see [release requirements](RELEASE_ACCEPTANCE.md) and the implementation ledger.
+30 September 2026: **round-one implementation is assembled for the bounded scope
+confirmed by the owner in SCOPE.md and FINAL_HANDOVER.md**. Final tested/released
+completion is still pending. Recent feature-first code remains UNVERIFIED; no
+tests or debugging were performed in the final integration pass.
 
-Updated 29 September 2026: the owner corrected the deadline to **14 October 2026**
-and restored the original scope, including local/API AI and non-AI operation.
-The earlier 25 October date and feature freeze are superseded.
+The current requirement matrix, supported boundaries and round-two tasks are in
+[ROUND_ONE_HANDOVER.md](ROUND_ONE_HANDOVER.md). Setup/scanning, optional AI,
+authenticated target workflows, static browser snapshots, selected detection,
+profiles, evidence, remediation/retest and gated delivery have implementation paths.
+The latest integration adds retained preflight diagnostics, queued report refresh,
+assessment-plan provenance and an explicit evidence/CI-gated publisher.
 
-v1.1.0 remains the published non-AI baseline. It is not completion of the expanded
-project. Unreleased provider hardening, gated dashboard AI/scanner controls,
-bounded session/role/CORS workflows, static browser snapshot code and additional
-source checks are detailed in [the implementation ledger](EXPANDED_IMPLEMENTATION.md).
-Portable fixture tests pass; real providers and Linux/browser/owner acceptance
-remain unverified. The experimental AI gate remains enabled by explicit opt-in only.
-
-Continuation: persistent operator triage, remediation ownership, revision history,
-CLI/dashboard retest comparisons and review report exports are implemented.
-Resolution requires operator evidence and an eligible later retest; it is never
-inferred automatically from missing findings. Provider readiness failures retain
-budget accounting. See the ledger for the updated portable verification results.
-
-See [current scope](SCOPE.md) and [delivery/acceptance plan](FINAL_HANDOVER.md).
-Next acceptance inputs: original master brief, a Linux execution environment,
-prepared local model and configured API provider. Remaining gaps, including
-interactive browser/business workflows and final release gates, remain open.
+Round two: Linux/browser/real-provider acceptance, regression and failure repair,
+owner sign-off, an unused final version and exact-commit stable publication.
+The owner confirmed the two scope documents as the round-one requirements; a
+separate original master brief is not required to proceed with this round.
 
 ## Historical milestone record
 

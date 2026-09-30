@@ -32,7 +32,8 @@ class Jobs:
                 if p.name.endswith('.config.json'): continue
                 try:
                     value=json.loads(p.read_text())
-                    if isinstance(value,dict) and all(isinstance(value.get(k),str) for k in ('id','created','status')): out.append(value)
+                    if isinstance(value,dict) and all(isinstance(value.get(k),str) for k in ('id','created','status')):
+                        value.pop('preflight',None);out.append(value)
                 except (OSError,ValueError): pass
         return sorted(out,key=lambda j:j['created'],reverse=True)[:limit]
     def prune(self):
@@ -121,6 +122,28 @@ class Jobs:
                 for path in created: path.unlink(missing_ok=True)
                 raise
         return job
+    def detail(self,ident):
+        from .review import identifier
+        path=self.folder/(identifier(ident)+'.json')
+        if path.is_symlink() or path.stat().st_size>2_000_000:raise PolicyError('job record unavailable')
+        value=json.loads(path.read_text())
+        if not isinstance(value,dict) or value.get('id')!=ident:raise PolicyError('invalid job record')
+        return value
+
+    def refresh_reports(self,run_id):
+        from .review import load_run
+        run=load_run(self.root,run_id)
+        with self.lock:
+            if self.closed:raise PolicyError('dashboard is shutting down')
+            active=[j for j in self.list(None) if j['status'] in ('QUEUED','RUNNING')]
+            if len(active)>=10:raise PolicyError('queue limit reached')
+            if any(j.get('run_id')==run_id for j in active):raise PolicyError('this assessment already has active work')
+            ident=uuid.uuid4().hex
+            job={'id':ident,'run_id':run_id,'created':now(),'status':'QUEUED','kind':'report refresh','mode':run['mode']}
+            write_json(self.folder/(ident+'.json'),job)
+            self.tasks.put((ident,None,None))
+        return job
+
     def cancel(self,ident):
         if not len(ident)==32 or any(c not in '0123456789abcdef' for c in ident): raise PolicyError('invalid job ID')
         with self.lock:
@@ -141,13 +164,14 @@ class Jobs:
                 with self.lock:
                     job=json.loads(path.read_text())
                     if job['status']!='QUEUED': continue
-                    job['status']='RUNNING';write_json(path,job)
+                    job['status']='RUNNING';job['started']=now();write_json(path,job)
                     project=Path(__file__).resolve().parent.parent
-                    command=[sys.executable,'-m','secaudit','scan','--config',str(config),'--run-id',ident]
+                    command=([sys.executable,'-m','secaudit','export-reports',job['run_id'],'--output',str(self.root)] if config is None else [sys.executable,'-m','secaudit','scan','--config',str(config),'--run-id',ident])
                     if archive: command+=['--archive',archive]
                     env=dict(os.environ);env['PYTHONPATH']=str(project)
-                    for filename in ('preflight_report.json','preflight_report.txt'):
-                        (self.root/filename).unlink(missing_ok=True)
+                    if config is not None:
+                        for filename in ('preflight_report.json','preflight_report.txt'):
+                            (self.root/filename).unlink(missing_ok=True)
                     self.process=subprocess.Popen(command,cwd=project,env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,start_new_session=True)
                     self.current=ident;p=self.process
                 try: p.wait(timeout=360)
@@ -155,13 +179,24 @@ class Jobs:
                 with self.lock:
                     job=json.loads(path.read_text())
                     if job['status']=='RUNNING': job['status']='COMPLETED' if p.returncode==0 else 'FAILED'
-                    job['finished']=now();job['diagnostic']=self.diagnostic(ident,p.returncode);write_json(path,job);self.current=None;self.process=None
+                    job['finished']=now()
+                    if config is None:
+                        job['diagnostic']={'exit_code':p.returncode,'code':'REPORTS_REFRESHED' if p.returncode==0 else 'REPORT_REFRESH_FAILED','message':'Reports refreshed from saved evidence and current review decisions.' if p.returncode==0 else 'Report refresh did not finish; earlier or partial report snapshots may remain. Retry after checking storage and PDF prerequisites.'}
+                    else:
+                        job['diagnostic']=self.diagnostic(ident,p.returncode)
+                        preflight=self.root/'preflight_report.json'
+                        try:
+                            if not preflight.is_symlink() and preflight.stat().st_size<=1_000_000:
+                                result=json.loads(preflight.read_text())
+                                if isinstance(result,dict):job['preflight']=result
+                        except (OSError,ValueError):pass
+                    write_json(path,job);self.current=None;self.process=None
             except Exception:
                 with self.lock:
                     job={'id':ident,'run_id':ident,'created':now(),'status':'FAILED','kind':'assessment','mode':'unknown','diagnostic':{'code':'WORKER_ERROR','message':'Worker could not start or record this assessment. Check local permissions and disk space.'}};write_json(path,job);self.current=None;self.process=None
             finally:
                 if archive: Path(archive).unlink(missing_ok=True)
-                config.unlink(missing_ok=True)
+                if config is not None:config.unlink(missing_ok=True)
                 (self.folder/(ident+'.scope')).unlink(missing_ok=True)
                 self.prune()
                 self.tasks.task_done()

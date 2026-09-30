@@ -1,5 +1,8 @@
 name: linux-scanner-tests
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
@@ -118,7 +121,7 @@ jobs:
       - name: Build versioned candidate bundle
         env:
           PYTHONPATH: .
-          SECAUDIT_RELEASE_CHANNEL: ${{ contains(github.event.head_commit.message, '[publish-v1.1]') && 'stable' || 'candidate' }}
+          SECAUDIT_RELEASE_CHANNEL: candidate
         run: .venv/bin/python scripts/package-release.py --commit "$GITHUB_SHA" --output artifacts/release --with-wheels --channel "$SECAUDIT_RELEASE_CHANNEL"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
@@ -151,41 +154,9 @@ jobs:
           retention-days: 14
 
 
-  publish-release:
-    # Publishing is explicit and can run only after every recurring acceptance gate passes.
-    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[publish-v1.1]')
-    needs: [test, live-acceptance, browser-acceptance, distribution-acceptance, semgrep-acceptance, inventory-acceptance]
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    permissions:
-      contents: write
-    concurrency:
-      group: secaudit-stable-release
-      cancel-in-progress: false
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
-        with:
-          python-version: '3.12'
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-        with:
-          pattern: candidate-ubuntu-24.04-python-*
-          path: incoming
-      - name: Verify and collect stable assets
-        env:
-          PYTHONPATH: .
-        run: python scripts/collect-release.py
-      - name: Publish verified v1.1.0 release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          python -c "from secaudit import __version__; assert __version__ == '1.1.0'"
-          if gh release view v1.1.0 >/dev/null 2>&1; then
-            echo 'Release already exists; refusing to replace it.'
-            exit 1
-          fi
-          gh release create v1.1.0 release-assets/* --target "$GITHUB_SHA" --title 'Secaudit 1.1.0' --notes-file docs/RELEASE_1.1.0.md --draft
-          gh release edit v1.1.0 --draft=false --latest
+  # Expanded publication is explicit through scripts/publish-release.py after
+  # exact-commit acceptance records and all recurring CI jobs pass. Ordinary
+  # commits and legacy publication markers cannot publish a release.
 
   semgrep-acceptance:
     runs-on: ubuntu-22.04

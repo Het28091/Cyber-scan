@@ -34,6 +34,8 @@ def pdf_reports(directory,run):
         ai=run.get('ai_usage',{})
         items += [para('AI usage','Heading2'),para('Enabled: '+str(ai.get('enabled',False))+'; provider: '+str(ai.get('provider','none'))+'; verification: '+str(ai.get('verified','not used')))]
         items += [para('Coverage','Heading2')]
+        plan=run.get('assessment_plan',{})
+        if plan:items+=[para('Selected checks: '+', '.join(plan.get('selected_modules',[]))),para('Unselected checks (not assessed): '+', '.join(plan.get('unselected_modules',[])))]
         for c in run['coverage']: items+=[KeepTogether([para(c['module']+' - '+c['status'])]+([para(c['reason'])] if kind=='technical' else []))]
         if run.get('events'): items+=[para('Execution notes','Heading2'),*[para(x) for x in run['events']]]
         review=run.get('operator_review',{})
@@ -42,7 +44,11 @@ def pdf_reports(directory,run):
             for decision in review.get('decisions',{}).values():
                 items.append(para(decision['finding_id']+' / '+decision['status']+' / revision '+str(decision['revision'])))
                 if kind=='technical':
-                    items.extend(para(label+': '+str(decision.get(key,''))) for label,key in [('Rationale','note'),('Owner','owner'),('Verification reference','evidence'),('Retest run','retest_run')])
+                    items.extend(para(label+': '+str(decision.get(key,''))) for label,key in [('Rationale','note'),('Owner','owner'),('Due date (UTC)','due_date'),('Verification reference','evidence'),('Retest run','retest_run')])
+        if kind=='technical' and run.get('ai_suggestions'):
+            items+=[para('AI suggestions — untrusted assistance','Heading2'),para('Verify suggestions against your evidence. They do not confirm findings or authorize changes.')]
+            for suggestion in run['ai_suggestions'].get('suggestions',[]):
+                items+=[para('Finding '+suggestion['id']),para(suggestion['text'])]
         if kind=='technical':
             items+=[Spacer(1,18),para('Technical findings','Title')]
             for i,f in enumerate(run['findings'],1):

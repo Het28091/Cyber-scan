@@ -2,10 +2,11 @@
 
 **1.1.0 · Linux only · Non-AI by default.**
 
-**Current development checkpoint (30 September 2026):** feature work is paused
-for owner testing. The working tree includes unreleased, unverified additions;
-follow [the checkpoint test guide](docs/TEST_CHECKPOINT.md) for Linux startup and
-the first manual pass. The published v1.1.0 download does not contain this work.
+**First spiral round (30 September 2026):** implementation is assembled for the
+owner-confirmed bounded scope. Recent additions remain unverified; final acceptance
+and publication are pending. See [round-one handover](docs/ROUND_ONE_HANDOVER.md)
+and [manual test guide](docs/TEST_CHECKPOINT.md). Clone current `main` for this work;
+the published v1.1.0 download does not contain the expanded implementation.
 
 [Download v1.1.0](https://github.com/Het28091/Cyber-scan/releases/tag/v1.1.0) · [1.1 release notes](docs/RELEASE_1.1.0.md)
 
@@ -14,7 +15,9 @@ Use local source or an explicitly authorized URL, then review findings in a loca
 Built-in checks are a heuristic baseline; isolated external scanners extend detection.
 Reports expose coverage, inventory gaps, provenance and untested controls.
 Offline scans use local data; internet mode can query package advisories without AI.
-Static authenticated GET/HEAD is supported; login automation, role comparison, a full SAST engine and compliance certification are outside this milestone.
+The expanded implementation includes explicit bearer-session and role checks,
+bounded CORS probes and isolated static browser snapshots. A full SAST engine,
+interactive JavaScript browsing and compliance certification are not claimed.
 
 [v1.0 release checklist](docs/V1_RELEASE_CHECKLIST.md) · [Project scope](docs/SCOPE.md) · [Progress](docs/PROGRESS.md) ·
 [Verification](docs/VERIFICATION.md) · [Capabilities](docs/CAPABILITIES.md) · [Security review](docs/SECURITY_REVIEW.md) · [Review response](docs/REVIEW_RESPONSE.md)

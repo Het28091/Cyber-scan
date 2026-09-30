@@ -1,97 +1,38 @@
 # Final delivery target — 14 October 2026
 
-**Assessment controls pass:** selectable source modules, local advisory settings,
-source limits and optional-component/PDF requirements are implemented in the
-dashboard and saved profiles, but remain unverified. See
-[ASSESSMENT_OPTIONS.md](ASSESSMENT_OPTIONS.md).
+Updated 30 September 2026. The owner confirmed that this document and SCOPE.md
+are the complete **first spiral round** requirements. The separate original brief
+is no longer a round-one input blocker. The 14 October target remains a target,
+not a guarantee or a scheduled background task.
 
-**Post-checkpoint owner feedback:** AI enablement/discoverability work resumed.
-Visible disabled-mode guidance, `--experimental-ai` startup options and an AI
-results panel are implemented but unverified. See [AI_QUICKSTART.md](AI_QUICKSTART.md).
+**First-round implementation is assembled; final acceptance is not complete.**
+The latest work has not been tested or debugged, following the owner's feature-first
+direction. [ROUND_ONE_HANDOVER.md](ROUND_ONE_HANDOVER.md) is the current requirement
+traceability and handover. Earlier test results apply only to their recorded code.
 
-**30 September checkpoint:** feature development is paused for owner testing.
-See [TEST_CHECKPOINT.md](TEST_CHECKPOINT.md) for startup commands, expected manual
-flows and feedback format. No new tests or debugging were performed to label this
-checkpoint working; the latest implementation remains unverified.
-
-Updated 29 September 2026. The owner corrected 25 October as a typo.
-**Target: 14 October 2026 (Asia/Kolkata), including AI and non-AI workflows
-and the original project goals.** This supersedes the non-AI-only feature freeze.
-This is a delivery target, not a guarantee or a scheduled background task.
-Implementation proceeds during active work sessions.
-
-Unreleased implementation status and test results are recorded in
-[EXPANDED_IMPLEMENTATION.md](EXPANDED_IMPLEMENTATION.md). The gap descriptions
-below are the original delivery-plan baseline; use that ledger for subsequent
-progress. No expanded acceptance checkbox is closed by fixture-only evidence.
-Stable builds and asset collection now enforce the separately prepared evidence
-described in [RELEASE_ACCEPTANCE.md](RELEASE_ACCEPTANCE.md). No expanded acceptance
-records or new release have been created.
-
-## Baseline and finish line
-
-### Feature-first spiral pass — 30 September 2026
-
-Per the owner's latest direction, prioritize building the remaining project
-workflows and defer testing/debugging to a later improvement pass. The latest
-dashboard implementation adds guided target scope, login/logout, role probes,
-CORS probes, offline browser snapshots, scanner selection and provider setup.
-Advanced JSON remains available for response assertions, detailed AI budgets
-and static scope authentication. This pass has **not been tested or debugged**.
-Completion percentages are not asserted: implementation breadth and verified
-acceptance remain separate, and the original brief is still unavailable.
-
-The subsequent remediation pass adds an assessment-level work list in Reports &
-evidence, optional due dates on operator reviews, UTC overdue and unassigned
-counts, owner/status/due-date filters, and JSON/CSV action-plan exports from the
-dashboard and CLI. It preserves scanner evidence and the existing revision/retest
-requirements. This implementation is also unverified; testing/debugging remain
-deferred under the owner's spiral-development direction.
-
-The following detection pass implements JSON OpenAPI security/transport declarations
-and selected Kubernetes workload isolation settings. Findings include JSON-pointer
-evidence and enter the existing remediation/report pipeline. See
-[DECLARATION_CHECKS.md](DECLARATION_CHECKS.md) for the rule catalogue and unsupported
-cases. This pass has not been tested or debugged and closes no acceptance gate.
-
-The reusable-setup pass adds named assessment profiles, revision-controlled
-updates/deletions, loading into the advanced editor, and a readable configuration
-summary. Consent and ZIP data are not retained. Saving does not start an assessment
-or establish readiness. See [ASSESSMENT_PROFILES.md](ASSESSMENT_PROFILES.md).
-This further feature-first implementation remains unverified.
-
-v1.1.0 is the published Linux non-AI baseline. Its recorded 104 tests, 94%
-coverage and 14 acceptance jobs validate that release, not the expanded scope.
-The original project is not complete merely because v1.1 shipped.
-
-Keep Linux-only setup, automatic virtual environments, dependency preflight,
-optional preparation downloads, scoped internet access without AI, and strict
-offline operation. Add optional local-model and API-model workflows without
-requiring a model or API key for non-AI use.
+v1.1.0 remains the published baseline. This working tree contains expanded code;
+it is not a new stable release. No final tag or expanded acceptance record is
+claimed. [RELEASE_ACCEPTANCE.md](RELEASE_ACCEPTANCE.md) describes the exact-commit
+gates and explicit publication path.
 
 ## Required work and acceptance
 
-| Workstream | Current gap | Required evidence |
+| Workstream | First-round implementation | Remaining evidence |
 | --- | --- | --- |
-| Non-AI foundation | Owner-machine feedback pending | Clean installation, deterministic scanning and complete reports without any model or provider credential |
-| Local AI | Experimental provider, fixture-tested; no dashboard controls | Real local model through preflight, scan and report; missing model, timeout, malformed output and cancellation tests |
-| API AI | Experimental compatible-provider code; live path unverified | Real configured provider with explicit data disclosure, environment-based credentials, budgets, redaction and failure-policy tests |
-| AI trust boundary | Existing metadata-only suggestions are not the complete original AI workflow | Document each supported AI function; evidence-linked outputs, untrusted-content tests, no unsupported finding confirmation or AI-issued shell execution |
-| Dashboard | Non-AI modes only; external scanner presets are CLI-only | Tested provider selection/configuration, scanner presets, readiness, failures and report provenance |
-| Authentication and state | Static scoped credentials only | Test-account login/session lifecycle, expired credentials and role comparisons against controlled applications |
-| Browser and active checks | Dashboard browser tests do not scan applications | Scoped target-browser workflow and bounded non-destructive checks, positive/negative controls and request limits |
-| Detection breadth | Built-in heuristics and verified adapters do not provide comprehensive detection | Coverage matrix and positive/clean controls for selected web/API, source, dependency, TLS and configuration checks; quantify gaps |
-| Workflow and reporting | Existing mappings are partial | Original-brief requirement traceability, assessment stages, evidence/remediation/retest workflow and explicit NIST/OWASP/MITRE mapping coverage |
-| Delivery | No expanded-scope release exists | Updated instructions, owner-machine acceptance, mandatory CI, versioned source/bundles/checksums and handover |
+| Non-AI foundation | Linux setup, independent offline/internet modes and module/limit selection | Linux regression, installation and owner verification |
+| Local/API AI | Gated adapters, startup flag, visible configuration, readiness, credentials, budgets and suggestions | Actual prepared providers, failures, redaction and cancellation |
+| AI trust boundary | Metadata-only, schema-validated suggestions linked to existing findings in UI/exports | Untrusted-output and disclosure verification; no autonomous AI scanner claimed |
+| Dashboard | Guided and advanced forms, profiles, jobs, retained preflight, reports and triage | Real browser/accessibility acceptance of new controls |
+| Authentication and state | Explicit bearer session lifecycle, static credentials, role status/field assertions | Controlled application and expired-credential acceptance |
+| Browser and active checks | Pinned static snapshots, isolated renderer, bounded CORS probes | Real Chromium/Bubblewrap acceptance and positive/negative controls |
+| Detection breadth | Selected web/API, source, dependency, verified TLS transport and JSON configuration checks | New-rule controls and explicit unsupported coverage review |
+| Workflow and reporting | Plans, coverage, reports, operator history, remediation/retest, queued report refresh and partial framework maps | End-to-end evidence and mapping/requirements reconciliation |
+| Delivery | Candidate/stable packaging, NOT TESTED evidence scaffolding, acceptance/CI verification, explicit versioned publisher | Unused final version, all exact-commit acceptance, stable bundles and publication |
 
-The first implementation batch is provider hardening and real local-AI acceptance,
-followed by API-provider acceptance and dashboard integration. Do not enable an
-experimental mode merely by removing its gate.
-
-Reconcile the original master brief against this matrix before marking final
-completion. Requirements discovered there remain tracked; they are not silently
-dropped to meet the date. MITRE ATT&CK mapping is not itself an execution sequence,
-and framework mappings do not constitute compliance certification.
+First-round boundaries are deliberate and explicit: no application JavaScript
+browser execution, general OAuth/MFA negotiation, arbitrary business-logic testing,
+exhaustive discovery or compliance certification. Those capabilities are not
+counted as completed. Testing/debugging and external acceptance form round two.
 
 ## Target schedule
 
@@ -168,7 +109,7 @@ publication; efficiency does not justify removing safety or correctness checks.
 
 ## Expanded final acceptance
 
-- [ ] Original-brief requirements mapped to implementation and evidence.
+- [ ] Confirmed round-one requirements mapped to implementation and acceptance evidence.
 - [ ] Non-AI offline and internet modes verified independently of AI.
 - [ ] Real local-model and API-model workflows verified end to end.
 - [ ] AI/dashboard failure handling, redaction and disclosure verified.

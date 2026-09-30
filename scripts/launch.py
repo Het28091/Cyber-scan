@@ -8,7 +8,7 @@ def main():
     python=Path(state['venv_python'])
     if not python.exists(): raise SystemExit('Virtual environment missing. Rerun initial setup.')
     args=sys.argv[1:] or ['dashboard']
-    if args[0] in ('doctor','scan','dashboard','resume') and not any(x=='--output' or x.startswith('--output=') for x in args): args+=['--output',state['output']]
+    if args[0] in ('doctor','scan','dashboard','resume','export-reports','review','compare','remediation') and not any(x=='--output' or x.startswith('--output=') for x in args): args+=['--output',state['output']]
     if args==['test']: command=[str(python),'-m','unittest','discover','-s','tests','-v']
     elif args==['demo-server']: command=[str(python),'demo/server.py']
     elif args==['reports']:

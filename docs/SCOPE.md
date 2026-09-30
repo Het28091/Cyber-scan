@@ -1,12 +1,11 @@
 # Current scope — Linux assessment with optional AI
 
-Post-checkpoint development resumed at the owner's request. The latest unverified
-pass adds explicit assessment module/limit controls and profile persistence; see
-[ASSESSMENT_OPTIONS.md](ASSESSMENT_OPTIONS.md). Testing/debugging remain deferred.
-
-**Current stopping point:** owner-testing checkpoint, 30 September 2026.
-Follow [TEST_CHECKPOINT.md](TEST_CHECKPOINT.md). Feature additions are paused;
-testing feedback will drive the next improvement pass.
+**First spiral round:** the implementation is assembled for the bounded scope
+below. The owner confirmed SCOPE.md and FINAL_HANDOVER.md as the complete
+round-one requirements on 30 September 2026. See
+[ROUND_ONE_HANDOVER.md](ROUND_ONE_HANDOVER.md) for implementation traceability,
+supported limits and the round-two verification list. Recent code is UNVERIFIED;
+the final tested/released goal is not complete.
 
 Updated 29 September 2026. Final delivery target: **14 October 2026**.
 The owner restored the original project scope, including AI and non-AI modes.
@@ -50,14 +49,15 @@ Its published verification applies to that baseline only.
   against implemented features and test evidence.
 - Finish owner-machine verification and publish a versioned, gated release.
 
-These items are planned, not claims of current functionality. AI remains
-experimental until its gates pass. Previously deferred functionality is reopened
-for this delivery; the original brief must be reconciled before final sign-off.
+Implementation coverage for these workstreams is recorded in the round-one
+handover. AI remains experimental until its gates pass. Verification, owner
+acceptance and final publication remain pending; implementing a path does not
+prove it works or close an acceptance gate.
 
 The unreleased implementation and explicit remaining gaps are tracked in
 [EXPANDED_IMPLEMENTATION.md](EXPANDED_IMPLEMENTATION.md). Provider hardening,
 dashboard controls and bounded target workflows now have code and fixture tests;
-this does not close real-provider, Linux/browser, original-brief or owner acceptance.
+this does not close real-provider, Linux/browser, requirements or owner acceptance.
 
 ## Network and evidence boundaries
 

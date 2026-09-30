@@ -31,6 +31,11 @@ def scan(cfg,run_id=None):
             failure_policy=cfg.ai.failure_policy,request_budget=cfg.ai.request_budget,token_budget=cfg.ai.token_budget)
         run['events'].append('AI disclosure: up to ten finding IDs, rule identifiers and severities are sent to the configured provider. Source, locations and raw evidence are excluded.')
     run['network_policy']['bounded_target_workflow']=bool(cfg.target_workflow)
+    supported={'source','secrets','config','dependencies','openapi','web','target_workflow','online_dependencies',*EXTERNAL}
+    run['assessment_plan']={'selected_modules':list(cfg.modules),'unselected_modules':sorted(supported-set(cfg.modules)),
+        'strict_components':cfg.strict,'pdf_required':cfg.pdf_required,
+        'execution_timeout_seconds':cfg.timeout,'source_limits':{'max_files':cfg.max_files,'max_file_bytes':cfg.max_file_bytes,'max_total_bytes':cfg.max_total_bytes},
+        'limitation':'Unselected modules were not assessed. Completed modules retain their individual coverage limits.'}
     from .review import context
     run['assessment_context']=context(cfg)
     for row in result['components']:
@@ -154,6 +159,7 @@ def main(argv=None):
     q=sub.add_parser('dashboard');q.add_argument('--output',default='runs');q.add_argument('--port',type=int,default=8765)
     q.add_argument('--experimental-ai',action='store_true',help='Enable experimental local/API AI modes for this dashboard session and its jobs')
     q=sub.add_parser('resume',help='Recover interrupted state and regenerate saved reports; never repeat requests');q.add_argument('run_id');q.add_argument('--output',default='runs')
+    q=sub.add_parser('export-reports',help='Refresh terminal assessment reports with current reviews; never rescan');q.add_argument('run_id');q.add_argument('--output',default='runs')
     q=sub.add_parser('review',help='Record an operator decision without modifying scanner evidence');q.add_argument('run_id');q.add_argument('finding_id');q.add_argument('--output',default='runs');q.add_argument('--decision',required=True,help='Path to JSON status, note, evidence, owner, retest_run and revision')
     q=sub.add_parser('compare',help='Compare two saved runs without rescanning or resolving findings');q.add_argument('baseline');q.add_argument('retest');q.add_argument('--output',default='runs')
     q=sub.add_parser('remediation',help='Export the current operator action plan without rescanning');q.add_argument('run_id');q.add_argument('--output',default='runs');q.add_argument('--format',choices=['json','csv'],default='json')
@@ -203,6 +209,11 @@ def main(argv=None):
             if len(a.run_id)!=32 or any(c not in '0123456789abcdef' for c in a.run_id): raise PolicyError('invalid run ID')
             from .review import with_reviews
             s=Store(a.output);s.recover(a.run_id);run=s.get(a.run_id);reports(Path(a.output)/a.run_id,with_reviews(a.output,run));s.db.close();print('Reports regenerated from saved evidence; no checks repeated.');return 0
+        if a.cmd=='export-reports':
+            from .review import load_run,with_reviews
+            run=load_run(a.output,a.run_id)
+            reports(Path(a.output)/a.run_id,with_reviews(a.output,run))
+            print('Reports refreshed from terminal evidence and current reviews; no checks repeated.');return 0
         cfg=load(a.config)
         for name in ('source','target','scope','output'):
             if getattr(a,name,None) is not None: setattr(cfg,name,getattr(a,name))
