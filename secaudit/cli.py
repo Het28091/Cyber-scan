@@ -148,9 +148,11 @@ def main(argv=None):
     sub=p.add_subparsers(dest='cmd',required=True)
     for name in ('doctor','scan'):
         q=sub.add_parser(name);q.add_argument('--config');q.add_argument('--source');q.add_argument('--target');q.add_argument('--scope');q.add_argument('--output');q.add_argument('--json',action='store_true')
+        q.add_argument('--experimental-ai',action='store_true',help='Explicitly enable experimental AI for this process; a configured provider is still required')
         if name=='scan':
             q.add_argument('--archive');q.add_argument('--run-id')
     q=sub.add_parser('dashboard');q.add_argument('--output',default='runs');q.add_argument('--port',type=int,default=8765)
+    q.add_argument('--experimental-ai',action='store_true',help='Enable experimental local/API AI modes for this dashboard session and its jobs')
     q=sub.add_parser('resume',help='Recover interrupted state and regenerate saved reports; never repeat requests');q.add_argument('run_id');q.add_argument('--output',default='runs')
     q=sub.add_parser('review',help='Record an operator decision without modifying scanner evidence');q.add_argument('run_id');q.add_argument('finding_id');q.add_argument('--output',default='runs');q.add_argument('--decision',required=True,help='Path to JSON status, note, evidence, owner, retest_run and revision')
     q=sub.add_parser('compare',help='Compare two saved runs without rescanning or resolving findings');q.add_argument('baseline');q.add_argument('retest');q.add_argument('--output',default='runs')
@@ -164,6 +166,7 @@ def main(argv=None):
         r=b.add_parser(name);r.add_argument('bundle')
         if name=='install': r.add_argument('--destination',default='installed')
     a=p.parse_args(argv)
+    if getattr(a,'experimental_ai',False):os.environ['SECAUDIT_EXPERIMENTAL_AI']='1'
     try:
         if a.cmd=='release-check':
             from .release_gate import verify

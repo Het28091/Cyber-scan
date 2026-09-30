@@ -25,13 +25,29 @@ $$('[data-view]').forEach(b=>b.onclick=()=>navigate(b.dataset.view));$('#refresh
 $('#scan-target').oninput=()=>{$('#scope-label').hidden=!$('#scan-target').value;};$('#scan-scope').value=JSON.stringify({authorization:'Operator-owned synthetic demo only',origins:['http://127.0.0.1:3000/'],exclusions:['http://127.0.0.1:3000/admin'],environment:'local-lab',profiles:['passive'],max_requests:10,max_seconds:30,allowed_ips:['127.0.0.1']},null,2);
 $('#scan-archive').onchange=()=>{if($('#scan-archive').files.length)$('#scan-source').value='';};$('#scan-preset').onchange=()=>{$('#ai-note').textContent=$('#scan-preset').value==='internet'?'Scoped targets and OSV package lookups. Package names and versions leave this machine; source and credentials stay local.':'No AI or online lookups. Public target IPs are blocked; local/private scoped targets only.';};
 $('#scan-form').onsubmit=async event=>{event.preventDefault();const b=$('#submit-scan');b.disabled=true;$('#scan-error').textContent='';try{const data={source:$('#scan-source').value.trim(),target:$('#scan-target').value.trim(),preset:$('#scan-preset').value};data.target_workflow=JSON.parse($('#scan-workflow').value);data.scanners=JSON.parse($('#scan-scanners').value);if(data.preset.endsWith('-ai')){data.ai=JSON.parse($('#scan-ai').value);data.ai_disclosure_accepted=$('#ai-consent').checked;}if(data.target)data.scope=JSON.parse($('#scan-scope').value);const f=$('#scan-archive').files[0];if(f){if(f.size>10000000)throw Error('ZIP archive exceeds 10 MB.');data.archive_base64=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result.split(',')[1]);reader.onerror=reject;reader.readAsDataURL(f);});data.archive_name=f.name;}const job=await api('/api/jobs',{method:'POST',body:JSON.stringify(data)});state.submitted=job.id;$('#scan-dialog').close();notify('Assessment '+job.id.slice(0,8)+' queued. Preflight runs before scanning.');navigate('assessments');await refresh();}catch(e){$('#scan-error').textContent=e.message;}finally{b.disabled=false;}};
-(async()=>{try{const b=await api('/api/bootstrap');state.csrf=b.csrf;for(const mode of b.presets.filter(x=>x.endsWith('-ai')))$('#scan-preset').append(new Option(mode+' · Experimental',mode));$('#version').textContent='v'+b.version;await refresh();setInterval(()=>{if(!document.hidden)refresh();},5000);}catch(e){notify(e.message,true);}})();
+(async()=>{try{const b=await api('/api/bootstrap');state.csrf=b.csrf;setupAIModes(b.presets);$('#version').textContent='v'+b.version;await refresh();setInterval(()=>{if(!document.hidden)refresh();},5000);}catch(e){notify(e.message,true);}})();
+
+function setupAIModes(presets){
+ const enabled=presets.includes('local-ai');
+ for(const [mode,title] of [['local-ai','Local AI · Ollama'],['connected-ai','API AI · Compatible provider']]){
+  const option=new Option(title+(presets.includes(mode)?' · Experimental':' · Enable at startup'),mode);option.disabled=!presets.includes(mode);$('#scan-preset').append(option);
+ }
+ const setup=el('details','guided-settings');setup.open=!enabled;
+ setup.append(el('summary','',enabled?'AI enabled for this session · Setup guide':'AI modes available · Enable to configure'));
+ setup.append(el('p','muted',enabled?'Choose Local AI or API AI in Assessment mode, then supply your prepared provider settings.':'AI modes are currently disabled on this server. Stop the dashboard with Ctrl+C and restart it using:'));
+ if(!enabled)setup.append(el('pre','configuration-summary','bash run.sh dashboard --experimental-ai --output runs'));
+ setup.append(el('p','muted','Local AI: use an already installed Ollama model, its exact model name, endpoint http://127.0.0.1:11434 and IP pin 127.0.0.1. No model is installed or downloaded by scanning.'));
+ setup.append(el('p','muted','API AI: use your provider’s HTTPS API base URL, exact model name, approved IP pins and a server environment variable such as SECAUDIT_API_KEY. The current adapter requires model listing and chat-completion endpoints.'));
+ setup.append(el('p','muted','AI assists with remediation suggestions for up to ten existing findings. It receives only finding IDs, rules and severities. It does not scan source independently, confirm vulnerabilities or execute commands.'));
+ setup.append(el('p','muted','Readiness checks run before assessment. Select Require AI readiness to block an unavailable provider. An empty findings list does not trigger inference. Real-provider acceptance is still pending.'));
+ $('#ai-note').after(setup);
+}
 
 $('#scan-preset').addEventListener('change',()=>{
  const mode=$('#scan-preset').value, enabled=mode.endsWith('-ai');
  $('#ai-controls').hidden=!enabled;$('#ai-consent').required=enabled;$('#ai-consent').checked=false;
  if(enabled){$('#ai-note').textContent='Experimental AI: explicit provider disclosure. Readiness and budgets are checked before assessment.';
- $('#scan-ai').value=JSON.stringify({enabled:true,provider:mode==='local-ai'?'ollama':'openai-compatible',endpoint:mode==='local-ai'?'http://127.0.0.1:11434':'https://api.example.invalid/v1',model:'operator-selected-model',api_key_env:'SECAUDIT_API_KEY',approved_ips:[mode==='local-ai'?'127.0.0.1':'192.0.2.1'],request_budget:2,token_budget:8192,timeout:15,failure_policy:'continue'},null,2);}
+ $('#scan-ai').value=JSON.stringify({enabled:true,provider:mode==='local-ai'?'ollama':'openai-compatible',endpoint:mode==='local-ai'?'http://127.0.0.1:11434':'https://api.example.invalid/v1',model:'operator-selected-model',api_key_env:'SECAUDIT_API_KEY',approved_ips:[mode==='local-ai'?'127.0.0.1':'192.0.2.1'],request_budget:2,token_budget:8192,timeout:15,failure_policy:'required'},null,2);}
 });
 async function renderReview(parent,finding,runId){
  const section=el('section','detail-block');parent.append(section);
@@ -54,12 +70,30 @@ async function renderReview(parent,finding,runId){
  }catch(error){section.append(el('p','form-error',error.message));}
 }
 function renderRetest(parent,run){
+ renderAIAssistance(parent,run);
  renderRemediation(parent,run);
  const box=el('article','report-card');box.append(el('h3','','Review and retest'));
  const review=el('a','download','Download current review history');review.href='/api/runs/'+run.id+'/reviews';review.download='operator-review.json';box.append(review);
  const label=el('label','','Compare with assessment'),select=el('select');select.append(new Option('Select a different assessment',''));for(const candidate of state.runs.filter(x=>x.id!==run.id))select.append(new Option(candidate.id.slice(0,8)+' · '+date(candidate.started),candidate.id));label.append(select);box.append(label);
  const button=el('button','secondary','Compare saved evidence'),result=el('pre');button.type='button';const saved=state.comparisons.get(run.id)||{};select.value=saved.retest||'';result.textContent=saved.result||'';select.onchange=()=>state.comparisons.set(run.id,{retest:select.value,result:''});box.append(button,result);parent.append(box);
  button.onclick=async()=>{button.disabled=true;try{if(!select.value)throw Error('Select a different assessment.');const data=await api('/api/compare/'+run.id+'/'+select.value);result.textContent=JSON.stringify(data,null,2);state.comparisons.set(run.id,{retest:select.value,result:result.textContent});}catch(error){result.textContent=error.message;}finally{button.disabled=false;}};
+}
+
+function renderAIAssistance(parent,run){
+ const usage=run.ai_usage||{};
+ if(!usage.enabled)return;
+ const box=el('article','report-card remediation-board');parent.append(box);
+ box.append(el('h3','','AI assistance · Untrusted suggestions'));
+ box.append(el('p','muted','Provider: '+(usage.provider||'Unknown')+' · Model: '+(usage.model||'Not recorded')+' · Readiness: '+(usage.readiness||'Not recorded')));
+ box.append(el('p','muted','Inference: '+(usage.verified||'Not recorded')+' · Requests: '+(usage.requests??0)+' · Reserved tokens: '+(usage.reserved_tokens??0)));
+ box.append(el('p','muted','Suggestions use finding metadata only. Verify each suggestion against the evidence and your application before applying changes. They do not change finding or review status.'));
+ const suggestions=run.ai_suggestions?.suggestions||[];
+ if(!suggestions.length)box.append(el('p','muted','No suggestions were saved. Review AI readiness and run events; no findings, provider failure or an empty response can leave this list empty.'));
+ for(const suggestion of suggestions){
+  const finding=run.findings.find(f=>f.id===suggestion.id),section=el('section','detail-block');
+  if(finding){const link=el('button','finding-button',finding.title);link.onclick=()=>showFinding(finding,run.id);section.append(link);}else section.append(el('h3','','Finding '+suggestion.id));
+  section.append(el('p','',suggestion.text));box.append(section);
+ }
 }
 
 const remediationFilters=new Map();
@@ -137,6 +171,7 @@ function setupGuidedAssessment(){
  }
  const endpoint=field(aiBox,'Provider endpoint'),model=field(aiBox,'Model name'),aiPins=field(aiBox,'Approved provider IP addresses — one per line','','lines'),key=field(aiBox,'API key environment variable','SECAUDIT_API_KEY');
  const aiRequests=field(aiBox,'Request budget','2','number'),aiTokens=field(aiBox,'Token budget','8192','number'),aiTimeout=field(aiBox,'Request timeout (seconds)','15','number'),failure=choice(aiBox,'If AI is unavailable',[['continue','Continue without AI'],['required','Require AI readiness']]);
+ failure.value='required';
  const advanced=[$('#scope-label'),$('#scan-workflow').parentElement,$('#scan-scanners').parentElement,$('#scan-ai').parentElement];
  function visibility(){const guided=mode.value==='guided',hasTarget=!!text(target);scopeBox.hidden=!guided||!hasTarget;workflowBox.hidden=!guided||!hasTarget;scannerBox.hidden=!guided;aiBox.hidden=!guided;advanced.forEach(n=>n.hidden=guided);$('#scope-label').hidden=guided||!hasTarget;}
  mode.onchange=visibility;target.addEventListener('input',visibility);
@@ -198,7 +233,7 @@ function setupAssessmentProfiles(){
  button('Reload list',()=>reload());
  button('Load selected',()=>{
   const profile=selected(),data=profile.configuration;
-  if(![...$('#scan-preset').options].some(o=>o.value===(data.preset||'internet')))throw Error('This profile uses a disabled mode. Enable the experimental mode on the server before loading it.');
+  if(![...$('#scan-preset').options].some(o=>!o.disabled&&o.value===(data.preset||'internet')))throw Error('This profile uses a disabled mode. Enable the experimental mode on the server before loading it.');
   assessmentEditor.load(data);name.value=profile.name;summary.hidden=true;
   message.textContent='Profile loaded into advanced JSON. Review current authorization, IP pins and provider disclosure before starting.';
  });

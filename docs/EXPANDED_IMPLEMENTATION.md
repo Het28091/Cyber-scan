@@ -21,6 +21,16 @@ against that missing brief remains a release blocker.
 
 ## Running the supported workflows
 
+### AI discoverability and results pass — 30 September 2026 (UNVERIFIED)
+
+Both AI mode choices now remain visible when disabled, with startup/setup guidance.
+Dashboard, scan and doctor accept `--experimental-ai` as explicit process-level
+opt-in; the existing environment gate remains. New dashboard AI drafts default to
+required readiness. Reports show provider/model, readiness, inference status,
+usage and untrusted suggestions linked to finding details. Non-AI modes remain
+independent. No tests, debugging or real-provider calls were performed for this
+pass. See [AI_QUICKSTART.md](AI_QUICKSTART.md) for setup and remaining boundaries.
+
 ### Reusable setup pass — 30 September 2026 (UNVERIFIED)
 
 Added local assessment profiles with named/revisioned persistence, save-as-new,

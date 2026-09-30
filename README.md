@@ -47,6 +47,11 @@ supported project workflow.
 
 ## Two non-AI modes
 
+For optional AI assistance, see [AI quick start](docs/AI_QUICKSTART.md). Start the
+dashboard with `bash run.sh dashboard --experimental-ai --output runs` to enable
+the local-model and compatible API modes. A prepared provider is required; these
+unreleased features remain experimental and unverified with real providers.
+
 | Mode | Target access | Dependency lookups | AI |
 |---|---|---|---|
 | `internet` | Explicitly authorized local or public targets | Optional OSV HTTPS lookup | Rejected |

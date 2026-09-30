@@ -1,5 +1,9 @@
 # Final delivery target — 14 October 2026
 
+**Post-checkpoint owner feedback:** AI enablement/discoverability work resumed.
+Visible disabled-mode guidance, `--experimental-ai` startup options and an AI
+results panel are implemented but unverified. See [AI_QUICKSTART.md](AI_QUICKSTART.md).
+
 **30 September checkpoint:** feature development is paused for owner testing.
 See [TEST_CHECKPOINT.md](TEST_CHECKPOINT.md) for startup commands, expected manual
 flows and feedback format. No new tests or debugging were performed to label this
