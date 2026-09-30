@@ -2,6 +2,10 @@
 
 **1.1.0 · Linux only · Non-AI by default.**
 
+Development: [completion status](docs/PROJECT_STATUS.md) ·
+[five-spiral production plan](docs/FIVE_SPIRAL_PLAN.md) ·
+[developer execution prompt](docs/DEVELOPER_PROMPT.md).
+
 **First spiral round (30 September 2026):** implementation is assembled for the
 owner-confirmed bounded scope. Recent additions remain unverified; final acceptance
 and publication are pending. See [round-one handover](docs/ROUND_ONE_HANDOVER.md)

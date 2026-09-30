@@ -1,4 +1,12 @@
-# Verification — 0.6.0
+# Verification record
+
+## Current expanded project — 30 September 2026
+
+Recent feature-first code has not been accepted end to end. The current PM
+assessment is [PROJECT_STATUS.md](PROJECT_STATUS.md); new verification work must
+record spiral/task ID, exact commit, environment, command, result and evidence
+under [FIVE_SPIRAL_PLAN.md](FIVE_SPIRAL_PLAN.md). All entries below retain their
+historical scope. This documentation-only PM update ran no tests or provider calls.
 
 ## v0.6 live acceptance — passed
 

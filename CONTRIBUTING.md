@@ -1,5 +1,20 @@
 # Contributing
 
+## Development management
+
+Follow [the five-spiral plan](docs/FIVE_SPIRAL_PLAN.md) and
+[current project status](docs/PROJECT_STATUS.md). The next planned execution phase
+is Spiral 2 functional validation/repair; the first round's code is assembled but
+not production-accepted. Use [the developer prompt](docs/DEVELOPER_PROMPT.md) to
+start a phase and record its task IDs, evidence, blockers and exit decision.
+
+Routine development follows the validation guidance below when testing is
+authorized. Planning-only tasks do not start runtime tests. If the owner defers
+testing, mark implementation unverified and leave readiness gates open. Do not
+expand features to avoid unresolved acceptance or operational defects.
+
+## Implementation and verification
+
 Use Python 3.11+ on Linux. Run `make test` and `make demo` before proposing changes.
 Use synthetic fixtures and local servers; never run CI against public targets.
 Update the capability matrix and verification record whenever behavior changes.

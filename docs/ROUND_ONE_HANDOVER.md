@@ -72,6 +72,11 @@ tool/model as successful coverage.
 
 ## Round two — verification and improvement
 
+**Planning update:** the following was the original combined follow-up list. It
+is now allocated across Spirals 2–5 in [FIVE_SPIRAL_PLAN.md](FIVE_SPIRAL_PLAN.md).
+Use that plan's risk order, task IDs and exit criteria for new development;
+this historical handover does not require all release work in Spiral 2.
+
 1. Run Linux setup, automated suites and mandatory CI; resolve actual failures.
 2. Exercise non-AI modes, current dashboard controls, profile reloads, cancellation,
    retained preflight failures, review/retest and report refresh in a real browser.

@@ -1,0 +1,86 @@
+# Project completion status
+
+PM assessment: 30 September 2026 (Asia/Kolkata).
+Implementation baseline: `a2856284d38b11badc4c58941de6a91b75ee649c`.
+Basis: repository scope, implementation handover, code entry points and recorded
+verification. No new runtime assessment or external acceptance was performed.
+
+**Overall status: assembled prototype; not production-ready.** The first spiral
+has implementation coverage for the agreed bounded scope. Its recent changes are
+unverified. The published v1.1.0 baseline and its historical passing results are
+separate from the expanded product.
+
+## Completion by workstream
+
+| Workstream | Implementation status | Current expanded acceptance | Evidence / remaining work |
+| --- | --- | --- | --- |
+| Linux setup and non-AI modes | Present | Not established for current baseline | `setup.sh`, `config/`, `cli.py`; clean install, offline/internet regression and environment matrix |
+| Source/ZIP/target orchestration | Present | Unverified recent changes | `jobs.py`, `security.py`; traversal/upload limits, cancellation and recovery |
+| Local AI | Experimental adapter and UI present | Real-provider acceptance missing | `ai.py`, `AI_QUICKSTART.md`; actual prepared model, failure behavior, resource limits |
+| API AI | Experimental adapter and UI present | Real-provider acceptance missing | Compatible model-list/chat provider, key handling, DNS pins, budgets and cancellation |
+| Dashboard and reusable profiles | Present | New controls unverified | Guided/JSON forms, mode transitions, profile compatibility, stale revisions and accessibility |
+| Session/role workflows | Bounded implementation present | Linux application acceptance missing | Bearer login/logout/invalidation; explicit role status and JSON assertions |
+| Browser and active checks | Bounded implementation present | Real renderer acceptance missing | Static Chromium/Bubblewrap snapshots and CORS probes; application JS is unsupported |
+| Detection and advisories | Heuristics/adapters present; partial by design | New-rule quality not quantified | Positive/clean fixtures, supported versions, malformed manifests and false-positive review |
+| Evidence and reporting | Present | New export/refresh paths unverified | Snapshot consistency, cancellation during refresh, PDF content, redaction and provenance |
+| Operator remediation/retest | Present | Expanded lifecycle unverified | Review history, ownership/dates, persistence, comparison and resolution rules |
+| Framework mapping | Reviewed subset present | Coverage reconciliation pending | Partial NIST/OWASP/MITRE related evidence; no compliance pass/fail certification |
+| Release tooling | Packaging, record scaffolding and publisher present | Expanded release not accepted/published | Exact-commit records, actual mandatory CI, unused version and owner sign-off |
+| Production operations | Partial; needs work | Not demonstrated | Backup/restore, upgrades, storage capacity, supported limits, recovery and operating runbooks |
+
+Source paths without a directory prefix above are under `secaudit/`.
+
+## What the completion numbers mean
+
+- **1 of 5 spirals has its implementation handover assembled.** This is a stage
+  count, not an effort-weighted or production-completion percentage.
+- **0 of 10 expanded release gates has an accepted PASS record recorded in this
+  handover.** This is an evidence count, not ten demonstrated failures.
+- **No expanded production release has been published.** Version 1.1.0 remains
+  the existing release/version string until deliberate release preparation.
+- Historical results include the published baseline and earlier portable checks.
+  They do not certify later feature-first commits. Recent commits used `[skip ci]`.
+
+No reliable overall percentage can be assigned until Spiral 2 measures the defect
+backlog and the owner agrees the acceptance dataset. Use completed backlog items,
+current gate evidence and remaining critical defects instead.
+
+## Scope and readiness boundaries
+
+The owner confirmed `SCOPE.md` and `FINAL_HANDOVER.md` as the complete first-round
+requirements. A separate original brief is not an input blocker. Production means
+the supported Linux x86_64, Python 3.11–3.14, local single-operator application,
+with explicit preparation of optional scanners/providers and reviewed target scope.
+It does not imply a public multi-user SaaS, native Windows support, autonomous AI
+exploitation, interactive JavaScript browser scanning or compliance certification.
+
+## Critical dependencies
+
+| Dependency | Responsible role | Needed by | Current state |
+| --- | --- | --- | --- |
+| Linux test host and representative supported environments | Developer / owner | Spiral 2 entry | This task's host is Windows; usable project test host not established here |
+| Prepared real local model and enough host resources | Owner provisions; developer integrates | Spiral 2 AI task | Not established |
+| Compatible API endpoint/model and securely supplied credential variable | Owner | Spiral 2 AI task | Not established; never request a secret in chat |
+| Chromium/Bubblewrap and pinned scanner versions/databases | Developer on authorized Linux host | Spirals 2–3 | Needs preparation and recorded versions |
+| Dedicated owned session/role fixtures | Developer; owner for deployment-specific access | Spirals 2–3 | Existing fixtures are starting points, not blanket production authorization |
+| Required review/security and owner acceptance | Reviewer / owner | Spirals 3–5 | Not completed for expanded baseline |
+
+Environment-bound tasks can be blocked individually while independent work
+continues. A missing provider must not be disguised as a fixture PASS.
+
+## Management decision
+
+Stop discretionary feature expansion. Next is Spiral 2 functional validation and
+repair, followed by the gates in [FIVE_SPIRAL_PLAN.md](FIVE_SPIRAL_PLAN.md).
+The 14 October 2026 target is **at risk / uncommitted** until Spiral 2 establishes
+actual failures and provider availability. Preserve quality gates if dates move.
+The previous request to defer testing is honored for this documentation-only PM
+task; no execution phase is started by publishing this plan.
+
+## Status update contract
+
+At each development checkpoint update this file and the plan's backlog with:
+source commit; active spiral/task IDs; implementation state; verification state;
+checks actually executed; evidence references; open P0/P1 issues; blockers with
+owner/action; and the next task. Do not rewrite historical results as current.
+Mark a gate PASS only with valid evidence for the applicable source commit.

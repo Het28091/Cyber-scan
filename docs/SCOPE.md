@@ -1,5 +1,11 @@
 # Current scope — Linux assessment with optional AI
 
+Development is governed by [FIVE_SPIRAL_PLAN.md](FIVE_SPIRAL_PLAN.md); current
+implementation versus acceptance is listed in [PROJECT_STATUS.md](PROJECT_STATUS.md).
+This plan separates the remaining work into Spirals 2–5 and supersedes earlier
+statements that all verification, operations and publication fit in round two.
+It preserves the owner-confirmed scope and does not add multi-user/public hosting.
+
 **First spiral round:** the implementation is assembled for the bounded scope
 below. The owner confirmed SCOPE.md and FINAL_HANDOVER.md as the complete
 round-one requirements on 30 September 2026. See

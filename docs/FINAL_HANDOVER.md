@@ -1,5 +1,11 @@
 # Final delivery target — 14 October 2026
 
+**PM update, 30 September:** use [FIVE_SPIRAL_PLAN.md](FIVE_SPIRAL_PLAN.md) for the
+current development sequence and [PROJECT_STATUS.md](PROJECT_STATUS.md) for
+completion status. Spiral 1 has its implementation handover; Spirals 2–5 cover
+functional repair, security/quality, operations and release. The date is at risk
+and must be reforecast after the Spiral 2 baseline; gates take precedence.
+
 Updated 30 September 2026. The owner confirmed that this document and SCOPE.md
 are the complete **first spiral round** requirements. The separate original brief
 is no longer a round-one input blocker. The 14 October target remains a target,
@@ -32,21 +38,26 @@ gates and explicit publication path.
 First-round boundaries are deliberate and explicit: no application JavaScript
 browser execution, general OAuth/MFA negotiation, arbitrary business-logic testing,
 exhaustive discovery or compliance certification. Those capabilities are not
-counted as completed. Testing/debugging and external acceptance form round two.
+counted as completed. Testing/debugging start in Spiral 2; security, operations
+and final acceptance continue through Spirals 3–5 under the production plan.
 
-## Target schedule
+## Target schedule and milestone control
 
-| Window | Planned outcome |
-| --- | --- |
-| 29 September–3 October | Requirement traceability, AI provider hardening and real-provider acceptance; incorporate owner installation feedback |
-| 4–8 October | Dashboard integration, authentication/session/role workflows, scoped browser and bounded active checks |
-| 9–11 October | Detection and framework coverage reconciliation; end-to-end tests and reporting |
-| 12–13 October | Release-candidate freeze, security/regression/installation checks and owner retest |
-| 14 October | Final acceptance and versioned handover if required gates pass |
+The previous calendar buckets are superseded by the risk-driven five-spiral plan.
+The 14 October 2026 date remains an aspiration, not an accepted delivery forecast.
 
-These dates express priority, not completed work. Surface blocked requirements
-early with impact and the smallest needed owner input. Do not describe incomplete
-features as complete or silently reduce scope. Existing release tags remain intact.
+| Spiral | Current state | Exit decision |
+| --- | --- | --- |
+| 1 — bounded prototype | Implementation handover assembled; unverified | Carry acceptance debt visibly into S2 |
+| 2 — functional integration | Next, not started | Core journeys, real providers and current regression evidence |
+| 3 — security and detection quality | Planned | Boundary assurance, corpus results and reviewed risks |
+| 4 — operational reliability | Planned | Recovery/restore/upgrade and measured resource budgets |
+| 5 — release and owner acceptance | Planned | All ten exact-commit gates, owner go/no-go and matching artifacts |
+
+The initial remaining effort assumption is 12–21 focused developer-days plus
+external waits/review, not a promise. Reforecast after S2-01 and at each spiral
+exit. Do not reduce acceptance criteria to fit a date. Detailed tasks, owners,
+dependencies and completion rules are in FIVE_SPIRAL_PLAN.md.
 
 ## Inputs that may become necessary
 

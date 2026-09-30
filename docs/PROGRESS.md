@@ -1,4 +1,9 @@
-# Progress — first spiral round
+# Progress — five-spiral production plan
+
+Current PM baseline: [PROJECT_STATUS.md](PROJECT_STATUS.md). Development sequence,
+task IDs and milestone criteria: [FIVE_SPIRAL_PLAN.md](FIVE_SPIRAL_PLAN.md).
+Spiral 1 is IMPLEMENTATION_HANDOVER, not production acceptance. Spiral 2 is next
+and not started; Spirals 3–5 are planned. No runtime work was done by this PM update.
 
 30 September 2026: **round-one implementation is assembled for the bounded scope
 confirmed by the owner in SCOPE.md and FINAL_HANDOVER.md**. Final tested/released
@@ -12,8 +17,9 @@ profiles, evidence, remediation/retest and gated delivery have implementation pa
 The latest integration adds retained preflight diagnostics, queued report refresh,
 assessment-plan provenance and an explicit evidence/CI-gated publisher.
 
-Round two: Linux/browser/real-provider acceptance, regression and failure repair,
-owner sign-off, an unused final version and exact-commit stable publication.
+The earlier combined round-two backlog is now split into functional validation
+(S2), security/detection quality (S3), operational readiness (S4) and exact-commit
+release/owner acceptance (S5). No historical PASS is promoted to current evidence.
 The owner confirmed the two scope documents as the round-one requirements; a
 separate original master brief is not required to proceed with this round.
 
