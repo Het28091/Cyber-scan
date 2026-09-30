@@ -1,5 +1,9 @@
 # Project completion status
 
+**Spiral 2 started, 30 September 2026:** owner explicitly authorized validation and
+repair. See [SPIRAL2_EXECUTION.md](SPIRAL2_EXECUTION.md) for current execution results,
+environment limitations and CI evidence. The PM baseline below is historical.
+
 PM assessment: 30 September 2026 (Asia/Kolkata).
 Implementation baseline: `a2856284d38b11badc4c58941de6a91b75ee649c`.
 Basis: repository scope, implementation handover, code entry points and recorded
