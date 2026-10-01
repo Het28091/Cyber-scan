@@ -99,7 +99,7 @@ function renderRetest(parent,run){
  box.append(refreshNote,refreshReports);
  const review=el('a','download','Download current review history');review.href='/api/runs/'+run.id+'/reviews';review.download='operator-review.json';box.append(review);
  const label=el('label','','Compare with assessment'),select=el('select');select.append(new Option('Select a different assessment',''));for(const candidate of state.runs.filter(x=>x.id!==run.id))select.append(new Option(candidate.id.slice(0,8)+' · '+date(candidate.started),candidate.id));label.append(select);box.append(label);
- const button=el('button','secondary','Compare saved evidence'),result=el('pre');button.type='button';const saved=state.comparisons.get(run.id)||{};select.value=saved.retest||'';result.textContent=saved.result||'';select.onchange=()=>state.comparisons.set(run.id,{retest:select.value,result:''});box.append(button,result);parent.append(box);
+ const button=el('button','secondary','Compare saved evidence'),result=el('pre');button.type='button';result.tabIndex=0;result.setAttribute('role','region');result.setAttribute('aria-label','Saved evidence comparison');const saved=state.comparisons.get(run.id)||{};select.value=saved.retest||'';result.textContent=saved.result||'';select.onchange=()=>state.comparisons.set(run.id,{retest:select.value,result:''});box.append(button,result);parent.append(box);
  button.onclick=async()=>{button.disabled=true;try{if(!select.value)throw Error('Select a different assessment.');const data=await api('/api/compare/'+run.id+'/'+select.value);result.textContent=JSON.stringify(data,null,2);state.comparisons.set(run.id,{retest:select.value,result:result.textContent});}catch(error){result.textContent=error.message;}finally{button.disabled=false;}};
 }
 

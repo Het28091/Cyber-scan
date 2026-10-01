@@ -275,6 +275,9 @@ def main():
                 page.get_by_role('combobox',name='Compare with assessment',exact=True).select_option(ai_run)
                 page.get_by_role('button',name='Compare saved evidence',exact=True).click()
                 expect(page.locator('#report-list')).to_contain_text('"same_context": false')
+                page.get_by_role('button',name='Compare saved evidence',exact=True).focus()
+                page.keyboard.press('Tab')
+                expect(page.get_by_role('region',name='Saved evidence comparison',exact=True)).to_be_focused()
                 audit('restarted-reports-and-comparison')
                 failures = [{'view': a['view'], 'violations': a['violations']} for a in accessibility if a['violations']]
                 assert not failures, json.dumps(failures)
