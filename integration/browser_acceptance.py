@@ -248,11 +248,39 @@ def main():
                     wait_job(lambda j:j['mode']=='local-ai' and j['status']=='FAILED')
                 finally:
                     provider.shutdown();provider.server_close()
+                # Restart the real server against the same evidence directory.
+                expected_runs=page.evaluate("async () => (await (await fetch('/api/runs')).json()).length")
+                context.close()
+                process.send_signal(signal.SIGINT);process.wait(timeout=10)
+                process=subprocess.Popen(process.args,cwd=ROOT,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,
+                    text=True,env=dict(os.environ,SECAUDIT_EXPERIMENTAL_AI='1'))
+                lines=queue.Queue()
+                threading.Thread(target=read_startup,daemon=True).start()
+                startup=[lines.get(timeout=20).strip() for _ in range(3)]
+                assert startup[2].startswith('Session password: '), 'Dashboard restart failed'
+                context=browser.new_context(http_credentials={'username':'operator','password':startup[2].split(': ',1)[1]})
+                page=context.new_page();page.on('pageerror',lambda error:errors.append(str(error)))
+                page.goto(f'http://127.0.0.1:{port}')
+                expect(page.locator('#all-runs .run-name')).to_have_count(expected_runs)
+                page.locator('#new-scan').click()
+                expect(page.get_by_role('combobox',name='Saved profile',exact=True)).to_contain_text('Owned offline fixture')
+                page.keyboard.press('Escape')
+                page.locator('.nav[data-view="findings"]').click()
+                page.locator('#finding-run').select_option(runs[0]['id'])
+                page.locator('.finding-button').first.click()
+                expect(page.locator('#finding-detail')).to_contain_text('Revision 1')
+                expect(page.get_by_label('Remediation owner',exact=True)).to_have_value('Fixture maintainer')
+                page.keyboard.press('Escape')
+                page.locator('.nav[data-view="reports"]').click()
+                page.get_by_role('combobox',name='Compare with assessment',exact=True).select_option(ai_run)
+                page.get_by_role('button',name='Compare saved evidence',exact=True).click()
+                expect(page.locator('#report-list')).to_contain_text('"same_context": false')
+                audit('restarted-reports-and-comparison')
                 failures = [{'view': a['view'], 'violations': a['violations']} for a in accessibility if a['violations']]
                 assert not failures, json.dumps(failures)
                 assert not errors, errors
                 browser.close()
-            result = {'status': 'passed', 'engine': 'Chromium', 'checks': ['keyboard dialog', 'malformed ZIP recovery', 'real offline ZIP scan', 'finding search/detail','saved operator review', 'all navigation views', 'JSON download', 'mobile overflow', 'no uncaught JavaScript errors', 'failed worker diagnostic', 'running crawler cancellation','AI disclosure consent','invalid scanner configuration','AI protocol fixture through reports','missing model failure'], 'limitations': ['Not a full accessibility audit','AI protocol fixture is not real-model acceptance']}
+            result = {'status': 'passed', 'engine': 'Chromium', 'checks': ['keyboard dialog','profile save/load and fresh consent','configuration preview', 'malformed ZIP recovery', 'real offline ZIP scan', 'finding search/detail','saved operator review with owner and due date','report refresh includes saved review', 'all navigation views', 'JSON download', 'mobile overflow', 'no uncaught JavaScript errors', 'failed worker diagnostic', 'running crawler cancellation','AI disclosure consent','invalid scanner configuration','AI protocol fixture through reports','missing model failure','dashboard restart persistence','incomparable-context comparison'], 'limitations': ['Not a full accessibility audit','AI protocol fixture is not real-model acceptance']}
             (artifacts / 'result.json').write_text(json.dumps(result, indent=2) + '\n')
             print(json.dumps(result))
         finally:
