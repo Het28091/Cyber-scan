@@ -35,6 +35,30 @@ Increase the timeout if your prepared model needs more time, up to the supported
 Only loopback addresses are allowed for local AI. No API credential is used by
 the Ollama adapter.
 
+### Kali VM with Ollama on its host
+
+The VM's `127.0.0.1` refers to the VM, not its host. Keep the local-provider
+loopback policy: use an authenticated SSH tunnel instead of exposing Ollama on
+all network interfaces or allowing LAN addresses in the adapter.
+
+If SSH access to Kali is already configured, run this from the host PC, replacing
+the uppercase placeholders with the owner's verified connection details:
+
+```text
+ssh -N -o ExitOnForwardFailure=yes -R 127.0.0.1:11435:127.0.0.1:11434 -p KALI_SSH_PORT KALI_USER@KALI_ADDRESS
+```
+
+This assumes the host's prepared Ollama actually listens on `127.0.0.1:11434`;
+adjust that destination only to its confirmed local endpoint. Verify the SSH host
+key, keep the tunnel terminal open, and use `http://127.0.0.1:11435` with approved
+IP `127.0.0.1` in Kali's Secaudit form. Use the exact installed model name and
+explicitly approve finding-metadata disclosure. If the forward cannot bind, stop
+and choose an unused loopback port. Do not change SSH GatewayPorts or disable
+host-key checking. Closing the SSH connection removes this temporary forward.
+
+This is preparation guidance, not evidence of successful provider acceptance.
+Spiral 2 still requires real model readiness, inference and saved-report evidence.
+
 ## API AI
 
 Use your configured provider's HTTPS API base URL, advertised model name and

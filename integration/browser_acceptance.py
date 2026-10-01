@@ -68,7 +68,7 @@ def main():
                 page.locator('#scan-source').fill(str(ROOT/'demo/source'))
                 page.get_by_label('Profile name',exact=True).fill('Owned offline fixture')
                 page.get_by_role('button',name='Save as new',exact=True).click()
-                expect(page.get_by_label('Saved profile',exact=True)).to_contain_text('revision 1')
+                expect(page.get_by_role('combobox',name='Saved profile',exact=True)).to_contain_text('revision 1')
                 page.locator('#scan-source').fill(str(Path(temp)/'changed-draft'))
                 page.locator('#scan-authorized').check()
                 page.get_by_role('button',name='Load selected',exact=True).click()
@@ -99,8 +99,8 @@ def main():
                 page.locator('.finding-button').first.click()
                 expect(page.locator('#finding-dialog')).to_be_visible()
                 expect(page.locator('#finding-detail')).to_contain_text('Remediation')
-                expect(page.get_by_label('Review status',exact=True)).to_be_visible()
-                page.get_by_label('Review status',exact=True).select_option('CONFIRMED')
+                expect(page.get_by_role('combobox',name='Review status',exact=True)).to_be_visible()
+                page.get_by_role('combobox',name='Review status',exact=True).select_option('CONFIRMED')
                 page.get_by_label('Rationale',exact=True).fill('Reviewed the owned eval fixture.')
                 page.get_by_label('Remediation owner',exact=True).fill('Fixture maintainer')
                 page.get_by_label('Due date (optional; overdue evaluated in UTC)',exact=True).fill('2026-10-14')
@@ -167,7 +167,7 @@ def main():
                     page.locator('#new-scan').click()
                     page.locator('#scan-source').fill('')
                     page.locator('#scan-target').fill(origin)
-                    page.get_by_label('Configuration editor',exact=True).select_option('json')
+                    page.get_by_role('combobox',name='Configuration editor',exact=True).select_option('json')
                     page.locator('#scan-scope').fill(json.dumps({
                         'authorization': 'Owned browser acceptance fixture', 'origins': [origin],
                         'exclusions': [], 'environment': 'local-lab', 'profiles': ['passive'],
