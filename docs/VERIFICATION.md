@@ -1,5 +1,11 @@
 # Verification record
 
+## Spiral 2 — 1 October 2026
+
+Execution is authorized; [SPIRAL2_EXECUTION.md](SPIRAL2_EXECUTION.md) records
+current checks and blockers. The PM-only statement below describes the earlier
+planning update, not the current implementation work. Spiral 2 is not accepted.
+
 ## Current expanded project — 30 September 2026
 
 Recent feature-first code has not been accepted end to end. The current PM

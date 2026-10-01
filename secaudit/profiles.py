@@ -5,7 +5,7 @@ import sqlite3
 import uuid
 from pathlib import Path
 from dataclasses import fields
-from .config import Config,AIConfig
+from .config import load,AIConfig
 from .models import now
 from .security import PolicyError,Scope,canonical
 
@@ -19,7 +19,10 @@ def validate_configuration(data):
     if not source and not target:raise PolicyError('a source directory or target is required; ZIP files are not saved')
     ai=data.get('ai',{})
     if not isinstance(ai,dict) or set(ai)-{f.name for f in fields(AIConfig)}:raise PolicyError('invalid provider configuration')
-    cfg=Config(mode=mode,source=source,target=target,scanners=data.get('scanners',{}),target_workflow=data.get('target_workflow',{}),ai=AIConfig(**ai))
+    from .dashboard_config import presets
+    if mode not in presets():raise PolicyError('invalid or disabled preset')
+    cfg=load(Path(__file__).resolve().parents[1]/'config'/('api-ai.json' if mode=='connected-ai' else mode+'.json'))
+    cfg.source=source;cfg.target=target;cfg.scanners=data.get('scanners',{});cfg.target_workflow=data.get('target_workflow',{});cfg.ai=AIConfig(**ai)
     if not isinstance(cfg.scanners,dict):raise PolicyError('invalid scanner configuration')
     cfg.modules+=list(cfg.scanners)
     if target:cfg.modules.append('target_workflow' if cfg.target_workflow else 'web')
@@ -32,7 +35,10 @@ def validate_configuration(data):
         if cfg.target_workflow and (scope.data['profiles']!=['passive','bounded'] or scope.auth):
             raise PolicyError('workflow requires bounded scope and its own account credentials')
     elif 'scope' in data:raise PolicyError('scope requires a target')
-    return json.loads(json.dumps(data))
+    resolved=json.loads(json.dumps(data))
+    resolved['preset']=mode
+    resolved['modules']=[m for m in cfg.modules if m in {'source','secrets','config','dependencies','openapi','online_dependencies'}]
+    return resolved
 
 
 def preview(data):

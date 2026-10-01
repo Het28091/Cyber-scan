@@ -34,7 +34,16 @@ jobs:
           export SECAUDIT_COVERAGE_SOURCE="$GITHUB_WORKSPACE/secaudit"
           export COVERAGE_PROCESS_START="$GITHUB_WORKSPACE/.coveragerc"
           export COVERAGE_FILE="$RUNNER_TEMP/coverage/.coverage"
-          python -m unittest discover -s tests -v
+          python - <<'PYCODE'
+          import unittest
+          from secaudit.security import redact
+          result = unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.discover('tests'))
+          for test, traceback in result.failures + result.errors:
+              message = str(redact(str(test) + '\n' + traceback))
+              message = message.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+              print('::error title=Regression failure::' + message, flush=True)
+          raise SystemExit(not result.wasSuccessful())
+          PYCODE
           unset COVERAGE_PROCESS_START
           python -m coverage combine "$RUNNER_TEMP/coverage"
           python -m coverage report --fail-under=81

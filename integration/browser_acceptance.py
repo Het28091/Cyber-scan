@@ -143,6 +143,7 @@ def main():
                     page.locator('#new-scan').click()
                     page.locator('#scan-source').fill('')
                     page.locator('#scan-target').fill(origin)
+                    page.get_by_label('Configuration editor',exact=True).select_option('json')
                     page.locator('#scan-scope').fill(json.dumps({
                         'authorization': 'Owned browser acceptance fixture', 'origins': [origin],
                         'exclusions': [], 'environment': 'local-lab', 'profiles': ['passive'],

@@ -41,7 +41,7 @@ this spiral. Corrections discovered later are tracked against their later spiral
 
 ## Spiral 2 — functional integration and repair
 
-**State:** next; not started. **Entry:** owner starts execution, Linux environment
+**State:** IN_PROGRESS since 30 September 2026; see [execution evidence](SPIRAL2_EXECUTION.md). **Entry:** owner starts execution, Linux environment
 available for runtime work, current source baseline recorded. Establish access to
 real providers early; continue independent non-AI work if either is unavailable.
 **Risk:** broad unverified changes may fail basic user journeys.
@@ -141,7 +141,11 @@ or weaken existing mandatory gates.
 
 ## Prioritized execution backlog
 
-All S2–S5 IDs above start **TODO**. Next task: **S2-01**. Suggested sequence:
+S2-01, S2-02, S2-03 and S2-05 are **IN_PROGRESS**. S2-04 is **BLOCKED** pending
+Kali access and explicit provider endpoint/model/disclosure configuration; the owner
+reports an existing Kali VM and host Ollama. API provider preparation remains missing.
+S3–S5 remain **TODO**. Next task: diagnose current Linux baseline failures.
+No Spiral 2 task is yet accepted. Suggested sequence:
 S2-01 → S2-02/S2-03 → S2-04/S2-05 → S3 → S4 → S5. Provider preparation can occur
 alongside S2-01; documentation/corpus preparation can proceed while a runtime
 dependency is blocked. Do not interpret this as authorization to spawn agents.
