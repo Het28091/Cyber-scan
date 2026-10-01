@@ -117,7 +117,10 @@ def main():
                 runs=page.evaluate("async () => await (await fetch('/api/runs')).json()")
                 assert len(runs)==1, 'Refreshing reports must not create another assessment'
                 snapshot=json.loads((Path(temp)/runs[0]['id']/'run.json').read_text())
-                assert snapshot['report_snapshot']['includes_operator_reviews']
+                assert snapshot['report_snapshot']['includes_operator_reviews'], json.dumps({
+                    'snapshot':snapshot['report_snapshot'],'review_database_exists':(Path(temp)/'reviews.sqlite3').exists(),
+                    'jobs':page.evaluate("async () => await (await fetch('/api/jobs')).json()"),
+                    'reviews':page.evaluate("async id => await (await fetch('/api/runs/'+id+'/reviews')).json()",runs[0]['id'])})
                 assert '2026-10-14' in (Path(temp)/runs[0]['id']/'technical.md').read_text()
                 for view in ('overview', 'assessments', 'findings', 'coverage', 'reports'):
                     page.locator(f'.nav[data-view="{view}"]').click()

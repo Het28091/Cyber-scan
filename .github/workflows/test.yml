@@ -78,7 +78,18 @@ jobs:
       - name: Live OSV and real sandboxed Gitleaks acceptance
         env:
           PYTHONPATH: .
-        run: python integration/live_acceptance.py
+        run: |
+          python - <<'PYCODE'
+          import runpy, traceback
+          from secaudit.security import redact
+          try:
+              runpy.run_path('integration/live_acceptance.py', run_name='__main__')
+          except Exception:
+              message = str(redact(traceback.format_exc()))
+              message = message.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+              print('::error title=Live acceptance failure::' + message, flush=True)
+              raise
+          PYCODE
 
   browser-acceptance:
     runs-on: ubuntu-24.04
