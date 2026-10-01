@@ -6,6 +6,41 @@ on:
 permissions:
   contents: read
 jobs:
+  target-browser-acceptance:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Prepare real Chromium and mandatory outer sandbox
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y bubblewrap
+          python -m pip install --require-hashes -r requirements.lock
+          python -m pip install playwright==1.63.0
+          python -m playwright install --with-deps chromium
+      - name: Real static snapshot containment
+        env:
+          PYTHONPATH: .
+        run: |
+          python - <<'PYCODE'
+          import subprocess, sys
+          from playwright.sync_api import sync_playwright
+          with sync_playwright() as p:
+              executable = p.chromium.executable_path
+          result = subprocess.run([sys.executable, 'integration/target_browser_acceptance.py', '--executable', executable, '--evidence', 'artifacts/target-browser/result.json'])
+          if result.returncode:
+              print('::error::Real target Chromium containment failed; no sandbox fallback permitted.')
+          raise SystemExit(result.returncode)
+          PYCODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: target-browser-evidence
+          path: artifacts/target-browser
+          retention-days: 14
   test:
     runs-on: ubuntu-24.04
     timeout-minutes: 15

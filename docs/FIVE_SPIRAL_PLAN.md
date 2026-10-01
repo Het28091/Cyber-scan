@@ -7,6 +7,12 @@ Baseline and current status: [PROJECT_STATUS.md](PROJECT_STATUS.md).
 
 ## Working agreement
 
+**Owner direction, 1 October 2026:** defer the unavailable Kali/Ollama/API
+acceptance inputs and continue every independent task. This explicitly permits
+provider-independent S3/S4 implementation and verification before Spiral 2's
+milestone acceptance. It does not waive S2-04, owner UAT, later entry evidence or
+any production release gate. Track this work in `INDEPENDENT_EXECUTION.md`.
+
 Each spiral is a risk-driven loop: agree objective and boundaries → identify the
 highest risks → implement or repair → validate on appropriate environments →
 record evidence and obtain the milestone decision → update the next spiral.
