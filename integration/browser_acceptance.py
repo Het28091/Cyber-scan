@@ -5,11 +5,13 @@ import json
 import os
 from pathlib import Path
 import queue
+import signal
 import socket
 import subprocess
 import sys
 import tempfile
 import threading
+import time
 import zipfile
 
 from playwright.sync_api import sync_playwright, expect
@@ -43,6 +45,16 @@ def main():
                 context = browser.new_context(http_credentials={'username': 'operator', 'password': password},
                                               viewport={'width': 1440, 'height': 1000})
                 page = context.new_page()
+                def wait_job(predicate,timeout=30):
+                    # Evaluate the async fetch explicitly. wait_for_function's
+                    # predicate polling must not treat a Promise as readiness.
+                    deadline=time.monotonic()+timeout
+                    while time.monotonic()<deadline:
+                        jobs=page.evaluate("async () => await (await fetch('/api/jobs')).json()")
+                        for job in jobs:
+                            if predicate(job):return job
+                        time.sleep(.1)
+                    raise AssertionError('Expected terminal job not observed: '+json.dumps(jobs))
                 errors = []
                 accessibility = []
                 axe_script = Path(os.environ['AXE_SCRIPT']).read_text()
@@ -113,7 +125,7 @@ def main():
                 page.keyboard.press('Escape')
                 page.locator('.nav[data-view="reports"]').click()
                 page.get_by_role('button',name='Refresh report snapshots',exact=True).click()
-                page.wait_for_function("async () => (await (await fetch('/api/jobs')).json()).some(j => j.kind === 'report refresh' && j.status === 'COMPLETED')",timeout=30000)
+                wait_job(lambda j:j['kind']=='report refresh' and j['status']=='COMPLETED')
                 runs=page.evaluate("async () => await (await fetch('/api/runs')).json()")
                 assert len(runs)==1, 'Refreshing reports must not create another assessment'
                 snapshot=json.loads((Path(temp)/runs[0]['id']/'run.json').read_text())
@@ -180,7 +192,7 @@ def main():
                     assert entered.wait(20), 'Crawler never reached owned target'
                     page.locator('#refresh').click()
                     page.locator('#jobs-list button', has_text='Cancel').click()
-                    page.wait_for_function("async () => (await (await fetch('/api/jobs')).json()).some(j => j.status === 'CANCELLED')")
+                    wait_job(lambda j:j['status']=='CANCELLED')
                     expect(page.locator('#jobs-list button', has_text='Cancel')).to_have_count(0)
                 finally:
                     release.set()
@@ -222,7 +234,7 @@ def main():
                     audit('ai-configuration')
                     page.locator('#submit-scan').click()
                     expect(page.locator('#scan-dialog')).not_to_be_visible()
-                    page.wait_for_function("async () => (await (await fetch('/api/jobs')).json()).some(j => j.mode === 'local-ai' && j.status === 'COMPLETED')",timeout=90000)
+                    wait_job(lambda j:j['mode']=='local-ai' and j['status']=='COMPLETED',90)
                     rows=page.evaluate("async () => await (await fetch('/api/runs')).json()")
                     ai_run=next(row['id'] for row in rows if row['mode']=='local-ai')
                     saved=page.evaluate("async id => await (await fetch('/api/runs/'+id)).json()",ai_run)
@@ -233,7 +245,7 @@ def main():
                     config['model']='not-installed'
                     page.locator('#scan-ai').fill(json.dumps(config))
                     page.locator('#submit-scan').click()
-                    page.wait_for_function("async () => (await (await fetch('/api/jobs')).json()).some(j => j.mode === 'local-ai' && j.status === 'FAILED')",timeout=30000)
+                    wait_job(lambda j:j['mode']=='local-ai' and j['status']=='FAILED')
                 finally:
                     provider.shutdown();provider.server_close()
                 failures = [{'view': a['view'], 'violations': a['violations']} for a in accessibility if a['violations']]
@@ -244,7 +256,7 @@ def main():
             (artifacts / 'result.json').write_text(json.dumps(result, indent=2) + '\n')
             print(json.dumps(result))
         finally:
-            process.terminate()
+            process.send_signal(signal.SIGINT)
             try:
                 process.wait(timeout=10)
             except subprocess.TimeoutExpired:
