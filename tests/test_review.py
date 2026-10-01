@@ -70,8 +70,10 @@ not a requirement!
             with self.assertRaisesRegex(PolicyError,'experimental'):
                 Config(mode='local-ai').validate()
             from secaudit.ai import Provider
-            with self.assertRaisesRegex(PolicyError,'disabled'):
-                Provider(Config(mode='connected-ai',ai=AIConfig(enabled=True)))
+            with patch('secaudit.ai.request') as transport:
+                with self.assertRaisesRegex(PolicyError,'experimental.*opt-in required'):
+                    Provider(Config(mode='connected-ai',ai=AIConfig(enabled=True)))
+                transport.assert_not_called()
 
     def test_distinct_same_location_findings_survive(self):
         a=Finding('R','title','asset','observation a','fix')
