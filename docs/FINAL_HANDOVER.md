@@ -12,8 +12,10 @@ is no longer a round-one input blocker. The 14 October target remains a target,
 not a guarantee or a scheduled background task.
 
 **First-round implementation is assembled; final acceptance is not complete.**
-The latest work has not been tested or debugged, following the owner's feature-first
-direction. [ROUND_ONE_HANDOVER.md](ROUND_ONE_HANDOVER.md) is the current requirement
+The first-round handover was unverified under the owner's feature-first direction.
+The owner subsequently authorized Spiral 2 testing and repair; see
+[SPIRAL2_EXECUTION.md](SPIRAL2_EXECUTION.md) for exact current evidence and blockers.
+[ROUND_ONE_HANDOVER.md](ROUND_ONE_HANDOVER.md) is the requirement
 traceability and handover. Earlier test results apply only to their recorded code.
 
 v1.1.0 remains the published baseline. This working tree contains expanded code;

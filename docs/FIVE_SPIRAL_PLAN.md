@@ -41,7 +41,8 @@ this spiral. Corrections discovered later are tracked against their later spiral
 
 ## Spiral 2 — functional integration and repair
 
-**State:** IN_PROGRESS since 30 September 2026; see [execution evidence](SPIRAL2_EXECUTION.md). **Entry:** owner starts execution, Linux environment
+**State:** BLOCKED on real-provider acceptance after the 1 October Linux repair checkpoint;
+see [execution evidence](SPIRAL2_EXECUTION.md). **Entry:** owner starts execution, Linux environment
 available for runtime work, current source baseline recorded. Establish access to
 real providers early; continue independent non-AI work if either is unavailable.
 **Risk:** broad unverified changes may fail basic user journeys.
@@ -141,11 +142,14 @@ or weaken existing mandatory gates.
 
 ## Prioritized execution backlog
 
-S2-01, S2-02, S2-03 and S2-05 are **IN_PROGRESS**. S2-04 is **BLOCKED** pending
+S2-01, S2-02, S2-03 and S2-05 are **VERIFIED** for the automated Linux checkpoint
+`6eda00ad94f796fe1229d22e967e6869e08bf37c`, with the checks and limits recorded in
+[SPIRAL2_EXECUTION.md](SPIRAL2_EXECUTION.md). This does not replace owner UAT or
+later spiral acceptance. S2-04 is **BLOCKED** pending
 Kali access and explicit provider endpoint/model/disclosure configuration; the owner
 reports an existing Kali VM and host Ollama. API provider preparation remains missing.
-S3–S5 remain **TODO**. Next task: diagnose current Linux baseline failures.
-No Spiral 2 task is yet accepted. Suggested sequence:
+S3–S5 remain **TODO**. Next task: S2-04 real-provider acceptance, then owner demo
+and a Spiral 2 milestone decision. Spiral 2 is not ACCEPTED. Suggested sequence:
 S2-01 → S2-02/S2-03 → S2-04/S2-05 → S3 → S4 → S5. Provider preparation can occur
 alongside S2-01; documentation/corpus preparation can proceed while a runtime
 dependency is blocked. Do not interpret this as authorization to spawn agents.

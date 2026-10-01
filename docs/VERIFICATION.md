@@ -6,6 +6,12 @@ Execution is authorized; [SPIRAL2_EXECUTION.md](SPIRAL2_EXECUTION.md) records
 current checks and blockers. The PM-only statement below describes the earlier
 planning update, not the current implementation work. Spiral 2 is not accepted.
 
+Source `6eda00ad94f796fe1229d22e967e6869e08bf37c`: all 14 mandatory jobs passed in
+[run 36807699088](https://github.com/Het28091/Cyber-scan/actions/runs/36807699088).
+[Persisted evidence](evidence/spiral2-linux-checkpoint.json) lists individual steps;
+the execution record maps results to S2-01/02/03/05. Real local/API provider
+acceptance remains NOT TESTED, so S2-04 and the milestone remain BLOCKED.
+
 ## Current expanded project — 30 September 2026
 
 Recent feature-first code has not been accepted end to end. The current PM

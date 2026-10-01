@@ -4,6 +4,22 @@
 repair. See [SPIRAL2_EXECUTION.md](SPIRAL2_EXECUTION.md) for current execution results,
 environment limitations and CI evidence. The PM baseline below is historical.
 
+**1 October repair checkpoint:** profile defaults now match the selected preset;
+the regression suite's experimental-AI opt-in assertion is repaired without
+weakening the transport guard. Chromium coverage now includes saved profiles,
+owner/due dates, report refresh, server restart and evidence comparison. The
+comparison's scrollable output now supports keyboard focus. Current source and
+job results are recorded in the execution record; these do not establish real
+model/API acceptance. The owner has Kali and host Ollama, but connection/model
+details and API-provider preparation are still pending. No release is authorized
+or claimed by this checkpoint. **All 14 mandatory CI jobs PASS** at source
+`6eda00ad94f796fe1229d22e967e6869e08bf37c`; see the
+[checkpoint evidence](evidence/spiral2-linux-checkpoint.json). S2-01/02/03/05 are
+verified for that automated Linux checkpoint. S2-04 and the overall milestone
+remain BLOCKED / NOT ACCEPTED pending real providers and the owner demo. No known
+P0/P1 functional defect remains from the executed checks. The deployment-specific
+target job was skipped and is not included in the verified count.
+
 PM assessment: 30 September 2026 (Asia/Kolkata).
 Implementation baseline: `a2856284d38b11badc4c58941de6a91b75ee649c`.
 Basis: repository scope, implementation handover, code entry points and recorded
