@@ -1,4 +1,4 @@
-import argparse,json,os,signal,sys,tempfile,uuid,zipfile,sqlite3
+import argparse,json,os,signal,sys,tempfile,uuid,zipfile,sqlite3,time
 from pathlib import Path
 from . import __version__
 from .config import load
@@ -47,10 +47,16 @@ def scan(cfg,run_id=None):
         run['coverage'].append({'module':name,'status':'NOT TESTED','reason':reason})
     store.save(run)
     if not cfg.target and not cfg.ai.enabled and 'online_dependencies' not in cfg.modules and not (set(cfg.modules)&EXTERNAL): deny_network()
-    all_findings=[];all_assets=[]
+    all_findings=[];all_assets=[];last_checkpoint=None
     def checkpoint(findings,assets):
+        nonlocal last_checkpoint
         run['findings']=[f.to_dict() for f in dedup(all_findings+findings)];run['assets']=all_assets+assets
-        store.save(run);write_json(directory/'partial.json',run)
+        # Keep live evidence current for graceful cancellation, but avoid rewriting
+        # an ever-growing SQLite/JSON snapshot for every source file. Terminal
+        # state is always saved in finally, including errors and cancellation.
+        current=time.monotonic()
+        if last_checkpoint is None or current-last_checkpoint>=.25:
+            store.save(run);write_json(directory/'partial.json',run);last_checkpoint=current
     def stop(signum, frame):
         raise KeyboardInterrupt()
     old_term=signal.signal(signal.SIGTERM,stop)
