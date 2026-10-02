@@ -38,7 +38,10 @@ def serve(root,port=8765):
         if path.is_symlink() or path.stat().st_size>10_000_000: raise PolicyError('run unavailable')
         result=json.loads(path.read_text(encoding='utf-8'))
         if not isinstance(result,dict) or any(not isinstance(result.get(k),list) for k in ('findings','assets','coverage')): raise PolicyError('invalid saved run')
-        result['available_reports']=[n for n in sorted(DOWNLOADS) if (folder/n).is_file() and not (folder/n).is_symlink()]
+        from .report_state import publication
+        marker=publication(folder)
+        result['report_publication']=marker['status'] if marker else 'LEGACY_UNVERIFIED'
+        result['available_reports']=[] if marker and marker['status']!='READY' else [n for n in sorted(DOWNLOADS) if (folder/n).is_file() and not (folder/n).is_symlink()]
         return result
     class Handler(BaseHTTPRequestHandler):
         def setup(self): super().setup();self.connection.settimeout(15)
@@ -113,7 +116,8 @@ def serve(root,port=8765):
                 if match and match[2] in DOWNLOADS:
                     run(match[1]);p=root/match[1]/match[2]
                     if p.is_symlink() or p.stat().st_size>30_000_000: raise PolicyError('report unavailable')
-                    self.send(p.read_bytes(),mimetypes.guess_type(p.name)[0] or 'application/octet-stream',filename=p.name);return
+                    from .report_state import read_report
+                    self.send(read_report(root/match[1],match[2]),mimetypes.guess_type(p.name)[0] or 'application/octet-stream',filename=p.name);return
                 self.send({'error':'Not found'},code=404)
             except (ValueError,OSError,KeyError,TypeError,RecursionError,sqlite3.Error): self.send({'error':'Requested artifact unavailable'},code=404)
         def do_POST(self):

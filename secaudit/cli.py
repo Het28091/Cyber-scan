@@ -164,6 +164,8 @@ def main(argv=None):
     q=sub.add_parser('compare',help='Compare two saved runs without rescanning or resolving findings');q.add_argument('baseline');q.add_argument('retest');q.add_argument('--output',default='runs')
     q=sub.add_parser('remediation',help='Export the current operator action plan without rescanning');q.add_argument('run_id');q.add_argument('--output',default='runs');q.add_argument('--format',choices=['json','csv'],default='json')
     q=sub.add_parser('release-check',help='Validate expanded acceptance evidence without publishing');q.add_argument('--manifest',required=True);q.add_argument('--commit',required=True)
+    q=sub.add_parser('backup',help='Snapshot stopped local evidence to a new directory');q.add_argument('--output',default='runs');q.add_argument('--destination',required=True)
+    q=sub.add_parser('restore',help='Verify a backup and restore into a new evidence directory');q.add_argument('backup');q.add_argument('--destination',required=True)
     q=sub.add_parser('scope',help='Create an authorization record and current DNS pins; no scan');q.add_argument('--origin',required=True);q.add_argument('--authorization',required=True);q.add_argument('--exclude',action='append',default=[]);q.add_argument('--output',required=True)
     q=sub.add_parser('dataset',help='Build an integrity manifest for an operator-supplied advisory snapshot');q.add_argument('--input',required=True);q.add_argument('--output',required=True);q.add_argument('--source',required=True);q.add_argument('--version',required=True);q.add_argument('--published-at',required=True)
     q=sub.add_parser('bundle');b=q.add_subparsers(dest='action',required=True)
@@ -174,6 +176,10 @@ def main(argv=None):
     a=p.parse_args(argv)
     if getattr(a,'experimental_ai',False):os.environ['SECAUDIT_EXPERIMENTAL_AI']='1'
     try:
+        if a.cmd in ('backup','restore'):
+            from .maintenance import backup,restore
+            result=backup(a.output,a.destination) if a.cmd=='backup' else restore(a.backup,a.destination)
+            print(json.dumps(result,indent=2));return 0
         if a.cmd=='release-check':
             from .release_gate import verify
             print(json.dumps(verify(a.manifest,a.commit,__version__),indent=2));return 0

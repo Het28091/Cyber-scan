@@ -1,4 +1,4 @@
-import csv,html,io,json
+import csv,html,io,json,hashlib,os,tempfile
 from pathlib import Path
 from .security import atomic,write_json,csv_safe,redact
 
@@ -10,6 +10,22 @@ def export_csv(path,rows,keys):
     atomic(path,s.getvalue())
 
 def reports(directory,run):
+    from .report_state import MANIFEST,GENERATED
+    from .models import now
+    d=Path(directory);d.mkdir(parents=True,exist_ok=True,mode=0o700)
+    generation=now()
+    # Fail closed from this point, even if a process dies between file replacements.
+    write_json(d/MANIFEST,{'schema':1,'status':'INCOMPLETE','generation':generation})
+    with tempfile.TemporaryDirectory(prefix='.report-stage-',dir=d) as temp:
+        staging=Path(temp)
+        _write_reports(staging,run)
+        hashes={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in staging.iterdir() if p.is_file()}
+        for name in hashes:os.replace(staging/name,d/name)
+        for name in GENERATED-set(hashes):(d/name).unlink(missing_ok=True)
+        write_json(d/MANIFEST,{'schema':1,'status':'READY','generation':generation,'sha256':hashes})
+
+
+def _write_reports(directory,run):
     d=Path(directory);run=redact(run)
     from .models import now
     run['report_snapshot']={'generated_at':now(),'includes_operator_reviews':bool(run.get('operator_review')),'source':'Saved assessment evidence; no checks repeated by export'}

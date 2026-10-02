@@ -89,6 +89,7 @@ async function renderReview(parent,finding,runId){
  }catch(error){section.append(el('p','form-error',error.message));}
 }
 function renderRetest(parent,run){
+ if(run.report_publication==='INCOMPLETE')parent.append(el('p','form-error','Report refresh is incomplete. Downloads are blocked; retry Refresh report snapshots after checking storage and prerequisites.'));
  if(run.assessment_plan){const plan=el('article','report-card');plan.append(el('h3','','Assessment plan'),el('p','','Selected: '+run.assessment_plan.selected_modules.join(', ')),el('p','muted','Not assessed: '+run.assessment_plan.unselected_modules.join(', ')),el('p','muted',run.assessment_plan.limitation));parent.append(plan);}
  renderAIAssistance(parent,run);
  renderRemediation(parent,run);

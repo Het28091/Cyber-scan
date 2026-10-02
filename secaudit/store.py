@@ -6,7 +6,10 @@ class Store:
     def __init__(self,root):
         self.root=Path(root);self.root.mkdir(parents=True,exist_ok=True,mode=0o700)
         path=self.root/'runs.sqlite3'
+        if path.is_symlink():raise ValueError('symlink run database refused')
         self.db=sqlite3.connect(path);path.chmod(0o600)
+        from .database import guard_schema
+        guard_schema(self.db)
         version=self.db.execute('PRAGMA user_version').fetchone()[0]
         if version>1: raise ValueError('database schema is newer than this application')
         if version==0:

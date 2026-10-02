@@ -66,6 +66,8 @@ class Profiles:
         path=Path(root)/'profiles.sqlite3'
         if path.is_symlink():raise PolicyError('symlink profile database refused')
         self.db=sqlite3.connect(path,timeout=10);path.chmod(0o600)
+        from .database import guard_schema
+        guard_schema(self.db)
         with self.db:self.db.execute('CREATE TABLE IF NOT EXISTS profiles(id TEXT PRIMARY KEY,revision INTEGER NOT NULL,name TEXT NOT NULL,updated TEXT NOT NULL,config TEXT NOT NULL)')
 
     def close(self):self.db.close()

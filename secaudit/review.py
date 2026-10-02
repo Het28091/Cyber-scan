@@ -67,6 +67,8 @@ class Reviews:
         path=self.root/'reviews.sqlite3'
         if path.is_symlink():raise PolicyError('symlink review database refused')
         self.db=sqlite3.connect(path,timeout=10)
+        from .database import guard_schema
+        guard_schema(self.db)
         path.chmod(0o600)
         with self.db:
             self.db.execute('CREATE TABLE IF NOT EXISTS decisions(run_id TEXT NOT NULL,finding_id TEXT NOT NULL,revision INTEGER NOT NULL,data TEXT NOT NULL,PRIMARY KEY(run_id,finding_id,revision))')
