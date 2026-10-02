@@ -7,7 +7,7 @@ from unittest.mock import patch
 @unittest.skipUnless(sys.platform=='linux','kernel resource verification requires Linux')
 class RendererResourceTests(unittest.TestCase):
     def check(self,**overrides):
-        from secaudit.browser_resource import verify,ADDRESS
+        from secaudit.browser_resource import verify,ADDRESS,FILE_BYTES
         values={'/proc/self/mountinfo':'1 0 0:1 / /sys/fs/cgroup rw - cgroup2 cgroup rw',
             '/proc/self/cgroup':'0::/owned-fixture',
             '/sys/fs/cgroup/owned-fixture/memory.max':str(1024**3),
@@ -15,7 +15,7 @@ class RendererResourceTests(unittest.TestCase):
             '/sys/fs/cgroup/owned-fixture/pids.max':'128'}
         values.update(overrides)
         import resource
-        limits={resource.RLIMIT_AS:(ADDRESS,ADDRESS),resource.RLIMIT_NOFILE:(512,512),resource.RLIMIT_FSIZE:(1_000_000,1_000_000)}
+        limits={resource.RLIMIT_AS:(ADDRESS,ADDRESS),resource.RLIMIT_NOFILE:(512,512),resource.RLIMIT_FSIZE:(FILE_BYTES,FILE_BYTES)}
         with patch.object(Path,'read_text',lambda path:values[str(path)]),patch('resource.getrlimit',side_effect=lambda kind:limits[kind]):return verify()
 
     def test_verified_limits_and_refused_unlimited_or_oversized_controls(self):
