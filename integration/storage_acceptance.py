@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+import shlex
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
@@ -45,12 +46,16 @@ def exercise():
 
 def main():
     from secaudit.adapters import bounded,sandbox_command
-    command=sandbox_command('/usr/bin/python3',ROOT)
+    executable=str(Path(sys._base_executable).resolve())
+    command=sandbox_command(executable,ROOT,extra=[(sys.base_prefix,sys.base_prefix)])
     command[-2:-2]=['--size','1048576','--tmpfs','/work']
     command+=['-B','/input/integration/storage_acceptance.py','--inside']
-    # System Python needs only stdlib; the source is mounted read-only at /input.
-    code,out=bounded(command,30,1_000_000)
-    if code:raise ValueError('Isolated full-storage acceptance failed; no sandbox fallback')
+    # The same supported Python runtime is read-only, without PDF dependencies.
+    # Only owned fixture diagnostics are captured; no user assessments are loaded.
+    code,out=bounded(['/bin/sh','-c',shlex.join(command)+' 2>&1'],30,1_000_000)
+    if code:
+        print('::error::Isolated storage fixture failed: '+out.decode(errors='replace')[-2000:].replace('\n','%0A'))
+        raise ValueError('Isolated full-storage acceptance failed; no sandbox fallback')
     result=json.loads(out)
     result['source_commit']=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     path=ROOT/'artifacts/checkpoints/independent/storage.json';path.parent.mkdir(parents=True,exist_ok=True)
