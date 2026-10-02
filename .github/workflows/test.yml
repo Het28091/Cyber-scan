@@ -29,6 +29,10 @@ jobs:
         env:
           PYTHONPATH: .
         run: python integration/storage_acceptance.py
+      - name: Default source boundary measurements
+        env:
+          PYTHONPATH: .
+        run: python integration/capacity_acceptance.py
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
