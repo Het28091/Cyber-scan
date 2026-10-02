@@ -80,5 +80,50 @@ No provider credential is configured in the tested SSH environment; no arbitrary
 shared key or paid inference was used. Developer then runs real provider acceptance.
 Owner UAT, representative dataset/budget approval, independent review and final
 exact-commit gates remain outstanding. S3/S4 are IN_PROGRESS, not accepted.
-Next independent work: process-termination/full-storage recovery exercises and
-near-limit/queue measurements, followed by mapping and fingerprint reconciliation.
+The next checkpoint below advances the recovery and input-boundary work; whole
+assessment/queue throughput and mapping/fingerprint reconciliation remain open.
+
+## Recovery and limits checkpoint — 2 October 2026
+
+Source: `f02e1e07657b1dd78a01fc69b76d2132f8d0e9ee`.
+Owner explicitly authorized continuing without the VM after SSH became unavailable.
+[CI run 37043137223](https://github.com/Het28091/Cyber-scan/actions/runs/37043137223)
+passed **all 16 mandatory jobs**; the optional deployment-specific target job was
+skipped. [Persisted metadata](evidence/recovery-linux-ci.json) includes job/step
+outcomes and artifact identities/digests. `operational-evidence` contains storage,
+capacity and upgrade/restore results with the workflow's 14-day retention. Raw
+artifacts were not downloaded through the unauthenticated API; no timings are
+invented here. Earlier copied measurements above remain tied to their earlier SHA.
+
+| Task | Executed check | Outcome / limit |
+| --- | --- | --- |
+| S4-02 | Real export child killed after replacing a report artifact; read/download refused until regeneration | PASS in regression suite. Original findings remain unchanged. Test barrier controls kill timing; no simulated process exit |
+| S4-02 | Actual ENOSPC on a disposable 1 MiB tmpfs | PASS in operations CI. Prior evidence bytes preserved, incomplete download rejected, space reclaimed and retry succeeds. No host volume filled; no power-loss durability claim |
+| S4-01 | 20 concurrent submissions with worker held at a synchronization barrier | PASS in regression suite. Ten accepted, ten rejected, no rejected input files, cancelled slot reusable, terminal inputs cleaned. Admission/cancellation verification, not throughput |
+| S4-01 | Default traversal count and bytes, exact bound and one beyond | PASS in operations CI: 5,000 files, 1,000,000 per-file bytes, 50,000,000 total bytes. Exact bound accepted; exceeding it rejected. Whole-assessment/reporting throughput remains open |
+| S4-04/05 | Repeatable fixture commands, pinned tool preparation and runbook | Implemented and exercised in mandatory operations job. Release documentation now names all sixteen mandatory jobs |
+
+Commands: `python -m unittest discover -s tests -v` (main CI regression job uses
+its existing coverage wrapper); `PYTHONPATH=. python integration/storage_acceptance.py`;
+`PYTHONPATH=. python integration/capacity_acceptance.py`; and the existing
+`integration/operations_acceptance.py`. All used owned fixtures without AI calls.
+The operations job uses Ubuntu 22.04/Python 3.12 and checksum-pinned upstream
+Bubblewrap 0.11.0. The other supported distribution combinations remain in CI.
+
+Environment failures retained: Ubuntu 24.04's hosted namespace policy rejected
+Bubblewrap with `Failed RTM_NEWADDR: Operation not permitted`; Ubuntu 22.04's old
+package rejected `--size`. The fixture now builds the pinned upstream release and
+uses the namespace-capable runner. No security policy was disabled. The supported
+Python runtime and its library directory are mounted read-only in their original
+layout. Fixtures remain bounded and fail closed when preparation is missing.
+
+Before the VM became unavailable, targeted recovery tests and the real storage
+fixture passed on Kali at `d3bc7db`. The subsequent full-suite outcome could not be
+recovered, so it is **NOT VERIFIED on Kali for this checkpoint**. Kali remains at
+that earlier checkout unless the owner updates it; this continuation did not claim
+to synchronize an unreachable VM. Current verification is Linux CI, as authorized.
+
+Next: full-assessment and target/queue load measurements, mapping/fingerprint
+reconciliation and independent review. Provider configuration, owner operating
+budgets/UAT and all final exact-commit release gates remain outstanding. No whole
+spiral was accepted and no release was published by this checkpoint.

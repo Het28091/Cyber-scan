@@ -71,6 +71,29 @@ The source and upload limits are explicit configuration controls, not throughput
 guarantees. `integration/operations_acceptance.py` records reference measurements;
 owner hardware and performance budgets still require acceptance.
 
+### Recovery and boundary checks for maintainers
+
+`test_report_publication` now kills a real export subprocess after an artifact has
+been replaced, verifies INCOMPLETE blocks downloads, and regenerates the reports.
+`test_hardening` submits 20 jobs concurrently while holding the worker at a test
+barrier: ten are admitted, rejections leave no extra inputs, and cancellation
+releases a slot. This verifies admission control, not queue throughput under load.
+
+`PYTHONPATH=. python integration/storage_acceptance.py` fills an isolated 1 MiB
+tmpfs and exercises actual ENOSPC, preserved previous evidence, blocked downloads
+and retry after reclaiming space. It requires Bubblewrap with `--size` support;
+it never fills the host's evidence volume. The CI runtime builds upstream 0.11.0
+from its checksum-pinned [upstream release archive](https://github.com/containers/bubblewrap/releases/tag/v0.11.0). Ubuntu 24.04's hosted runner denied the
+required namespace operation, so this exercise uses Ubuntu 22.04 without disabling
+host security policy. This is not physical-disk power-loss durability testing.
+
+`PYTHONPATH=. python integration/capacity_acceptance.py` verifies the exact default
+source traversal limits and one unit beyond each: 5,000 files, 1,000,000 bytes per
+file and 50,000,000 total bytes. Results include traversal timing; they do not
+establish full-assessment/reporting latency or an owner-approved operating budget.
+All exercises use disposable owned fixtures. See INDEPENDENT_EXECUTION.md for
+the source-specific results; implementation presence alone is not acceptance.
+
 ## Prepared static-browser runtime
 
 Static snapshots require a real Chromium executable, Bubblewrap, cgroup v2 and a

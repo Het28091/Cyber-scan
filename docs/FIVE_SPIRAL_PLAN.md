@@ -160,8 +160,11 @@ S3/S4 are **IN_PROGRESS**: the current task-level implementation, executed check
 and remaining criteria are recorded in [INDEPENDENT_EXECUTION.md](INDEPENDENT_EXECUTION.md).
 S3-03's real static renderer and S4-03's bounded upgrade/restore/rollback exercises
 are VERIFIED at `250e82e`; this does not accept either whole spiral. S5 remains
-**TODO**. Next independent tasks: crash/full-storage recovery, near-limit and queue
-measurements, mapping/fingerprint reconciliation. S2-04 and owner demo resume when
+**TODO**. At `f02e1e0`, killed-export/full-storage recovery, concurrent ten-slot
+queue admission and default traversal boundaries are VERIFIED in mandatory Linux
+CI. S4-01/02 remain IN_PROGRESS: this does not establish whole-assessment throughput
+or physical-disk durability. Next independent tasks: whole-assessment/target/queue
+load measurements and mapping/fingerprint reconciliation. S2-04 and owner demo resume when
 their inputs are ready. Spiral 2 is not ACCEPTED. Suggested sequence:
 S2-01 → S2-02/S2-03 → S2-04/S2-05 → S3 → S4 → S5. Provider preparation can occur
 alongside S2-01; documentation/corpus preparation can proceed while a runtime

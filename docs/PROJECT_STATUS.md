@@ -1,5 +1,14 @@
 # Project completion status
 
+**Latest continuation — 2 October 2026:** source
+`f02e1e07657b1dd78a01fc69b76d2132f8d0e9ee` passes all **16 mandatory Linux CI jobs**,
+including new real process-kill and disk-full recovery, concurrent queue admission,
+and exact/default source-boundary checks. The owner authorized continuation without
+the VM; its latest full-suite outcome is unverified after SSH became unavailable.
+See [recovery checkpoint](INDEPENDENT_EXECUTION.md#recovery-and-limits-checkpoint--2-october-2026).
+Full-assessment load, mapping review, real providers and owner acceptance remain
+open. These results do not establish production readiness or accept a whole spiral.
+
 **Current checkpoint — 2 October 2026:** provider-independent S3/S4 work is in
 progress under the owner's sequencing exception. At source
 `250e82e5b073e94ead33c7fd2dd76a440f40cc68`, all **16 mandatory Linux CI jobs PASS**

@@ -1,5 +1,17 @@
 # Verification record
 
+## Recovery and limits — 2 October 2026
+
+Source `f02e1e07657b1dd78a01fc69b76d2132f8d0e9ee`: all 16 mandatory jobs PASS in
+[CI run 37043137223](https://github.com/Het28091/Cyber-scan/actions/runs/37043137223),
+including killed report publication, actual bounded-tmpfs ENOSPC, concurrent queue
+admission and default traversal count/byte boundaries. See
+[task IDs, runtime failures, commands and limits](INDEPENDENT_EXECUTION.md#recovery-and-limits-checkpoint--2-october-2026)
+and [durable job/step metadata](evidence/recovery-linux-ci.json).
+Current Kali full-suite outcome is unverified; owner authorized Linux CI continuation
+without the VM. Optional deployment target job skipped; real AI providers and owner
+acceptance remain pending. No final release-gate acceptance or production claim.
+
 ## Provider-independent checkpoint — 2 October 2026
 
 Source `250e82e5b073e94ead33c7fd2dd76a440f40cc68`: **162 Kali tests PASS, no skips**;
