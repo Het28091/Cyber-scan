@@ -5,7 +5,6 @@ This deliberately does not execute application JavaScript or submit forms.
 import shutil
 import tempfile
 import subprocess
-import sys
 import uuid
 from html.parser import HTMLParser
 from pathlib import Path
@@ -38,13 +37,8 @@ def render(body,executable='',timeout=15):
         manager=shutil.which('systemd-run');control=shutil.which('systemctl')
         if not manager or not control:raise PolicyError('REQUIRED_MISSING: user systemd/cgroup v2 renderer containment required')
         unit='secaudit-browser-'+uuid.uuid4().hex
-        from .browser_resource import MEMORY,TASKS,ADDRESS
-        wrapper=[manager,'--user','--quiet','--wait','--pipe','--collect','--unit',unit,
-            '-p','Type=exec','-p','MemoryMax='+str(MEMORY),'-p','MemorySwapMax=0',
-            '-p','TasksMax='+str(TASKS),'-p','RuntimeMaxSec='+str(timeout),
-            '-p','TimeoutStopSec=1','-p','KillMode=control-group','-p','LimitAS='+str(ADDRESS),
-            '-p','LimitNOFILE=128','-p','LimitFSIZE=1000000','-p','LimitCORE=0',
-            sys.executable,str(Path(__file__).with_name('browser_resource.py'))]+command
+        from .browser_resource import MEMORY,TASKS,service_command
+        wrapper=service_command(command,timeout,unit)
         try:code,dom=bounded(wrapper,timeout+3,1_000_000)
         finally:
             # Explicitly stop the unit even if the client was cancelled. The

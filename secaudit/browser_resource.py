@@ -5,11 +5,24 @@ Executed as a file by a transient user service; no application environment neede
 import os
 from pathlib import Path
 import resource
+import shutil
 import sys
 
 MEMORY=1024**3
 TASKS=128
 ADDRESS=2*1024**4
+FILES=512
+
+
+def service_command(command,timeout,unit):
+    manager=shutil.which('systemd-run')
+    if not manager or not shutil.which('systemctl'):raise ValueError('user systemd/cgroup v2 renderer containment required')
+    return [manager,'--user','--quiet','--wait','--pipe','--collect','--unit',unit,
+        '-p','Type=exec','-p','MemoryMax='+str(MEMORY),'-p','MemorySwapMax=0',
+        '-p','TasksMax='+str(TASKS),'-p','RuntimeMaxSec='+str(timeout),
+        '-p','TimeoutStopSec=1','-p','KillMode=control-group','-p','LimitAS='+str(ADDRESS),
+        '-p','LimitNOFILE='+str(FILES),'-p','LimitFSIZE=1000000','-p','LimitCORE=0',
+        sys.executable,str(Path(__file__).resolve())]+command
 
 
 def verify():
@@ -22,7 +35,7 @@ def verify():
     memory=int((group/'memory.max').read_text());tasks=int((group/'pids.max').read_text())
     swap=int((group/'memory.swap.max').read_text())
     if not 0<memory<=MEMORY or not 0<tasks<=TASKS or swap!=0:raise ValueError('kernel resource budgets are not enforced')
-    for kind,maximum in ((resource.RLIMIT_AS,ADDRESS),(resource.RLIMIT_NOFILE,128),(resource.RLIMIT_FSIZE,1_000_000)):
+    for kind,maximum in ((resource.RLIMIT_AS,ADDRESS),(resource.RLIMIT_NOFILE,FILES),(resource.RLIMIT_FSIZE,1_000_000)):
         soft,hard=resource.getrlimit(kind)
         if soft<=0 or hard<=0 or soft>maximum or hard>maximum:raise ValueError('process resource budgets are not enforced')
     return {'memory_max':memory,'swap_max':swap,'tasks_max':tasks,'address_max':ADDRESS}
