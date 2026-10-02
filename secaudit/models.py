@@ -1,6 +1,7 @@
 from dataclasses import dataclass,field,asdict
 from datetime import datetime,timezone
 import hashlib,json
+from copy import deepcopy
 
 def now(): return datetime.now(timezone.utc).isoformat()
 @dataclass
@@ -33,8 +34,9 @@ def dedup(findings):
     out={}
     for f in findings:
         key=f.fingerprint
-        if key not in out: out[key]=f
+        if key not in out: out[key]=deepcopy(f)
         else:
             out[key].evidence=list(dict.fromkeys(out[key].evidence+f.evidence))
-            out[key].provenance+=f.provenance or [{'scanner':f.scanner,'rule':f.rule,'version':f.scanner_version}]
+            for origin in f.provenance or [{'scanner':f.scanner,'rule':f.rule,'version':f.scanner_version}]:
+                if origin not in out[key].provenance:out[key].provenance.append(deepcopy(origin))
     return list(out.values())
