@@ -28,7 +28,10 @@ def render(body,executable='',timeout=15):
     if len(body)>65536: raise PolicyError('browser snapshot exceeds size limit')
     with tempfile.TemporaryDirectory(prefix='secaudit-browser-') as folder:
         path=Path(folder)/'page.html';path.write_bytes(body);path.chmod(0o600)
-        command=sandbox_command(exe,folder)+['--headless','--disable-gpu','--disable-background-networking','--disable-extensions','--no-first-run','--blink-settings=scriptEnabled=false','--user-data-dir=/tmp/profile','--dump-dom','file:///input/page.html']
+        helper=Path(__file__).with_name('browser_snapshot.py')
+        command=sandbox_command(exe,folder,extra=[(str(helper),'/snapshot.py')])
+        contained_exe=command.pop()
+        command+=['/usr/bin/python3','/snapshot.py',contained_exe]
         # Chromium's own sandbox stays enabled. A host that cannot nest the
         # sandboxes is unsupported; do not fall back to --no-sandbox.
         # Modern Chromium reserves tens of GiB of PROT_NONE virtual space. Keep
