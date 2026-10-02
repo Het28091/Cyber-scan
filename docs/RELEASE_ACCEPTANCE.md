@@ -152,7 +152,7 @@ PYTHONPATH=. python scripts/publish-release.py \
 
 Without `--publish`, this checks and collects local `release-assets/` only. It
 reads GitHub to verify that the exact repository commit passed the actual
-`.github/workflows/test.yml` workflow and all fourteen mandatory jobs in the same
+`.github/workflows/test.yml` workflow and all sixteen mandatory jobs in the same
 run attempt. A skipped workflow, pull-request run, wrong SHA, missing job, failed
 job or mismatched evidence URL is rejected. It also refuses an existing version
 tag. The private raw assessment reports are not required as publication assets;
