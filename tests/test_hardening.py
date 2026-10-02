@@ -1,4 +1,6 @@
 import base64,http.client,json,socket,subprocess,sys,tempfile,unittest
+import threading
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from unittest.mock import patch
 from secaudit.security import Scope,PolicyError,canonical
@@ -8,6 +10,30 @@ from secaudit.preflight import doctor
 from secaudit.config import Config
 ROOT=Path(__file__).resolve().parents[1]
 class HardeningTests(unittest.TestCase):
+    def test_concurrent_queue_capacity_and_cancelled_slot_reuse(self):
+        gate=threading.Event();worker=Jobs._worker
+        def paused(instance):
+            if not gate.wait(20):raise AssertionError('queue fixture timed out')
+            worker(instance)
+        with tempfile.TemporaryDirectory() as temp,patch.object(Jobs,'_worker',paused):
+            jobs=Jobs(temp)
+            def submit(_):
+                try:return jobs.submit({'source':'demo/source','preset':'offline'})
+                except PolicyError as error:
+                    self.assertEqual(str(error),'queue limit reached');return None
+            try:
+                with ThreadPoolExecutor(max_workers=20) as pool:results=list(pool.map(submit,range(20)))
+                accepted=[job for job in results if job]
+                self.assertEqual(len(accepted),10)
+                self.assertEqual(len(jobs.list(None)),10)
+                self.assertEqual(len(list(jobs.folder.glob('*.config.json'))),10)
+                jobs.cancel(accepted[0]['id'])
+                self.assertIsNotNone(submit(20))
+                self.assertEqual(sum(job['status']=='QUEUED' for job in jobs.list(None)),10)
+                for job in jobs.list(None):jobs.cancel(job['id'])
+            finally:gate.set();jobs.close()
+            self.assertFalse(list(jobs.folder.glob('*.config.json')))
+
     def scope(self):return {'authorization':'synthetic test','origins':['http://127.0.0.1/'],'exclusions':['http://127.0.0.1/admin'],'environment':'lab','profiles':['passive'],'max_requests':2,'max_seconds':2,'allowed_ips':['127.0.0.1']}
     def test_scope_wrong_shapes_fail_cleanly(self):
         for data in (None,[],42,dict(self.scope(),origins='http://127.0.0.1/'),dict(self.scope(),allowed_ips=[1]),dict(self.scope(),exclusions=None),dict(self.scope(),environment={}),dict(self.scope(),unknown=True)):

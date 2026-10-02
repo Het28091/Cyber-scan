@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 import sys
+import subprocess
+import time
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -11,6 +13,40 @@ from secaudit.security import PolicyError
 
 @unittest.skipUnless(sys.platform=='linux','report publication uses Linux atomic permissions')
 class PublicationTests(unittest.TestCase):
+    def test_killed_publisher_blocks_download_and_recovers(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);run=self.run_data();reports(root,run)
+            original=json.loads((root/'run.json').read_text())['findings']
+            script='''
+import json,os,signal,sys
+from pathlib import Path
+from unittest.mock import patch
+from secaudit.reporting import reports
+root=Path(sys.argv[1]);run=json.loads((root/'run.json').read_text())
+replace=os.replace
+def checkpoint(source,destination):
+    replace(source,destination)
+    if Path(destination)==root/'technical.html':
+        (root/'checkpoint').write_text('published one artifact')
+        os.kill(os.getpid(),signal.SIGSTOP)
+with patch('secaudit.reporting.os.replace',side_effect=checkpoint):reports(root,run)
+'''
+            child=subprocess.Popen([sys.executable,'-c',script,str(root)],stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
+            try:
+                deadline=time.monotonic()+20
+                while not (root/'checkpoint').exists() and child.poll() is None and time.monotonic()<deadline:time.sleep(.02)
+                self.assertTrue((root/'checkpoint').exists(),'publisher did not reach mid-publication checkpoint')
+                child.kill();child.wait(timeout=5)
+                self.assertEqual(publication(root)['status'],'INCOMPLETE')
+                with self.assertRaisesRegex(PolicyError,'incomplete'):read_report(root,'technical.html')
+                self.assertEqual(json.loads((root/'run.json').read_text())['findings'],original)
+                reports(root,run)
+                self.assertEqual(publication(root)['status'],'READY')
+                self.assertEqual(json.loads(read_report(root,'run.json'))['findings'],original)
+            finally:
+                if child.poll() is None:child.kill();child.wait(timeout=5)
+                child.stderr.close()
+
     def run_data(self):
         return {'id':'a'*32,'mode':'offline','status':'COMPLETED_WITH_LIMITATIONS',
             'findings':[],'coverage':[],'assets':[],'components':[],'events':[]}

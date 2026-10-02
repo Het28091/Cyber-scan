@@ -21,6 +21,12 @@ jobs:
         env:
           PYTHONPATH: .
         run: python integration/operations_acceptance.py
+      - name: Prepare bounded storage fixture
+        run: sudo apt-get update -qq && sudo apt-get install -y bubblewrap
+      - name: Real full-storage recovery
+        env:
+          PYTHONPATH: .
+        run: python integration/storage_acceptance.py
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
