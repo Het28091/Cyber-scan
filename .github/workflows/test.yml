@@ -85,6 +85,10 @@ jobs:
 
       - name: Synthetic offline assessment
         run: python3 -m secaudit scan --config config/offline.json
+      - name: Detection quality corpus
+        env:
+          PYTHONPATH: .
+        run: python integration/quality_corpus.py
 
   live-acceptance:
     # Ubuntu 22.04 supports unprivileged Bubblewrap on the hosted Linux runner.
