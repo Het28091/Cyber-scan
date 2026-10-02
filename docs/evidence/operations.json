@@ -1,0 +1,39 @@
+{
+  "source_commit": "250e82e5b073e94ead33c7fd2dd76a440f40cc68",
+  "previous_commit": "55ac666b57963fe0e45910ec51a31179ad566be0",
+  "platform": "Linux-6.19.14+kali-amd64-x86_64-with-glibc2.42",
+  "python": "3.13.12",
+  "cpu_count": 14,
+  "measurements": [
+    {
+      "files": 10,
+      "seconds": 0.303,
+      "report_bytes": 113654
+    },
+    {
+      "files": 100,
+      "seconds": 0.511,
+      "report_bytes": 130488
+    },
+    {
+      "files": 1000,
+      "seconds": 9.074,
+      "report_bytes": 301492
+    }
+  ],
+  "memory_total_bytes": 11596808192,
+  "children_peak_rss_kib": 38160,
+  "status": "PASS",
+  "checks": [
+    "old release scan",
+    "upgrade export preserves findings",
+    "reviews and profiles saved",
+    "byte-identical verified restore",
+    "old application with pre-upgrade rollback copy"
+  ],
+  "limitations": [
+    "Synthetic workloads only; no owner-approved performance budget yet",
+    "Child peak RSS is the maximum over this exercise, not per-workload profiling",
+    "Quiescent backup required; not crash-consistent live backup or in-place data downgrade"
+  ]
+}

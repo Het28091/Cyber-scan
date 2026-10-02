@@ -70,3 +70,23 @@ summary retention is 200 terminal records; it does not delete assessment evidenc
 The source and upload limits are explicit configuration controls, not throughput
 guarantees. `integration/operations_acceptance.py` records reference measurements;
 owner hardware and performance budgets still require acceptance.
+
+## Prepared static-browser runtime
+
+Static snapshots require a real Chromium executable, Bubblewrap, cgroup v2 and a
+working systemd user manager with memory/pids controllers. Check
+`systemctl --user show --property=Version` in the same login environment that runs
+Secaudit. On Kali the verified executable is `/usr/lib/chromium/chromium`; the
+distribution's shell wrapper may require additional host files and is not the
+verified executable. Do not substitute `--no-sandbox` or relax host policy when
+preparation fails. A system administrator must prepare the supported environment.
+
+Each snapshot uses a unique transient service and kernel-verified 1 GiB memory,
+zero swap, 128 tasks, 512 descriptors, 2 TiB virtual-address ceiling and 8 MiB per
+internal file. Large virtual reservations are not physical allocation. Writable
+mounts are ephemeral; their pages count toward the memory budget. Snapshot output
+is separately capped at 1 MB, input at 64 KiB, and the default renderer lifetime
+at 15 seconds. The parent stops the unit; a systemd watchdog covers parent death.
+Page scripts are disabled before loading the fetched HTML. Browser network is
+isolated, so linked images/styles will not load. This is a static inventory, not
+interactive browser scanning. Runtime preparation failure means coverage missing.

@@ -1,5 +1,18 @@
 # Project completion status
 
+**Current checkpoint — 2 October 2026:** provider-independent S3/S4 work is in
+progress under the owner's sequencing exception. At source
+`250e82e5b073e94ead33c7fd2dd76a440f40cc68`, all **16 mandatory Linux CI jobs PASS**
+and **162 Kali regression tests PASS with no skips**. Real isolated static
+Chromium, upgrade/backup/restore/rollback and the declared detection corpus pass.
+The renderer startup P1 is resolved on Kali and CI. No known P0/P1 remains from
+these executed checks; this is not independent security review or release acceptance.
+See [current task/evidence record](INDEPENDENT_EXECUTION.md) for exact commands,
+results, source and remaining scope. S2-04 real providers and owner UAT are still
+blocked; S3/S4 remain IN_PROGRESS and S5 has not started. Production readiness is
+not established. The assessments below are historical baselines, not current
+test failures or a statement that Kali access is still missing.
+
 **Spiral 2 started, 30 September 2026:** owner explicitly authorized validation and
 repair. See [SPIRAL2_EXECUTION.md](SPIRAL2_EXECUTION.md) for current execution results,
 environment limitations and CI evidence. The PM baseline below is historical.

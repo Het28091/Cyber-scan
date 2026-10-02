@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "checks": [
+    "verified kernel memory/process/swap limits",
+    "oversized allocation terminated",
+    "pinned single fetch",
+    "real offline Chromium rendering",
+    "script-disabled positive control",
+    "no subresource network request"
+  ],
+  "browser": {
+    "forms": 1,
+    "password_inputs": 1,
+    "links": 1,
+    "javascript": false,
+    "browser_network": false,
+    "renderer": "Chromium offline snapshot",
+    "memory_limit_bytes": 1073741824,
+    "swap_limit_bytes": 0,
+    "process_limit": 128,
+    "containment": "verified cgroup v2 + Bubblewrap + Chromium sandbox"
+  },
+  "limitation": "Static snapshot only; not interactive application browser acceptance"
+}

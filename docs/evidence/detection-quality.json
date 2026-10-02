@@ -1,0 +1,464 @@
+{
+  "schema": 1,
+  "status": "PASS",
+  "cases": [
+    {
+      "case": "PY-DYNAMIC-EXEC-positive",
+      "expected": [
+        "PY-DYNAMIC-EXEC"
+      ],
+      "observed": [
+        "PY-DYNAMIC-EXEC"
+      ],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    },
+    {
+      "case": "PY-DYNAMIC-EXEC-clean",
+      "expected": [],
+      "observed": [],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    },
+    {
+      "case": "PY-SHELL-positive",
+      "expected": [
+        "PY-SHELL"
+      ],
+      "observed": [
+        "PY-SHELL"
+      ],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    },
+    {
+      "case": "PY-SHELL-clean",
+      "expected": [],
+      "observed": [],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    },
+    {
+      "case": "PY-PICKLE-positive",
+      "expected": [
+        "PY-PICKLE"
+      ],
+      "observed": [
+        "PY-PICKLE"
+      ],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    },
+    {
+      "case": "PY-PICKLE-clean",
+      "expected": [],
+      "observed": [],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    },
+    {
+      "case": "PY-SQL-DYNAMIC-positive",
+      "expected": [
+        "PY-SQL-DYNAMIC"
+      ],
+      "observed": [
+        "PY-SQL-DYNAMIC"
+      ],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    },
+    {
+      "case": "PY-SQL-DYNAMIC-clean",
+      "expected": [],
+      "observed": [],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    },
+    {
+      "case": "PY-YAML-LOAD-positive",
+      "expected": [
+        "PY-YAML-LOAD"
+      ],
+      "observed": [
+        "PY-YAML-LOAD"
+      ],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    },
+    {
+      "case": "PY-YAML-LOAD-clean",
+      "expected": [],
+      "observed": [],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    },
+    {
+      "case": "SECRET-LITERAL-positive",
+      "expected": [
+        "SECRET-LITERAL"
+      ],
+      "observed": [
+        "SECRET-LITERAL"
+      ],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    },
+    {
+      "case": "SECRET-LITERAL-clean",
+      "expected": [],
+      "observed": [],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    },
+    {
+      "case": "CONFIG-DEBUG-positive",
+      "expected": [
+        "CONFIG-DEBUG"
+      ],
+      "observed": [
+        "CONFIG-DEBUG"
+      ],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    },
+    {
+      "case": "CONFIG-DEBUG-clean",
+      "expected": [],
+      "observed": [],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    },
+    {
+      "case": "CONFIG-TLS-positive",
+      "expected": [
+        "CONFIG-TLS"
+      ],
+      "observed": [
+        "CONFIG-TLS"
+      ],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    },
+    {
+      "case": "CONFIG-TLS-clean",
+      "expected": [],
+      "observed": [],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    },
+    {
+      "case": "DOCKER-USER-positive",
+      "expected": [
+        "DOCKER-USER"
+      ],
+      "observed": [
+        "DOCKER-USER"
+      ],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    },
+    {
+      "case": "DOCKER-USER-clean",
+      "expected": [],
+      "observed": [],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    },
+    {
+      "case": "api-positive",
+      "expected": [
+        "API-CLEARTEXT-SERVER",
+        "API-OAUTH-FLOW",
+        "API-QUERY-CREDENTIAL",
+        "API-SECURITY"
+      ],
+      "observed": [
+        "API-CLEARTEXT-SERVER",
+        "API-OAUTH-FLOW",
+        "API-QUERY-CREDENTIAL",
+        "API-SECURITY"
+      ],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    },
+    {
+      "case": "api-reference",
+      "expected": [
+        "API-SECURITY-REFERENCE"
+      ],
+      "observed": [
+        "API-SECURITY-REFERENCE"
+      ],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    },
+    {
+      "case": "api-clean",
+      "expected": [],
+      "observed": [],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    },
+    {
+      "case": "kubernetes-positive",
+      "expected": [
+        "K8S-CAPABILITIES",
+        "K8S-ESCALATION",
+        "K8S-HOST-NAMESPACE",
+        "K8S-HOST-PATH",
+        "K8S-PRIVILEGED",
+        "K8S-ROOT",
+        "K8S-TOKEN-MOUNT"
+      ],
+      "observed": [
+        "K8S-CAPABILITIES",
+        "K8S-ESCALATION",
+        "K8S-HOST-NAMESPACE",
+        "K8S-HOST-PATH",
+        "K8S-PRIVILEGED",
+        "K8S-ROOT",
+        "K8S-TOKEN-MOUNT"
+      ],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    },
+    {
+      "case": "kubernetes-clean",
+      "expected": [],
+      "observed": [],
+      "false_positive_rules": [],
+      "false_negative_rules": []
+    }
+  ],
+  "tp": 21,
+  "fp": 0,
+  "fn": 0,
+  "clean_cases_passed": 11,
+  "covered_builtin_rules": [
+    "API-CLEARTEXT-SERVER",
+    "API-OAUTH-FLOW",
+    "API-QUERY-CREDENTIAL",
+    "API-SECURITY",
+    "API-SECURITY-REFERENCE",
+    "CONFIG-DEBUG",
+    "CONFIG-TLS",
+    "DOCKER-USER",
+    "K8S-CAPABILITIES",
+    "K8S-ESCALATION",
+    "K8S-HOST-NAMESPACE",
+    "K8S-HOST-PATH",
+    "K8S-PRIVILEGED",
+    "K8S-ROOT",
+    "K8S-TOKEN-MOUNT",
+    "PY-DYNAMIC-EXEC",
+    "PY-PICKLE",
+    "PY-SHELL",
+    "PY-SQL-DYNAMIC",
+    "PY-YAML-LOAD",
+    "SECRET-LITERAL"
+  ],
+  "mappings": {
+    "PY-DYNAMIC-EXEC": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "PY-SHELL": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "PY-PICKLE": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "PY-SQL-DYNAMIC": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "PY-YAML-LOAD": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "SECRET-LITERAL": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      },
+      {
+        "framework": "MITRE ATT&CK Enterprise",
+        "version": "T1552.001 revision 1.3",
+        "control": "T1552.001",
+        "rationale": "Potential credential material in source relates to credentials-in-files exposure. This does not establish credential validity, attacker activity or an executed technique.",
+        "status": "NEEDS MANUAL REVIEW"
+      }
+    ],
+    "CONFIG-DEBUG": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "CONFIG-TLS": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "DOCKER-USER": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "API-SECURITY": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "API-CLEARTEXT-SERVER": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "API-QUERY-CREDENTIAL": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "API-OAUTH-FLOW": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "API-SECURITY-REFERENCE": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "K8S-HOST-NAMESPACE": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "K8S-TOKEN-MOUNT": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "K8S-HOST-PATH": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "K8S-PRIVILEGED": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "K8S-ESCALATION": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "K8S-ROOT": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ],
+    "K8S-CAPABILITIES": [
+      {
+        "framework": "NIST CSF",
+        "version": "2.0",
+        "control": "ID.RA-01",
+        "status": "NEEDS MANUAL REVIEW",
+        "rationale": "Candidate vulnerability evidence supports identification; validation and organizational implementation remain manual."
+      }
+    ]
+  },
+  "limitations": [
+    "Curated syntax/declaration samples only; not a representative vulnerability prevalence dataset",
+    "Filesystem traversal is supplied by a fixture; no application code is executed",
+    "Not runtime authorization, exploitability, full parser/schema, installed inventory or compliance validation",
+    "Dependency inventory/advisory parsers and external adapters use separate existing unit/live controls; not included in these counts"
+  ]
+}

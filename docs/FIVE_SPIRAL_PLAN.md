@@ -69,7 +69,8 @@ and a remaining-defect list. Evidence is preliminary until final-commit reruns.
 
 ## Spiral 3 — security boundaries and detection quality
 
-**State:** planned. **Entry:** stable core from Spiral 2; owned fixtures and prepared
+**State:** IN_PROGRESS under the owner sequencing exception; not accepted.
+See [2 October evidence](INDEPENDENT_EXECUTION.md). **Entry:** stable core from Spiral 2; owned fixtures and prepared
 sandbox/scanner/browser tools. **Risk:** false assurance or unauthorized egress.
 
 | ID | Work package | Completion evidence |
@@ -89,7 +90,8 @@ release gates cannot be waived through such risk acceptance.
 
 ## Spiral 4 — operational reliability and maintainability
 
-**State:** planned. **Entry:** stable security boundaries and known detection limits.
+**State:** IN_PROGRESS under the owner sequencing exception; not accepted.
+See [2 October evidence](INDEPENDENT_EXECUTION.md). **Entry:** stable security boundaries and known detection limits.
 **Risk:** evidence loss, unbounded resources or a deployment that cannot recover.
 
 | ID | Work package | Completion evidence |
@@ -152,10 +154,15 @@ S2-01, S2-02, S2-03 and S2-05 are **VERIFIED** for the automated Linux checkpoin
 `6eda00ad94f796fe1229d22e967e6869e08bf37c`, with the checks and limits recorded in
 [SPIRAL2_EXECUTION.md](SPIRAL2_EXECUTION.md). This does not replace owner UAT or
 later spiral acceptance. S2-04 is **BLOCKED** pending
-Kali access and explicit provider endpoint/model/disclosure configuration; the owner
-reports an existing Kali VM and host Ollama. API provider preparation remains missing.
-S3–S5 remain **TODO**. Next task: S2-04 real-provider acceptance, then owner demo
-and a Spiral 2 milestone decision. Spiral 2 is not ACCEPTED. Suggested sequence:
+explicit provider endpoint/model/disclosure configuration. Kali SSH access is now
+working and was used for the 2 October checkpoint. API provider preparation remains missing.
+S3/S4 are **IN_PROGRESS**: the current task-level implementation, executed checks
+and remaining criteria are recorded in [INDEPENDENT_EXECUTION.md](INDEPENDENT_EXECUTION.md).
+S3-03's real static renderer and S4-03's bounded upgrade/restore/rollback exercises
+are VERIFIED at `250e82e`; this does not accept either whole spiral. S5 remains
+**TODO**. Next independent tasks: crash/full-storage recovery, near-limit and queue
+measurements, mapping/fingerprint reconciliation. S2-04 and owner demo resume when
+their inputs are ready. Spiral 2 is not ACCEPTED. Suggested sequence:
 S2-01 → S2-02/S2-03 → S2-04/S2-05 → S3 → S4 → S5. Provider preparation can occur
 alongside S2-01; documentation/corpus preparation can proceed while a runtime
 dependency is blocked. Do not interpret this as authorization to spawn agents.

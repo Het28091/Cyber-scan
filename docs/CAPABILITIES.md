@@ -1,5 +1,15 @@
 # Capability matrix — 1.0.0
 
+**Unreleased checkpoint, 2 October 2026:** static Chromium/Bubblewrap inventory is
+implemented and verified on Kali and CI, with scripts/network disabled and bounded
+cgroup resources. Backup/restore, pre-upgrade-copy rollback and interrupted report
+publication detection are implemented and exercised. The 21-rule built-in corpus
+has 21 TP / 0 FP / 0 FN on its declared fixtures; this is not general accuracy.
+See [current task evidence and remaining scope](INDEPENDENT_EXECUTION.md). Real
+AI provider acceptance remains pending. Historical "not implemented" entries below
+describe version 1.0.0, not the unreleased checkpoint. No production-ready release
+of these expanded changes has been accepted or published.
+
 This is the historical baseline matrix. For unreleased expanded implementation,
 verification and unsupported cases, see [EXPANDED_IMPLEMENTATION.md](EXPANDED_IMPLEMENTATION.md).
 

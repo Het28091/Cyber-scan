@@ -1,5 +1,16 @@
 # Verification record
 
+## Provider-independent checkpoint — 2 October 2026
+
+Source `250e82e5b073e94ead33c7fd2dd76a440f40cc68`: **162 Kali tests PASS, no skips**;
+real isolated Chromium acceptance PASS; upgrade/restore/rollback PASS; declared
+21-rule corpus 21 TP / 0 FP / 0 FN and 11 clean cases PASS. All **16 mandatory CI
+jobs PASS** in [run 37039191586](https://github.com/Het28091/Cyber-scan/actions/runs/37039191586).
+See [task IDs, commands, runtime, evidence and residual work](INDEPENDENT_EXECUTION.md).
+The optional deployment-specific target job was skipped. Real local/API provider
+acceptance, owner UAT and exact-commit release gates remain pending. S2–S4 have
+not received milestone acceptance and no production release is claimed.
+
 ## Spiral 2 — 1 October 2026
 
 Execution is authorized; [SPIRAL2_EXECUTION.md](SPIRAL2_EXECUTION.md) records

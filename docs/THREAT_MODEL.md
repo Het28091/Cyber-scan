@@ -15,7 +15,7 @@ that account. The dashboard is not a public or multi-user service.
 | Website drives local dashboard actions | Loopback bind, Host validation, Basic session password, Origin and CSRF for mutations | Raw HTTP negative tests plus real browser owned journeys; no public hosting claim |
 | ZIP traverses output paths or source invokes code | Bounded extraction, no links, source parsed rather than imported; subprocess source isolation | Archive/input and seccomp regressions; operator keeps input tree immutable |
 | Scanner reads host secrets or phones home | Bubblewrap read-only mounts, cleared environment, network namespace, bounded process group | Actual Gitleaks/Semgrep/Syft/Trivy jobs; no unsandboxed fallback |
-| Static Chromium runs scripts/subresources | Pinned single HTML fetch then isolated offline render; Chromium sandbox retained | New real containment gate currently FAIL; 8 GiB virtual-address limit conflicts with the installed renderer's 32 GiB reservation on Kali. Do not treat mocked renderer tests as acceptance |
+| Static Chromium runs scripts/subresources | Pinned single HTML fetch then isolated offline render; script disable before navigation; verified cgroup memory/swap/task limits; Chromium sandbox retained | Real Kali and CI acceptance PASS at `250e82e`, including oversized allocation, static form and no script/subresource request controls; see INDEPENDENT_EXECUTION.md |
 | Provider sees private source or injects instructions | Allowlisted finding ID/rule/severity payload, experimental opt-in and disclosure, validated inert text | Protocol/schema/non-AI independence tests; actual provider credentials and inference still absent |
 | Credentials appear in artifacts | Registered-secret and pattern redaction, discarded scanner matches, environment references | Existing canary/redaction tests; arbitrary operator-authored text is not guaranteed secret-free |
 | Report refresh exposes a mixture of generations | Staging, INCOMPLETE/READY record, content digests and read-time generation check | New failure-injection regressions; legacy records are not upgraded merely by reading them |
@@ -24,10 +24,11 @@ that account. The dashboard is not a public or multi-user service.
 
 Remaining risk register:
 
-- **P1:** real static Chromium acceptance fails under the mandatory resource cap.
-  Developer must establish a compatible renderer or a reviewed physical-memory
-  containment design before changing the virtual-memory policy. Current fail-closed
-  behavior is preserved; no `--no-sandbox`, host policy override or unlimited run.
+- **Resolved P1 at `250e82e`:** renderer startup now passes on Kali and CI with
+  kernel-verified physical-memory containment and separate bounded internal-file
+  and output budgets. Missing cgroup/user-manager support still fails closed;
+  no `--no-sandbox`, host policy override or unlimited run is permitted. This
+  developer verification does not replace independent security review.
 - **Blocked evidence:** actual AI provider calls, owner UAT, independent security
   review and owner-approved workload budgets are missing. CI fixtures cannot waive them.
 - **Operational limit:** backups require all writers stopped; report publication

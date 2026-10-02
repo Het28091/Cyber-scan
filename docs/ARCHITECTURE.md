@@ -99,3 +99,21 @@ values are registered only in process memory for evidence redaction.
 A separate live acceptance job queries OSV once, runs real Gitleaks under Bubblewrap
 and tests namespace, read-only input, environment and dropped-capability boundaries.
 Unit tests collect child-process execution and enforce at least 81% statement coverage.
+
+## Unreleased reliability and static rendering
+
+`report_state.py` validates publication manifests and report digests. `reporting.py`
+stages a generation, records INCOMPLETE before replacing files, then records READY
+with hashes. Dashboard downloads check that generation and digest; interrupted
+multi-file replacement is detected, not represented as a directory transaction.
+`maintenance.py` performs bounded, quiescent backup/restore into new directories,
+with SQLite/schema guards and source/copy integrity checks. See OPERATIONS.md.
+
+`target_browser.py` fetches no URLs itself: it receives the already pinned HTML.
+`browser_resource.py` launches a dedicated systemd user service and verifies its
+actual cgroup/rlimit bounds before entering Bubblewrap. `browser_snapshot.py` uses
+inherited CDP pipes inside that boundary, disables scripts before navigation and
+reads the DOM without evaluation. No debugging TCP port is opened. Chromium's
+own sandbox remains enabled; all writable mounts are ephemeral. The real renderer
+and recovery exercises are now separate mandatory CI/publication requirements.
+Current source-specific evidence is in INDEPENDENT_EXECUTION.md.
