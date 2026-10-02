@@ -41,7 +41,8 @@ def exercise():
     print(json.dumps({'status':'PASS','volume_bytes':1048576,'checks':[
         'kernel ENOSPC on isolated tmpfs','old evidence bytes preserved',
         'incomplete download refused','export recovers after space reclaimed'],
-        'limits':'Owned fixture without PDF dependencies; not power-loss or physical-disk durability evidence'}))
+        'pdf_generated':(root/'technical.pdf').is_file(),
+        'limits':'Owned synthetic report fixture; not power-loss or physical-disk durability evidence'}))
 
 
 def main():
@@ -52,7 +53,7 @@ def main():
     command[-1]=executable
     command[-2:-2]=['--size','1048576','--tmpfs','/work']
     command+=['-B','/input/integration/storage_acceptance.py','--inside']
-    # The same supported Python runtime is read-only, without PDF dependencies.
+    # The same supported Python runtime is read-only.
     # Only owned fixture diagnostics are captured; no user assessments are loaded.
     code,out=bounded(['/bin/sh','-c',shlex.join(command)+' 2>&1'],30,1_000_000)
     if code:

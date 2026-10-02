@@ -24,7 +24,17 @@ jobs:
           PYTHONPATH: .
         run: python integration/operations_acceptance.py
       - name: Prepare bounded storage fixture
-        run: sudo apt-get update -qq && sudo apt-get install -y bubblewrap
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y build-essential libcap-dev meson ninja-build pkg-config
+          cd "$RUNNER_TEMP"
+          curl --fail --location --retry 3 -o bubblewrap.tar.xz https://github.com/containers/bubblewrap/releases/download/v0.11.0/bubblewrap-0.11.0.tar.xz
+          echo '988fd6b232dafa04b8b8198723efeaccdb3c6aa9c1c7936219d5791a8b7a8646  bubblewrap.tar.xz' | sha256sum --check
+          tar -xf bubblewrap.tar.xz
+          meson setup bubblewrap-build bubblewrap-0.11.0 -Dman=disabled -Dbash_completion=disabled -Dzsh_completion=disabled
+          meson compile -C bubblewrap-build
+          "$RUNNER_TEMP/bubblewrap-build/bwrap" --version
+          echo "$RUNNER_TEMP/bubblewrap-build" >> "$GITHUB_PATH"
       - name: Real full-storage recovery
         env:
           PYTHONPATH: .
