@@ -22,7 +22,7 @@ def snapshot(executable):
     process=subprocess.Popen(args,pass_fds=tuple(sorted({3,4,send_read,receive_write})),
         preexec_fn=pipes,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     os.close(send_read);os.close(receive_write)
-    buffer=b'';ident=0;deadline=time.monotonic()+120
+    buffer=b'';ident=0;deadline=time.monotonic()+120;events=[]
     def message():
         nonlocal buffer
         while b'\0' not in buffer:
@@ -42,20 +42,27 @@ def snapshot(executable):
         while data:data=data[os.write(send_write,data):]
         while True:
             response=message()
-            if response.get('id')!=ident:continue
+            if response.get('id')!=ident:
+                if 'method' in response:
+                    events.append(response)
+                    if len(events)>1024:raise ValueError('browser event limit')
+                continue
             if 'error' in response:raise ValueError('browser protocol command rejected')
             return response['result']
     try:
         target=call('Target.createTarget',{'url':'about:blank'})['targetId']
         session=call('Target.attachToTarget',{'targetId':target,'flatten':True})['sessionId']
         call('Page.enable',session=session)
+        call('Page.setLifecycleEventsEnabled',{'enabled':True},session)
         call('Emulation.setScriptExecutionDisabled',{'value':True},session)
         result=call('Page.navigate',{'url':'file:///input/page.html'},session)
-        if result.get('errorText'):raise ValueError('snapshot navigation failed')
+        if result.get('errorText') or not result.get('loaderId'):raise ValueError('snapshot navigation failed')
         # DOM.getDocument after the load event avoids reporting the initial blank page.
         while True:
-            event=message()
-            if event.get('sessionId')==session and event.get('method')=='Page.loadEventFired':break
+            event=events.pop(0) if events else message()
+            if (event.get('sessionId')==session and event.get('method')=='Page.lifecycleEvent'
+                    and event.get('params',{}).get('name')=='load'
+                    and event.get('params',{}).get('loaderId')==result['loaderId']):break
         node=call('DOM.getDocument',{'depth':0},session)['root']['nodeId']
         html=call('DOM.getOuterHTML',{'nodeId':node},session)['outerHTML']
         if len(html.encode())>1_000_000:raise ValueError('snapshot size limit')
@@ -69,5 +76,6 @@ def snapshot(executable):
 
 if __name__=='__main__':
     try:print(snapshot(sys.argv[1]))
-    except (ValueError,OSError,KeyError,IndexError):
-        print('Offline browser snapshot unavailable.',file=sys.stderr);raise SystemExit(2)
+    except (ValueError,OSError,KeyError,IndexError) as error:
+        # The parent discards renderer stderr; never include returned DOM text.
+        print('Offline browser snapshot unavailable: '+type(error).__name__,file=sys.stderr);raise SystemExit(2)
