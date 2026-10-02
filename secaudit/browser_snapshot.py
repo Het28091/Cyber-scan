@@ -78,4 +78,5 @@ if __name__=='__main__':
     try:print(snapshot(sys.argv[1]))
     except (ValueError,OSError,KeyError,IndexError) as error:
         # The parent discards renderer stderr; never include returned DOM text.
-        print('Offline browser snapshot unavailable: '+type(error).__name__,file=sys.stderr);raise SystemExit(2)
+        reason=str(error) if type(error) is ValueError else type(error).__name__
+        print('Offline browser snapshot unavailable: '+reason,file=sys.stderr);raise SystemExit(2)
