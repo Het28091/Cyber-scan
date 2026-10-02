@@ -4,6 +4,9 @@ This deliberately does not execute application JavaScript or submit forms.
 """
 import shutil
 import tempfile
+import subprocess
+import sys
+import uuid
 from html.parser import HTMLParser
 from pathlib import Path
 from .security import PolicyError
@@ -29,8 +32,28 @@ def render(body,executable='',timeout=15):
         command=sandbox_command(exe,folder)+['--headless','--disable-gpu','--disable-background-networking','--disable-extensions','--no-first-run','--blink-settings=scriptEnabled=false','--user-data-dir=/tmp/profile','--dump-dom','file:///input/page.html']
         # Chromium's own sandbox stays enabled. A host that cannot nest the
         # sandboxes is unsupported; do not fall back to --no-sandbox.
-        code,dom=bounded(command,timeout,1_000_000,max_address_bytes=8*1024**3)
+        # Modern Chromium reserves tens of GiB of PROT_NONE virtual space. Keep
+        # a finite address cap, but enforce actual memory and all descendants in
+        # a kernel cgroup instead of mistaking address reservation for resident RAM.
+        manager=shutil.which('systemd-run');control=shutil.which('systemctl')
+        if not manager or not control:raise PolicyError('REQUIRED_MISSING: user systemd/cgroup v2 renderer containment required')
+        unit='secaudit-browser-'+uuid.uuid4().hex
+        from .browser_resource import MEMORY,TASKS,ADDRESS
+        wrapper=[manager,'--user','--quiet','--wait','--pipe','--collect','--unit',unit,
+            '-p','Type=exec','-p','MemoryMax='+str(MEMORY),'-p','MemorySwapMax=0',
+            '-p','TasksMax='+str(TASKS),'-p','RuntimeMaxSec='+str(timeout),
+            '-p','TimeoutStopSec=1','-p','KillMode=control-group','-p','LimitAS='+str(ADDRESS),
+            '-p','LimitNOFILE=128','-p','LimitFSIZE=1000000','-p','LimitCORE=0',
+            sys.executable,str(Path(__file__).with_name('browser_resource.py'))]+command
+        try:code,dom=bounded(wrapper,timeout+3,1_000_000)
+        finally:
+            # Explicitly stop the unit even if the client was cancelled. The
+            # independent RuntimeMaxSec also bounds it if the parent is killed.
+            try:subprocess.run([control,'--user','stop',unit],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=3)
+            except (OSError,subprocess.TimeoutExpired):pass
         if code or b'<html' not in dom.lower(): raise PolicyError('browser snapshot renderer unavailable')
         parser=Inventory();parser.feed(dom.decode('utf-8','replace'))
         return {'forms':parser.forms,'password_inputs':parser.passwords,'links':parser.links,
-                'javascript':False,'browser_network':False,'renderer':'Chromium offline snapshot'}
+                'javascript':False,'browser_network':False,'renderer':'Chromium offline snapshot',
+                'memory_limit_bytes':MEMORY,'swap_limit_bytes':0,'process_limit':TASKS,
+                'containment':'verified cgroup v2 + Bubblewrap + Chromium sandbox'}

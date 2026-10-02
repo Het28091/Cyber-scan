@@ -21,6 +21,9 @@ jobs:
           python -m pip install --require-hashes -r requirements.lock
           python -m pip install playwright==1.63.0
           python -m playwright install --with-deps chromium
+          sudo systemctl start "user@$(id -u).service"
+          echo "XDG_RUNTIME_DIR=/run/user/$(id -u)" >> "$GITHUB_ENV"
+          echo "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus" >> "$GITHUB_ENV"
       - name: Real static snapshot containment
         env:
           PYTHONPATH: .
