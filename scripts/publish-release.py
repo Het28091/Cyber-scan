@@ -39,7 +39,7 @@ def verify_ci(repository,run_id,commit):
         jobs.extend(batch)
         if len(batch)<100:break
     else:raise ValueError('CI job listing exceeds bound')
-    required={'test','live-acceptance','browser-acceptance','target-browser-acceptance','semgrep-acceptance'}
+    required={'test','live-acceptance','browser-acceptance','target-browser-acceptance','operations-acceptance','semgrep-acceptance'}
     required|={f'distribution-acceptance ({os_name}, {python})' for os_name in ('ubuntu-22.04','ubuntu-24.04') for python in ('3.11','3.12','3.13','3.14')}
     required|={f'inventory-acceptance ({tool})' for tool in ('syft','trivy')}
     for name in required:
