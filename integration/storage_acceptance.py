@@ -48,6 +48,8 @@ def main():
     from secaudit.adapters import bounded,sandbox_command
     executable=str(Path(sys._base_executable).resolve())
     command=sandbox_command(executable,ROOT,extra=[(sys.base_prefix,sys.base_prefix)])
+    # Preserve the runtime layout for libpython's executable-relative lookup.
+    command[-1]=executable
     command[-2:-2]=['--size','1048576','--tmpfs','/work']
     command+=['-B','/input/integration/storage_acceptance.py','--inside']
     # The same supported Python runtime is read-only, without PDF dependencies.
