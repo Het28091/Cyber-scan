@@ -31,6 +31,19 @@ not silently marked accepted or removed from earlier release requirements.
 
 ## API AI
 
+At source `7f8b08f`, the compatible-provider adapter supports an explicit
+`response_format: "json_object"`; the Groq template enables it. Existing provider
+configurations retain text mode unless selected. Advanced dashboard AI JSON can
+carry the same option. Output still must pass the original strict schema, known
+finding-ID and metadata-only disclosure checks. Invalid JSON, invented IDs and
+unexpected executable fields remain rejected. This is remediation assistance,
+not autonomous scanning or execution.
+
+Kali's full suite passed **170 tests in 10.663 seconds** at that source, including
+the new response-format/disclosure/schema tests. The session had no configured
+`SECAUDIT_API_KEY` (presence only was checked). This proves fixture behavior, not
+real Groq inference or free-quota billing. No provider call was made.
+
 `config/groq-ai.json` is an explicit preparation template. It contains no key.
 The endpoint follows [Groq's compatibility documentation](https://console.groq.com/docs/openai)
 and the model is documented [here](https://console.groq.com/docs/model/llama-3.1-8b-instant).

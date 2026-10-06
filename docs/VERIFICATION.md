@@ -1,5 +1,14 @@
 # Verification record
 
+## API JSON-response option — 6 October 2026
+
+Implementation source `7f8b08f`: full Kali Python 3.13.12 suite, 170 tests PASS in
+10.663 s (`artifacts/checkpoints/three-mode/json-mode-tests.log` on the VM).
+New tests cover explicit opt-in versus unchanged text mode, metadata minimization,
+invalid JSON, unknown finding IDs and unexpected fields. Two portable targeted
+tests also passed. Actual provider inference and free-quota status remain NOT TESTED;
+the credential-presence check returned false and no real API request was made.
+
 ## Owner Kali non-AI modes — 6 October 2026
 
 Source `3d72b5b3a9050921c20a29df7e39c7b07e2060b8`, Python 3.13.12: 168 tests pass,

@@ -1,5 +1,12 @@
 # Project completion status
 
+**AI integration continuation — 6 October 2026:** explicit JSON response mode
+is implemented for compatible providers and enabled in the Groq template. All
+170 regression tests pass on Kali at `7f8b08f`. Live API acceptance is still blocked:
+the test session has no replacement credential and free-only account preparation
+must be confirmed. No paid calls or local-model tests were performed. See
+[mode handover](THREE_MODE_HANDOVER.md).
+
 **Kali reconnected — 6 October 2026:** at source `3d72b5b`, all 168 regression
 tests pass; actual offline CLI scanning under inherited network denial and the
 internet-mode web-only CLI on an owned fixture pass. Source/HTTP/queue load tests
