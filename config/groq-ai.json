@@ -12,6 +12,7 @@
     "approved_ips": [],
     "api_key_env": "SECAUDIT_API_KEY",
     "failure_policy": "required",
+    "response_format": "json_object",
     "request_budget": 2,
     "token_budget": 8192,
     "output_tokens": 512,

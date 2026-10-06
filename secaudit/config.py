@@ -23,6 +23,7 @@ class AIConfig:
     permitted_data_categories: list=field(default_factory=lambda:['finding_metadata'])
     redaction: bool=True
     failure_policy: str='continue'
+    response_format: str='text'
     approved_ips: list=field(default_factory=list)
 
 @dataclass
@@ -92,6 +93,7 @@ class Config:
         if type(a.retry_limit) is not int or type(a.concurrency) is not int or a.retry_limit!=0 or a.concurrency!=1: raise PolicyError('this version supports retry_limit=0 and concurrency=1')
         if a.timeout>120 or a.output_tokens>=a.context_tokens: raise PolicyError('AI timeout must be at most 120 seconds and output must fit context')
         if a.failure_policy not in ('continue','required') or a.permitted_data_categories!=['finding_metadata'] or a.redaction is not True: raise PolicyError('unsupported AI disclosure or failure policy')
+        if a.response_format not in ('text','json_object'): raise PolicyError('unsupported AI response format')
         for key in ('cost_ceiling','input_price_per_million','output_price_per_million'):
             v=getattr(a,key)
             if type(v) not in (int,float) or not 0<=v<1e9: raise PolicyError(f'invalid {key}')

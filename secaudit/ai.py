@@ -55,7 +55,9 @@ class Provider:
             try: content=r['message']['content']
             except (KeyError,TypeError): raise PolicyError('invalid AI completion envelope') from None
         else:
-            r=self.call('/chat/completions',{'model':self.a.model,'messages':messages,'max_tokens':self.a.output_tokens,'stream':False})
+            request_data={'model':self.a.model,'messages':messages,'max_tokens':self.a.output_tokens,'stream':False}
+            if self.a.response_format=='json_object':request_data['response_format']={'type':'json_object'}
+            r=self.call('/chat/completions',request_data)
             try: content=r['choices'][0]['message']['content']
             except (KeyError,TypeError,IndexError): raise PolicyError('invalid AI completion envelope') from None
         if not isinstance(content,str): raise PolicyError('invalid AI completion content')
