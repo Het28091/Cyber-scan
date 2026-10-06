@@ -1,5 +1,12 @@
 # Project completion status
 
+**Owner scope update — 6 October 2026:** current execution targets Groq API AI
+(`llama-3.1-8b-instant`, free quota only), web-only non-AI, and offline local-source
+non-AI. Local-model testing is deferred. The prepared configurations and exact
+remaining prerequisites are in [THREE_MODE_HANDOVER.md](THREE_MODE_HANDOVER.md).
+SSH to the last VM address timed out; real API/VM acceptance is not yet performed.
+Portable non-AI configuration checks passed; these are not runtime acceptance.
+
 **Latest implementation checkpoint — 6 October 2026:** source `c1cf598` fixes
 checkpoint-write performance and immutable finding deduplication. All **16 mandatory
 Linux CI jobs PASS** at that source. Full source,

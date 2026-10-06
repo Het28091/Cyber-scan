@@ -7,6 +7,11 @@ Baseline and current status: [PROJECT_STATUS.md](PROJECT_STATUS.md).
 
 ## Working agreement
 
+**6 October owner scope:** prioritize API AI on Groq with free quota only, web-only
+non-AI and offline local-source non-AI. Defer local-model testing for now. This
+changes immediate execution order, not historical evidence or final gate results.
+See THREE_MODE_HANDOVER.md for configuration and external blockers.
+
 **Owner direction, 1 October 2026:** defer the unavailable Kali/Ollama/API
 acceptance inputs and continue every independent task. This explicitly permits
 provider-independent S3/S4 implementation and verification before Spiral 2's

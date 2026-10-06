@@ -1,0 +1,69 @@
+# Owner-selected modes — 6 October 2026
+
+The owner requested online API AI using Groq `llama-3.1-8b-instant`, web-only
+non-AI, and local offline non-AI. Local-model AI testing is deferred for now,
+not silently marked accepted or removed from earlier release requirements.
+
+## API AI
+
+`config/groq-ai.json` is an explicit preparation template. It contains no key.
+The endpoint follows [Groq's compatibility documentation](https://console.groq.com/docs/openai)
+and the model is documented [here](https://console.groq.com/docs/model/llama-3.1-8b-instant).
+Its empty `approved_ips` deliberately blocks execution until DNS pins are resolved
+and reviewed on the execution host. Configure the credential privately through
+`SECAUDIT_API_KEY`; never commit it. A key was disclosed in chat: rotate that key,
+and do not paste its replacement into another message.
+
+Initial acceptance uses only owned `demo/source` findings and sends finding ID,
+rule and severity metadata. No source text or target captures are sent. Two
+requests allow one model-list request and one inference request. The owner selected
+**free quota only** on 6 October: no paid inference is authorized. Confirm that
+the prepared account/test environment cannot fall back to billable usage before
+calling the API. The template does not claim that a zero/default cost
+ceiling enforces free-only billing. Real readiness, inference, JSON validation,
+reports and failure/cancellation behavior remain to be verified on the prepared
+provider. Local-model tests are not required for this immediate execution scope.
+
+## Web-only, no AI
+
+Use `config/web-only.json`: source is empty, only `web` is selected, AI is disabled,
+and no online dependency/advisory module runs. Supply a reviewed authorization
+scope and target; the empty target prevents accidentally scanning a sample website.
+
+```bash
+bash run.sh scan --config config/web-only.json \
+  --target https://YOUR-AUTHORIZED-TARGET/ --scope /absolute/reviewed-scope.json
+```
+
+Existing controls still enforce IP pins, allowed paths and request/time budgets.
+Only an explicitly owned/authorized target should be supplied. Built-in web checks
+are bounded HTTP checks, not an interactive application or exploitation engine.
+CI has exercised owned HTTP fixtures; intended-target acceptance is separate.
+
+## Local machine only, no internet or AI
+
+Use the existing offline source configuration with a local source path:
+
+```bash
+bash run.sh scan --config config/offline.json --source /absolute/local/source
+```
+
+With no target, no AI and no external/online modules, the built-in source path
+denies network access through Linux seccomp. Initial dependency preparation may
+need connectivity; prepare/install the offline bundle before disconnecting the VM.
+The distribution CI already tests installation and scanning under inherited network
+denial. Do not enable online advisories or API AI and call that an offline run.
+
+## Missing inputs and current status
+
+- SSH to the last supplied VM address timed out on 6 October. Start Kali and
+  confirm its current reachable IP; repository location remains `/home/kali/Cyber-scan`.
+- Privately configure a replacement API key, confirm the test budget, and make
+  the environment available to the actual test process. A variable exported in
+  an unrelated terminal does not reach a new SSH session automatically.
+- Provide an authorized web target/scope only if deployment-specific testing is
+  wanted now; otherwise the developer uses owned local fixtures on the VM.
+
+No real API call was made and no VM acceptance was claimed in this preparation
+checkpoint. Existing CI evidence remains tied to its recorded source. This scope
+selection does not authorize release publication or waive owner acceptance.

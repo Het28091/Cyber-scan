@@ -1,0 +1,10 @@
+{
+  "mode": "internet",
+  "source": "",
+  "target": "",
+  "scope": "scope.json",
+  "output": "runs",
+  "modules": ["web"],
+  "strict": true,
+  "ai": {"enabled": false}
+}
