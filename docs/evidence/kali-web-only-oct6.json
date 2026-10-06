@@ -1,0 +1,15 @@
+{
+  "source_commit": "3d72b5b3a9050921c20a29df7e39c7b07e2060b8",
+  "python": "3.13.12",
+  "status": "PASS",
+  "mode": "internet",
+  "modules": [
+    "web"
+  ],
+  "requests": [
+    "HEAD",
+    "GET"
+  ],
+  "ai_enabled": false,
+  "limitation": "Owned loopback fixture in internet mode; no external deployment tested"
+}

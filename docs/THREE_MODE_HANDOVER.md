@@ -1,5 +1,30 @@
 # Owner-selected modes — 6 October 2026
 
+## Kali checkpoint
+
+SSH restored at the owner's updated address. The clean checkout was fast-forwarded
+to `3d72b5b3a9050921c20a29df7e39c7b07e2060b8`; Python 3.13.12 on Kali Linux.
+`python -m unittest discover -s tests -v`: **168 tests PASS, 10.867 seconds**.
+`integration/load_acceptance.py`: PASS; 4,999-file scan 1.162 s, twenty owned HTTP
+pages 2.706 s, ten real queue jobs 3.601 s. Logs remain in the VM's
+`artifacts/checkpoints/three-mode/`; timings are synthetic observations.
+
+Two additional owned fixtures passed at that exact source:
+
+- [Offline evidence](evidence/kali-offline-oct6.json): a parent process installed
+  seccomp network denial, confirmed AF_INET socket creation was refused, then ran
+  the actual offline CLI in an inheriting child. Reports completed with five demo
+  findings and AI disabled. This proves the prepared scan, not online setup.
+- [Web-only evidence](evidence/kali-web-only-oct6.json): loaded `config/web-only.json`,
+  supplied a temporary owned loopback HTTP server and its pinned scope, and ran the
+  CLI. Internet mode, only the web module, one HEAD plus one GET, one asset and AI
+  disabled were verified. No external deployment was contacted.
+
+Real API acceptance remains NOT TESTED. The disclosed credential was not used or
+saved to the repository. A privately configured replacement and confirmed free-only
+account environment remain required; no paid calls are authorized. Local-model
+testing remains deferred. This checkpoint does not accept a production release.
+
 The owner requested online API AI using Groq `llama-3.1-8b-instant`, web-only
 non-AI, and local offline non-AI. Local-model AI testing is deferred for now,
 not silently marked accepted or removed from earlier release requirements.

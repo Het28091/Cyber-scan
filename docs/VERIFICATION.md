@@ -1,5 +1,13 @@
 # Verification record
 
+## Owner Kali non-AI modes — 6 October 2026
+
+Source `3d72b5b3a9050921c20a29df7e39c7b07e2060b8`, Python 3.13.12: 168 tests pass,
+full source/HTTP/queue load exercise passes, offline CLI completes under inherited
+seccomp network denial, and explicit internet-mode web-only CLI completes against
+an owned pinned fixture with AI disabled. See [details and copied evidence](THREE_MODE_HANDOVER.md).
+No real API call, local-model test or release acceptance is claimed.
+
 ## Load, identity and mapping — 6 October 2026
 
 Source `c1cf5989d5561b19df4486b2b3d31da18274900a`: the operations job verifies

@@ -1,5 +1,12 @@
 # Project completion status
 
+**Kali reconnected — 6 October 2026:** at source `3d72b5b`, all 168 regression
+tests pass; actual offline CLI scanning under inherited network denial and the
+internet-mode web-only CLI on an owned fixture pass. Source/HTTP/queue load tests
+also pass on the VM. See [three-mode evidence](THREE_MODE_HANDOVER.md).
+Online API AI still awaits private replacement-key preparation and free-quota
+confirmation. Local-model testing is deferred. No production acceptance claimed.
+
 **Owner scope update — 6 October 2026:** current execution targets Groq API AI
 (`llama-3.1-8b-instant`, free quota only), web-only non-AI, and offline local-source
 non-AI. Local-model testing is deferred. The prepared configurations and exact
