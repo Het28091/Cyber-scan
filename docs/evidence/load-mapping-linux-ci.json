@@ -1,0 +1,1519 @@
+{
+  "recorded_date": "2026-10-06",
+  "source_commit": "c1cf5989d5561b19df4486b2b3d31da18274900a",
+  "run_id": 37491440348,
+  "url": "https://github.com/Het28091/Cyber-scan/actions/runs/37491440348",
+  "conclusion": "success",
+  "mandatory_passed": 16,
+  "jobs": [
+    {
+      "name": "live-acceptance",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-06T15:54:41Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:54:43Z"
+        },
+        {
+          "name": "Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-06T15:54:43Z",
+          "completed_at": "2026-10-06T15:54:43Z"
+        },
+        {
+          "name": "Install real scanner and mandatory sandbox",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-06T15:54:43Z",
+          "completed_at": "2026-10-06T15:54:58Z"
+        },
+        {
+          "name": "Live OSV and real sandboxed Gitleaks acceptance",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-06T15:54:58Z",
+          "completed_at": "2026-10-06T15:55:01Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-10-06T15:55:01Z",
+          "completed_at": "2026-10-06T15:55:01Z"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-10-06T15:55:01Z",
+          "completed_at": "2026-10-06T15:55:02Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-06T15:55:02Z",
+          "completed_at": "2026-10-06T15:55:02Z"
+        }
+      ],
+      "html_url": "https://github.com/Het28091/Cyber-scan/actions/runs/37491440348/job/112364902191"
+    },
+    {
+      "name": "test",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-06T15:54:41Z",
+          "completed_at": "2026-10-06T15:54:41Z"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-06T15:54:41Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Install locked report dependencies",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:54:47Z"
+        },
+        {
+          "name": "Install development gates",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-06T15:54:47Z",
+          "completed_at": "2026-10-06T15:54:52Z"
+        },
+        {
+          "name": "Ruff correctness gate",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-06T15:54:52Z",
+          "completed_at": "2026-10-06T15:54:52Z"
+        },
+        {
+          "name": "Bandit high severity and confidence gate",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-06T15:54:52Z",
+          "completed_at": "2026-10-06T15:54:54Z"
+        },
+        {
+          "name": "Dependency advisory gate (network required; failures block)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-10-06T15:54:54Z",
+          "completed_at": "2026-10-06T15:54:55Z"
+        },
+        {
+          "name": "Unit and integration tests with subprocess coverage",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-10-06T15:54:55Z",
+          "completed_at": "2026-10-06T15:55:37Z"
+        },
+        {
+          "name": "Synthetic offline assessment",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-10-06T15:55:37Z",
+          "completed_at": "2026-10-06T15:55:37Z"
+        },
+        {
+          "name": "Detection quality corpus",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-06T15:55:37Z",
+          "completed_at": "2026-10-06T15:55:37Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21,
+          "started_at": "2026-10-06T15:55:37Z",
+          "completed_at": "2026-10-06T15:55:37Z"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22,
+          "started_at": "2026-10-06T15:55:37Z",
+          "completed_at": "2026-10-06T15:55:38Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23,
+          "started_at": "2026-10-06T15:55:38Z",
+          "completed_at": "2026-10-06T15:55:38Z"
+        }
+      ],
+      "html_url": "https://github.com/Het28091/Cyber-scan/actions/runs/37491440348/job/112364902585"
+    },
+    {
+      "name": "inventory-acceptance (syft)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-06T15:54:41Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:54:43Z"
+        },
+        {
+          "name": "Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-06T15:54:43Z",
+          "completed_at": "2026-10-06T15:54:43Z"
+        },
+        {
+          "name": "Install pinned scanner binaries and Bubblewrap",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-06T15:54:43Z",
+          "completed_at": "2026-10-06T15:55:11Z"
+        },
+        {
+          "name": "Explicit connected Trivy database preparation",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 5,
+          "started_at": "2026-10-06T15:55:11Z",
+          "completed_at": "2026-10-06T15:55:11Z"
+        },
+        {
+          "name": "Real isolated inventory and reporting controls",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-06T15:55:11Z",
+          "completed_at": "2026-10-06T15:55:15Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-06T15:55:15Z",
+          "completed_at": "2026-10-06T15:55:16Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-06T15:55:16Z",
+          "completed_at": "2026-10-06T15:55:16Z"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-10-06T15:55:16Z",
+          "completed_at": "2026-10-06T15:55:16Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-10-06T15:55:16Z",
+          "completed_at": "2026-10-06T15:55:16Z"
+        }
+      ],
+      "html_url": "https://github.com/Het28091/Cyber-scan/actions/runs/37491440348/job/112364902687"
+    },
+    {
+      "name": "browser-acceptance",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-06T15:54:41Z",
+          "completed_at": "2026-10-06T15:54:43Z"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-06T15:54:43Z",
+          "completed_at": "2026-10-06T15:54:46Z"
+        },
+        {
+          "name": "Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-06T15:54:46Z",
+          "completed_at": "2026-10-06T15:54:46Z"
+        },
+        {
+          "name": "Run python -m pip install --require-hashes -r requirements.lock",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-06T15:54:46Z",
+          "completed_at": "2026-10-06T15:54:57Z"
+        },
+        {
+          "name": "Run python -m pip install playwright==1.63.0",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-06T15:54:57Z",
+          "completed_at": "2026-10-06T15:55:00Z"
+        },
+        {
+          "name": "Run python -m playwright install --with-deps chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-06T15:55:00Z",
+          "completed_at": "2026-10-06T15:55:47Z"
+        },
+        {
+          "name": "Install pinned accessibility checker",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-06T15:55:47Z",
+          "completed_at": "2026-10-06T15:55:58Z"
+        },
+        {
+          "name": "Real dashboard browser acceptance",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-10-06T15:55:58Z",
+          "completed_at": "2026-10-06T15:56:16Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-10-06T15:56:16Z",
+          "completed_at": "2026-10-06T15:56:17Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-10-06T15:56:17Z",
+          "completed_at": "2026-10-06T15:56:18Z"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-10-06T15:56:18Z",
+          "completed_at": "2026-10-06T15:56:18Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19,
+          "started_at": "2026-10-06T15:56:18Z",
+          "completed_at": "2026-10-06T15:56:18Z"
+        }
+      ],
+      "html_url": "https://github.com/Het28091/Cyber-scan/actions/runs/37491440348/job/112364902693"
+    },
+    {
+      "name": "operations-acceptance",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-06T15:54:40Z",
+          "completed_at": "2026-10-06T15:54:41Z"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-06T15:54:41Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Run python -m pip install --require-hashes -r requirements.lock",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:54:47Z"
+        },
+        {
+          "name": "Real upgrade restore rollback and reference workload exercise",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-06T15:54:47Z",
+          "completed_at": "2026-10-06T15:54:50Z"
+        },
+        {
+          "name": "Prepare bounded storage fixture",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-06T15:54:50Z",
+          "completed_at": "2026-10-06T15:55:07Z"
+        },
+        {
+          "name": "Real full-storage recovery",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-06T15:55:07Z",
+          "completed_at": "2026-10-06T15:55:08Z"
+        },
+        {
+          "name": "Default source boundary measurements",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-10-06T15:55:08Z",
+          "completed_at": "2026-10-06T15:55:08Z"
+        },
+        {
+          "name": "Full assessment and real queue measurements",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-10-06T15:55:08Z",
+          "completed_at": "2026-10-06T15:55:15Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-10-06T15:55:15Z",
+          "completed_at": "2026-10-06T15:55:16Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19,
+          "started_at": "2026-10-06T15:55:16Z",
+          "completed_at": "2026-10-06T15:55:16Z"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20,
+          "started_at": "2026-10-06T15:55:16Z",
+          "completed_at": "2026-10-06T15:55:17Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21,
+          "started_at": "2026-10-06T15:55:17Z",
+          "completed_at": "2026-10-06T15:55:17Z"
+        }
+      ],
+      "html_url": "https://github.com/Het28091/Cyber-scan/actions/runs/37491440348/job/112364902701"
+    },
+    {
+      "name": "semgrep-acceptance",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-06T15:54:40Z",
+          "completed_at": "2026-10-06T15:54:41Z"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-06T15:54:41Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Explicitly install Semgrep in a sandbox-visible environment",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:55:11Z"
+        },
+        {
+          "name": "Install locked pipeline reporting dependencies",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-06T15:55:11Z",
+          "completed_at": "2026-10-06T15:55:16Z"
+        },
+        {
+          "name": "Real isolated Semgrep positive, clean and invalid-rules controls",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-06T15:55:16Z",
+          "completed_at": "2026-10-06T15:55:32Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-06T15:55:32Z",
+          "completed_at": "2026-10-06T15:55:32Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-06T15:55:32Z",
+          "completed_at": "2026-10-06T15:55:32Z"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-10-06T15:55:32Z",
+          "completed_at": "2026-10-06T15:55:33Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-10-06T15:55:33Z",
+          "completed_at": "2026-10-06T15:55:33Z"
+        }
+      ],
+      "html_url": "https://github.com/Het28091/Cyber-scan/actions/runs/37491440348/job/112364902775"
+    },
+    {
+      "name": "target-browser-acceptance",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-06T15:54:41Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:54:43Z"
+        },
+        {
+          "name": "Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-06T15:54:43Z",
+          "completed_at": "2026-10-06T15:54:43Z"
+        },
+        {
+          "name": "Prepare real Chromium and mandatory outer sandbox",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-06T15:54:43Z",
+          "completed_at": "2026-10-06T15:55:20Z"
+        },
+        {
+          "name": "Real static snapshot containment",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-06T15:55:20Z",
+          "completed_at": "2026-10-06T15:55:22Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-06T15:55:22Z",
+          "completed_at": "2026-10-06T15:55:23Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-06T15:55:23Z",
+          "completed_at": "2026-10-06T15:55:23Z"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-06T15:55:23Z",
+          "completed_at": "2026-10-06T15:55:24Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-06T15:55:24Z",
+          "completed_at": "2026-10-06T15:55:24Z"
+        }
+      ],
+      "html_url": "https://github.com/Het28091/Cyber-scan/actions/runs/37491440348/job/112364902920"
+    },
+    {
+      "name": "distribution-acceptance (ubuntu-24.04, 3.12)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-06T15:54:41Z",
+          "completed_at": "2026-10-06T15:54:41Z"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-06T15:54:41Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Clean setup and repeated offline setup",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:55:05Z"
+        },
+        {
+          "name": "Prepare locked wheels and install under network denial",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-06T15:55:05Z",
+          "completed_at": "2026-10-06T15:55:11Z"
+        },
+        {
+          "name": "Build versioned candidate bundle",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-06T15:55:11Z",
+          "completed_at": "2026-10-06T15:55:12Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-06T15:55:12Z",
+          "completed_at": "2026-10-06T15:55:14Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-06T15:55:14Z",
+          "completed_at": "2026-10-06T15:55:14Z"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-10-06T15:55:14Z",
+          "completed_at": "2026-10-06T15:55:14Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-10-06T15:55:14Z",
+          "completed_at": "2026-10-06T15:55:14Z"
+        }
+      ],
+      "html_url": "https://github.com/Het28091/Cyber-scan/actions/runs/37491440348/job/112364903067"
+    },
+    {
+      "name": "distribution-acceptance (ubuntu-22.04, 3.12)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-06T15:54:40Z",
+          "completed_at": "2026-10-06T15:54:41Z"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-06T15:54:41Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Clean setup and repeated offline setup",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:54:59Z"
+        },
+        {
+          "name": "Prepare locked wheels and install under network denial",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-06T15:54:59Z",
+          "completed_at": "2026-10-06T15:55:02Z"
+        },
+        {
+          "name": "Build versioned candidate bundle",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-06T15:55:02Z",
+          "completed_at": "2026-10-06T15:55:03Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-06T15:55:03Z",
+          "completed_at": "2026-10-06T15:55:10Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-06T15:55:10Z",
+          "completed_at": "2026-10-06T15:55:10Z"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-10-06T15:55:10Z",
+          "completed_at": "2026-10-06T15:55:10Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-10-06T15:55:10Z",
+          "completed_at": "2026-10-06T15:55:10Z"
+        }
+      ],
+      "html_url": "https://github.com/Het28091/Cyber-scan/actions/runs/37491440348/job/112364903070"
+    },
+    {
+      "name": "inventory-acceptance (trivy)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-06T15:54:41Z",
+          "completed_at": "2026-10-06T15:54:41Z"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-06T15:54:41Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Install pinned scanner binaries and Bubblewrap",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:55:04Z"
+        },
+        {
+          "name": "Explicit connected Trivy database preparation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-06T15:55:04Z",
+          "completed_at": "2026-10-06T15:55:07Z"
+        },
+        {
+          "name": "Real isolated inventory and reporting controls",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-06T15:55:07Z",
+          "completed_at": "2026-10-06T15:55:10Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-06T15:55:10Z",
+          "completed_at": "2026-10-06T15:55:11Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-06T15:55:11Z",
+          "completed_at": "2026-10-06T15:55:11Z"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-10-06T15:55:11Z",
+          "completed_at": "2026-10-06T15:55:11Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-10-06T15:55:11Z",
+          "completed_at": "2026-10-06T15:55:11Z"
+        }
+      ],
+      "html_url": "https://github.com/Het28091/Cyber-scan/actions/runs/37491440348/job/112364903120"
+    },
+    {
+      "name": "distribution-acceptance (ubuntu-22.04, 3.13)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-06T15:54:41Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:54:43Z"
+        },
+        {
+          "name": "Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-06T15:54:43Z",
+          "completed_at": "2026-10-06T15:54:43Z"
+        },
+        {
+          "name": "Clean setup and repeated offline setup",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-06T15:54:43Z",
+          "completed_at": "2026-10-06T15:55:05Z"
+        },
+        {
+          "name": "Prepare locked wheels and install under network denial",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-06T15:55:05Z",
+          "completed_at": "2026-10-06T15:55:11Z"
+        },
+        {
+          "name": "Build versioned candidate bundle",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-06T15:55:11Z",
+          "completed_at": "2026-10-06T15:55:12Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-06T15:55:12Z",
+          "completed_at": "2026-10-06T15:55:15Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-06T15:55:15Z",
+          "completed_at": "2026-10-06T15:55:15Z"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-10-06T15:55:15Z",
+          "completed_at": "2026-10-06T15:55:15Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-10-06T15:55:15Z",
+          "completed_at": "2026-10-06T15:55:15Z"
+        }
+      ],
+      "html_url": "https://github.com/Het28091/Cyber-scan/actions/runs/37491440348/job/112364903223"
+    },
+    {
+      "name": "distribution-acceptance (ubuntu-24.04, 3.13)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-06T15:54:41Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:54:43Z"
+        },
+        {
+          "name": "Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-06T15:54:43Z",
+          "completed_at": "2026-10-06T15:54:43Z"
+        },
+        {
+          "name": "Clean setup and repeated offline setup",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-06T15:54:43Z",
+          "completed_at": "2026-10-06T15:55:03Z"
+        },
+        {
+          "name": "Prepare locked wheels and install under network denial",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-06T15:55:03Z",
+          "completed_at": "2026-10-06T15:55:08Z"
+        },
+        {
+          "name": "Build versioned candidate bundle",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-06T15:55:08Z",
+          "completed_at": "2026-10-06T15:55:10Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-06T15:55:10Z",
+          "completed_at": "2026-10-06T15:55:12Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-06T15:55:12Z",
+          "completed_at": "2026-10-06T15:55:12Z"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-10-06T15:55:12Z",
+          "completed_at": "2026-10-06T15:55:12Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-10-06T15:55:12Z",
+          "completed_at": "2026-10-06T15:55:12Z"
+        }
+      ],
+      "html_url": "https://github.com/Het28091/Cyber-scan/actions/runs/37491440348/job/112364903228"
+    },
+    {
+      "name": "distribution-acceptance (ubuntu-24.04, 3.14)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-06T15:54:41Z",
+          "completed_at": "2026-10-06T15:54:41Z"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-06T15:54:41Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Clean setup and repeated offline setup",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:55:04Z"
+        },
+        {
+          "name": "Prepare locked wheels and install under network denial",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-06T15:55:04Z",
+          "completed_at": "2026-10-06T15:55:10Z"
+        },
+        {
+          "name": "Build versioned candidate bundle",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-06T15:55:10Z",
+          "completed_at": "2026-10-06T15:55:11Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-06T15:55:11Z",
+          "completed_at": "2026-10-06T15:55:13Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-06T15:55:13Z",
+          "completed_at": "2026-10-06T15:55:13Z"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-10-06T15:55:13Z",
+          "completed_at": "2026-10-06T15:55:13Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-10-06T15:55:13Z",
+          "completed_at": "2026-10-06T15:55:13Z"
+        }
+      ],
+      "html_url": "https://github.com/Het28091/Cyber-scan/actions/runs/37491440348/job/112364903242"
+    },
+    {
+      "name": "distribution-acceptance (ubuntu-22.04, 3.11)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-06T15:54:40Z",
+          "completed_at": "2026-10-06T15:54:41Z"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-06T15:54:41Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Clean setup and repeated offline setup",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:55:02Z"
+        },
+        {
+          "name": "Prepare locked wheels and install under network denial",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-06T15:55:02Z",
+          "completed_at": "2026-10-06T15:55:09Z"
+        },
+        {
+          "name": "Build versioned candidate bundle",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-06T15:55:09Z",
+          "completed_at": "2026-10-06T15:55:11Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-06T15:55:11Z",
+          "completed_at": "2026-10-06T15:55:12Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-06T15:55:12Z",
+          "completed_at": "2026-10-06T15:55:12Z"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-10-06T15:55:12Z",
+          "completed_at": "2026-10-06T15:55:13Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-10-06T15:55:13Z",
+          "completed_at": "2026-10-06T15:55:13Z"
+        }
+      ],
+      "html_url": "https://github.com/Het28091/Cyber-scan/actions/runs/37491440348/job/112364903291"
+    },
+    {
+      "name": "distribution-acceptance (ubuntu-22.04, 3.14)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-06T15:54:41Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:54:43Z"
+        },
+        {
+          "name": "Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-06T15:54:43Z",
+          "completed_at": "2026-10-06T15:54:43Z"
+        },
+        {
+          "name": "Clean setup and repeated offline setup",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-06T15:54:43Z",
+          "completed_at": "2026-10-06T15:55:09Z"
+        },
+        {
+          "name": "Prepare locked wheels and install under network denial",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-06T15:55:09Z",
+          "completed_at": "2026-10-06T15:55:16Z"
+        },
+        {
+          "name": "Build versioned candidate bundle",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-06T15:55:16Z",
+          "completed_at": "2026-10-06T15:55:17Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-06T15:55:17Z",
+          "completed_at": "2026-10-06T15:55:18Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-06T15:55:18Z",
+          "completed_at": "2026-10-06T15:55:18Z"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-10-06T15:55:18Z",
+          "completed_at": "2026-10-06T15:55:19Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-10-06T15:55:19Z",
+          "completed_at": "2026-10-06T15:55:19Z"
+        }
+      ],
+      "html_url": "https://github.com/Het28091/Cyber-scan/actions/runs/37491440348/job/112364903339"
+    },
+    {
+      "name": "distribution-acceptance (ubuntu-24.04, 3.11)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-06T15:54:41Z",
+          "completed_at": "2026-10-06T15:54:42Z"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-06T15:54:42Z",
+          "completed_at": "2026-10-06T15:54:43Z"
+        },
+        {
+          "name": "Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-06T15:54:43Z",
+          "completed_at": "2026-10-06T15:54:43Z"
+        },
+        {
+          "name": "Clean setup and repeated offline setup",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-06T15:54:43Z",
+          "completed_at": "2026-10-06T15:55:03Z"
+        },
+        {
+          "name": "Prepare locked wheels and install under network denial",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-06T15:55:03Z",
+          "completed_at": "2026-10-06T15:55:10Z"
+        },
+        {
+          "name": "Build versioned candidate bundle",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-06T15:55:10Z",
+          "completed_at": "2026-10-06T15:55:12Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-06T15:55:12Z",
+          "completed_at": "2026-10-06T15:55:13Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-06T15:55:13Z",
+          "completed_at": "2026-10-06T15:55:13Z"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-10-06T15:55:13Z",
+          "completed_at": "2026-10-06T15:55:14Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-10-06T15:55:14Z",
+          "completed_at": "2026-10-06T15:55:14Z"
+        }
+      ],
+      "html_url": "https://github.com/Het28091/Cyber-scan/actions/runs/37491440348/job/112364903426"
+    },
+    {
+      "name": "authorized-target-acceptance",
+      "status": "completed",
+      "conclusion": "skipped",
+      "steps": [],
+      "html_url": "https://github.com/Het28091/Cyber-scan/actions/runs/37491440348/job/112364904703"
+    }
+  ],
+  "load_measurements": {
+    "source_commit": "c1cf5989d5561b19df4486b2b3d31da18274900a",
+    "python": "3.12.14",
+    "platform": "Linux-6.8.0-1064-azure-x86_64-with-glibc2.35",
+    "checks": [
+      {
+        "name": "4999-file full assessment",
+        "status": "COMPLETED_WITH_LIMITATIONS",
+        "seconds": 1.165,
+        "assets": 4999,
+        "report_bytes": 1013017,
+        "returncode": 0
+      },
+      {
+        "name": "twenty owned HTTP pages",
+        "status": "PASS",
+        "seconds": 2.274,
+        "get_requests": 20,
+        "preflight_head_requests": 1,
+        "assets": 20
+      },
+      {
+        "name": "ten real queued source assessments",
+        "seconds": 2.814,
+        "statuses": [
+          "COMPLETED",
+          "COMPLETED",
+          "COMPLETED",
+          "COMPLETED",
+          "COMPLETED",
+          "COMPLETED",
+          "COMPLETED",
+          "COMPLETED",
+          "COMPLETED",
+          "COMPLETED"
+        ]
+      }
+    ],
+    "peak_child_rss_kib": 38696,
+    "status": "PASS",
+    "limitations": [
+      "Owned clean Python files only; not a universal scanner performance budget",
+      "Default 60-second scan timeout unchanged; owner hardware/budget approval pending",
+      "RSS is cumulative child maximum, not per-job profiling; no AI or external target traffic"
+    ]
+  }
+}

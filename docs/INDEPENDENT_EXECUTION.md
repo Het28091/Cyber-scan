@@ -1,5 +1,50 @@
 # Provider-independent execution
 
+## Load and mapping checkpoint — 6 October 2026
+
+Source `c1cf5989d5561b19df4486b2b3d31da18274900a`. The operations acceptance
+job passed its full source, owned HTTP and actual queue exercises on Ubuntu 22.04,
+Python 3.12.14. Results: 4,999-file full assessment 1.165 s / 4,999 assets /
+1,013,017 report bytes; twenty HTTP GETs plus one preflight HEAD in 2.274 s;
+ten queued source jobs all COMPLETED in 2.814 s. Maximum child RSS across the
+exercise was 38,696 KiB. These are synthetic CI observations, not approved owner
+hardware budgets or general throughput guarantees.
+
+S4-01/05 repair: the earlier full scan at `dbd87af` timed out after 60.443 s with
+2,014 assets. Per-file rewrites of growing SQLite/JSON checkpoints caused excessive
+work. The repaired path keeps live evidence current while limiting disk checkpoints
+to one per 250 ms after the first; terminal paths always persist current evidence.
+The 60-second timeout, input limits and sandbox boundaries remain unchanged.
+Regression coverage verifies terminal failure preserves work since the last disk
+checkpoint. A hard kill can lose progress since the last completed disk checkpoint;
+this is documented, not a power-loss durability guarantee.
+
+S3-04 repair/review: deduplication no longer mutates scanner findings or accumulates
+duplicate provenance across checkpoints. Regression tests cover repeatability,
+input isolation, role/location/description identity and presentation-field stability.
+[DETECTION_REVIEW.md](DETECTION_REVIEW.md) reconciles all 28 fixed built-in rule IDs:
+five have specific curated mappings; others have only generic NIST identification
+associations. Dynamic upstream rules are separate. Primary sources were reviewed
+on 2 October; no compliance certification or independent review is claimed.
+
+The HTTP load fixture initially failed because its `headers` method collided with
+BaseHTTPRequestHandler's request-header attribute. Renaming the fixture method
+restored actual HTTP execution; no application safety boundary changed.
+
+Current CI: [run 37491440348](https://github.com/Het28091/Cyber-scan/actions/runs/37491440348).
+All **16 mandatory jobs PASS**. The optional deployment-specific authorized-target
+job was skipped and is not counted as a pass. Completed-run metadata and actual
+load measurements are saved in [durable evidence](evidence/load-mapping-linux-ci.json).
+No new Kali result is claimed.
+
+Next required inputs: [OWNER_ACCEPTANCE_INPUTS.md](OWNER_ACCEPTANCE_INPUTS.md).
+The remaining milestone work requires configured local/API providers, owner-machine
+demo and workload approval, plus independent review. These are not waived by CI.
+S2 remains blocked; S3/S4 are not accepted; S5 freeze/publication has not started.
+No release was created and no final gate was marked PASS by this checkpoint.
+
+## Earlier checkpoints
+
 Owner authorized continuation on 1 October 2026 while S2-04 remains BLOCKED.
 Starting source: `25be9e0` (Spiral 2 evidence checkpoint). Initial working tree clean.
 Windows editing/portable tests; GitHub Linux runners for runtime acceptance.

@@ -94,7 +94,29 @@ establish full-assessment/reporting latency or an owner-approved operating budge
 All exercises use disposable owned fixtures. See INDEPENDENT_EXECUTION.md for
 the source-specific results; implementation presence alone is not acceptance.
 
-## Prepared static-browser runtime
+## Progress, support and evidence retention
+
+The full source/owned-HTTP/queue exercise is `integration/load_acceptance.py`.
+Its measurements are separate from traversal-only boundary checks.
+
+Live progress is updated at each checkpoint. SQLite/partial JSON writes occur on
+the first checkpoint and at most once per 250 ms thereafter; terminal success,
+failure and handled cancellation persist the latest in-memory evidence. A hard
+kill can lose progress since the last completed disk checkpoint. Treat such runs
+as interrupted; this does not claim power-loss durability.
+
+For support, record the exact commit, Linux/Python/tool versions, selected mode,
+failure category and smallest owned reproducer. Share only reviewed, redacted
+preflight/coverage/publication metadata. Do not upload credentials, private source,
+provider responses or an entire evidence tree to public issues.
+
+Assessment evidence does not expire automatically. The 200-terminal-job summary
+limit does not remove assessment runs. The owner chooses retention and verifies
+backup/restore before deliberate disposal. Stop writers before maintenance. Support
+contacts, response times and release observation periods require owner decisions.
+See OWNER_ACCEPTANCE_INPUTS.md for the concrete remaining prerequisites.
+
+## Prepared static-browser runtime requirements
 
 Static snapshots require a real Chromium executable, Bubblewrap, cgroup v2 and a
 working systemd user manager with memory/pids controllers. Check

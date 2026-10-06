@@ -150,6 +150,16 @@ or weaken existing mandatory gates.
 
 ## Prioritized execution backlog
 
+**6 October update:** S3-04 developer mapping/fingerprint review is complete for
+the declared bounded rule set; independent review and a representative owner dataset
+remain pending. S4-01/05 full source, owned HTTP and actual queue exercises pass at
+`c1cf598`, including a repaired checkpoint-write bottleneck. This completes those
+developer exercises, not owner operating-budget acceptance. See
+[current task evidence](INDEPENDENT_EXECUTION.md) and
+[required owner inputs](OWNER_ACCEPTANCE_INPUTS.md). Older next-task statements
+below describe earlier checkpoints. Next: live providers, owner-machine demo,
+budget/dataset approval and independent review; do not start S5 publication.
+
 S2-01, S2-02, S2-03 and S2-05 are **VERIFIED** for the automated Linux checkpoint
 `6eda00ad94f796fe1229d22e967e6869e08bf37c`, with the checks and limits recorded in
 [SPIRAL2_EXECUTION.md](SPIRAL2_EXECUTION.md). This does not replace owner UAT or

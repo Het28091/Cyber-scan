@@ -1,5 +1,15 @@
 # Project completion status
 
+**Latest implementation checkpoint — 6 October 2026:** source `c1cf598` fixes
+checkpoint-write performance and immutable finding deduplication. All **16 mandatory
+Linux CI jobs PASS** at that source. Full source,
+owned HTTP and actual queue measurements now pass the Linux operations job.
+The fixed-rule mapping/identity review is recorded in DETECTION_REVIEW.md.
+See [current evidence and exact scope](INDEPENDENT_EXECUTION.md).
+The next acceptance inputs are the VM, configured providers, owner workload/UAT
+decisions and independent review; see OWNER_ACCEPTANCE_INPUTS.md. No production
+readiness or whole-spiral acceptance is claimed. Entries below are historical.
+
 **Latest continuation — 2 October 2026:** source
 `f02e1e07657b1dd78a01fc69b76d2132f8d0e9ee` passes all **16 mandatory Linux CI jobs**,
 including new real process-kill and disk-full recovery, concurrent queue admission,

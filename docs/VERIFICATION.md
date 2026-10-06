@@ -1,5 +1,19 @@
 # Verification record
 
+## Load, identity and mapping — 6 October 2026
+
+Source `c1cf5989d5561b19df4486b2b3d31da18274900a`: the operations job verifies
+the 4,999-file full source scan, twenty owned HTTP pages and ten real queued jobs.
+See [measurements, fixes and limits](INDEPENDENT_EXECUTION.md) and
+[run 37491440348](https://github.com/Het28091/Cyber-scan/actions/runs/37491440348).
+Finding identity/mapping regressions are part of the mandatory main test job.
+All **16 mandatory CI jobs PASS**; the optional deployment-specific target job is
+skipped. [Durable job/step and measurement evidence](evidence/load-mapping-linux-ci.json)
+records the exact source and actual results.
+Portable identity/mapping tests also passed on Windows on 2 October; they are not
+Linux acceptance. Real providers and owner-machine acceptance remain NOT TESTED
+for this source. No publication or release-gate PASS records were created.
+
 ## Recovery and limits — 2 October 2026
 
 Source `f02e1e07657b1dd78a01fc69b76d2132f8d0e9ee`: all 16 mandatory jobs PASS in
