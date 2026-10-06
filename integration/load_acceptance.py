@@ -18,13 +18,13 @@ def target_measurement(root):
     visits=[]
     class Handler(BaseHTTPRequestHandler):
         def log_message(self,*args):pass
-        def headers(self):
+        def send_fixture_headers(self):
             self.send_response(200);self.send_header('Content-Type','text/html')
             self.send_header('Content-Security-Policy',"default-src 'none'")
             self.send_header('X-Content-Type-Options','nosniff');self.end_headers()
-        def do_HEAD(self):visits.append(('HEAD',self.path));self.headers()
+        def do_HEAD(self):visits.append(('HEAD',self.path));self.send_fixture_headers()
         def do_GET(self):
-            visits.append(('GET',self.path));self.headers()
+            visits.append(('GET',self.path));self.send_fixture_headers()
             self.wfile.write((''.join(f'<a href="/page/{n}">Owned</a>' for n in range(1,20))).encode())
     server=ThreadingHTTPServer(('127.0.0.1',0),Handler)
     thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
