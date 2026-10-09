@@ -52,13 +52,22 @@ class Provider:
         messages=[{'role':'system','content':system},{'role':'user','content':json.dumps(payload)}]
         if self.a.provider=='ollama':
             r=self.call('/api/chat',{'model':self.a.model,'messages':messages,'stream':False,'format':'json','options':{'num_predict':self.a.output_tokens}})
+            if r.get('done') is False or r.get('done_reason') not in (None,'stop'):
+                raise PolicyError('AI completion incomplete or interrupted')
             try: content=r['message']['content']
             except (KeyError,TypeError): raise PolicyError('invalid AI completion envelope') from None
         else:
             request_data={'model':self.a.model,'messages':messages,'max_tokens':self.a.output_tokens,'stream':False}
             if self.a.response_format=='json_object':request_data['response_format']={'type':'json_object'}
             r=self.call('/chat/completions',request_data)
-            try: content=r['choices'][0]['message']['content']
+            try:
+                choice=r['choices'][0]
+                if not isinstance(choice,dict) or not isinstance(choice.get('message'),dict):raise TypeError()
+                if choice.get('finish_reason') not in (None,'stop'):
+                    raise PolicyError('AI completion incomplete or interrupted')
+                if choice['message'].get('tool_calls') or choice['message'].get('function_call') or choice['message'].get('refusal'):
+                    raise PolicyError('AI completion is not a remediation response')
+                content=choice['message']['content']
             except (KeyError,TypeError,IndexError): raise PolicyError('invalid AI completion envelope') from None
         if not isinstance(content,str): raise PolicyError('invalid AI completion content')
         try: result=json.loads(content)

@@ -6,6 +6,26 @@ from .security import PolicyError
 IGNORE={'.git','.venv','node_modules','__pycache__','runs'}
 TEXT={'.py','.js','.ts','.jsx','.tsx','.json','.yaml','.yml','.env','.tf','.toml','.ini','.cfg','.txt','.xml','.conf','.sh','.properties','.in','.lock'}
 
+def docker_runtime_user(text):
+    """Track the final stage's declared user, including locally named stages.
+
+    External image defaults and variable expansion remain unknown.
+    """
+    stages={};stage=None;user=None
+    logical=re.sub(r'\\\r?\n', ' ', text)
+    for line in logical.splitlines():
+        parts=line.strip().split()
+        if not parts or parts[0].startswith('#'):continue
+        instruction=parts[0].upper()
+        if instruction=='FROM':
+            if stage is not None:stages[stage]=user
+            args=[p for p in parts[1:] if not p.startswith('--')]
+            user=stages.get(args[0].lower()) if args else None
+            stage=args[2].lower() if len(args)>=3 and args[1].upper()=='AS' else None
+        elif instruction=='USER':
+            user=parts[1].split(':',1)[0] if len(parts)>1 else None
+    return user
+
 def files(root,cfg):
     root=Path(root).resolve()
     if not root.is_dir(): raise PolicyError('source must be a directory')
@@ -60,7 +80,8 @@ def source_scan(root,cfg,checkpoint):
             if 'config' in cfg.modules:
                 if re.search(r'(?i)\bdebug\s*[:=]\s*(?:true|1)\b',line): add('CONFIG-DEBUG','Debug mode enabled',name,ln,'Debug setting is enabled.','Disable debug mode in production.')
                 if re.search(r'(?i)\bverify\s*=\s*False\b',line): add('CONFIG-TLS','TLS verification disabled',name,ln,'Certificate verification is disabled.','Use certificate validation and a trusted CA bundle.','HIGH')
-        if 'config' in cfg.modules and Path(name).name=='Dockerfile' and not re.search(r'(?im)^\s*USER\s+(?!root\b|0\b)\S+',text):
+        runtime_user=docker_runtime_user(text) if Path(name).name=='Dockerfile' else None
+        if 'config' in cfg.modules and Path(name).name=='Dockerfile' and (not runtime_user or runtime_user=='root' or runtime_user.isdecimal() and int(runtime_user)==0 or '$' in runtime_user):
             add('DOCKER-USER','No explicit non-root Docker user',name,1,'The Dockerfile does not explicitly select a non-root user; base image defaults are unknown.','Choose a non-root runtime user.')
         from .inventory import parse_manifest
         parsed=parse_manifest(name,text)
