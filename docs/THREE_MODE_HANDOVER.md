@@ -1,5 +1,31 @@
 # Owner-selected modes — 6 October 2026
 
+## Separate mode improvements — 9 October 2026
+
+Implementation `18fc648`: **177 Kali tests PASS in 9.975 seconds**, with CI run
+37963739961 successful. Six actual CLI journeys at `15ca6e4` PASS; copied
+[evidence](evidence/three-mode-quality-oct9.json). Tests are separately identified
+by mode and provider simulation is explicitly distinguished from live acceptance.
+
+| Mode | Implemented improvement | Current verification | Remaining |
+| --- | --- | --- | --- |
+| Offline local, no AI/network | Dockerfile check follows the final USER and final stage, including named-stage inheritance; root reset and unknown variable users no longer look safe | Ten Dockerfile cases; two CLI/PDF journeys under inherited seccomp network denial | External base-image users, build arguments, numeric-stage references and nonstandard escape directives are not resolved; representative owner corpus still needed |
+| Web-only, no AI | Empty CSP, nosniff and HSTS headers no longer suppress missing-policy findings; evidence distinguishes empty from absent | Empty/nonempty HTTPS fixtures; two real owned HTTP CLI/PDF journeys; exact HEAD/GET counts and AI disabled | Header presence is not full policy validation; authenticated DVWA and active vulnerability detection remain outside these results |
+| Online API AI | Reject truncated/filtered/tool/refusal completions even when their JSON looks valid; preserve scanner findings on required-provider failure | Two actual CLI/PDF journeys with simulated compatible-provider responses: accepted stop and rejected length; metadata-only disclosure checked | Real inference needs privately prepared replacement key and a confirmed free-only environment; no paid calls made |
+
+Original curated corpus rerun at `15ca6e4`: 21 TP, 0 FP, 0 FN and 11 clean
+cases pass. These counts describe that corpus only, not general vulnerability
+accuracy. New mode regression cases are additional checks, not silently added to
+that denominator. Unit cases are in `tests/test_mode_quality.py`; run Linux mode
+journeys with `python -m integration.three_mode_quality`. CI now runs this harness
+in operations acceptance and retains its summary. Temporary fixture reports are
+validated then removed; VM logs remain in `artifacts/checkpoints/mode-quality/`.
+
+Kali is reachable at the latest owner-provided address and DVWA has been exercised
+as recorded in DVWA_ASSESSMENT.md. Old connectivity/key observations below are
+historical. No new real-provider readiness assertion is made in this pass.
+Production and whole-spiral acceptance remain open.
+
 ## Kali checkpoint
 
 SSH restored at the owner's updated address. The clean checkout was fast-forwarded

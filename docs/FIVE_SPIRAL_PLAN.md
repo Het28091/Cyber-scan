@@ -7,6 +7,12 @@ Baseline and current status: [PROJECT_STATUS.md](PROJECT_STATUS.md).
 
 ## Working agreement
 
+**9 October separate-mode continuation:** S2-02/S2-05 and S3-04 corrections
+implemented and regression verified per mode; S3-02 AI output rejection preserves
+deterministic evidence. Six Linux fixture journeys PASS at `15ca6e4`; detailed
+limits in THREE_MODE_HANDOVER.md. S2-04 live API/free-only setup remains BLOCKED,
+local-model acceptance deferred, representative corpus and owner gates remain open.
+
 **9 October evidence:** S2-02/S2-05 redirect-cookie correction VERIFIED on Kali
 and CI at `ca13ace`; S3-01 scope retention and S3-04 bounded real-DVWA comparisons
 recorded in [DVWA_ASSESSMENT.md](DVWA_ASSESSMENT.md). Authenticated DVWA accuracy

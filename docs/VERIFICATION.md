@@ -1,5 +1,17 @@
 # Verification record
 
+## Separate modes — 9 October 2026
+
+Implementation `18fc648`: Kali Python 3.13.12, 177 tests PASS in 9.975 seconds;
+CI 37963739961 successful. Eight portable AI/web targeted tests also PASS.
+Harness source `15ca6e45ea77a75f54edc5f2692e9a4f54fd87d4`: six actual CLI/PDF
+journeys PASS (two offline under seccomp, two owned HTTP, two simulated API).
+Required AI truncation correctly produces FAILED while keeping findings/reports.
+Original curated corpus: 21 TP, 0 FP, 0 FN; 11 clean cases PASS. VM logs:
+`artifacts/checkpoints/mode-quality/tests.log` and `journeys.log`.
+See [copied journey evidence](evidence/three-mode-quality-oct9.json) and
+[mode-specific limits](THREE_MODE_HANDOVER.md). No live API inference performed.
+
 ## Owner DVWA and HTTPS — 9 October 2026
 
 Source `ca13ace488bcc39adec03cf5d971f8c157dc1ecb`: 174 tests PASS on Kali

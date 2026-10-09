@@ -1,0 +1,53 @@
+{
+  "source_commit": "15ca6e45ea77a75f54edc5f2692e9a4f54fd87d4",
+  "timestamp": "2026-10-09T17:06:45.901389+00:00",
+  "status": "PASS",
+  "cases": [
+    {
+      "mode": "offline",
+      "case": "final-root",
+      "status": "PASS",
+      "network_denied": true,
+      "finding_count": 1
+    },
+    {
+      "mode": "offline",
+      "case": "inherited-user",
+      "status": "PASS",
+      "network_denied": true,
+      "finding_count": 0
+    },
+    {
+      "mode": "internet-no-ai",
+      "case": "empty",
+      "status": "PASS",
+      "finding_count": 2
+    },
+    {
+      "mode": "internet-no-ai",
+      "case": "valid",
+      "status": "PASS",
+      "finding_count": 0
+    },
+    {
+      "mode": "connected-ai",
+      "case": "stop",
+      "status": "PASS",
+      "provider": "FIXTURE ONLY",
+      "scan_status": "COMPLETED_WITH_LIMITATIONS",
+      "deterministic_findings_preserved": true
+    },
+    {
+      "mode": "connected-ai",
+      "case": "length",
+      "status": "PASS",
+      "provider": "FIXTURE ONLY",
+      "scan_status": "FAILED",
+      "deterministic_findings_preserved": true
+    }
+  ],
+  "limitations": [
+    "Owned regression fixtures only; not universal detection accuracy.",
+    "Real API inference and free-only account acceptance remain NOT TESTED."
+  ]
+}

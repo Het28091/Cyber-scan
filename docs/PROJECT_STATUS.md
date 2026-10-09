@@ -1,5 +1,13 @@
 # Project completion status
 
+**Separate-mode checkpoint — 9 October 2026:** offline Docker runtime-user
+detection, web empty-header detection and API completion validation improved at
+`18fc648` (177 Kali tests and CI PASS). Six independent mode journeys PASS at
+`15ca6e4`, including real offline network denial and preservation of findings when
+simulated AI output is rejected. API evidence is fixture-only; real provider
+acceptance remains blocked on private free-only preparation. See
+[three-mode status](THREE_MODE_HANDOVER.md). No production readiness claimed.
+
 **DVWA checkpoint — 9 October 2026:** the owner's lab exposed a redirect-cookie
 detection gap, repaired at `ca13ace`. All 174 Kali tests and its CI run pass.
 Actual HTTP/HTTPS CLI findings match independent header/cookie observations,
