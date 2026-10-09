@@ -19,7 +19,7 @@ from secaudit.online import scan_dependencies
 
 
 def verify():
-    result = {'started': now(), 'platform': platform.platform(), 'status': 'FAILED'}
+    result = {'started': now(), 'platform': platform.platform(), 'status': 'FAILED', 'stage':'osv-query'}
     try:
         cfg = Config(mode='internet', online_package_limit=1, timeout=20)
         findings, usage, _ = scan_dependencies(
@@ -86,6 +86,10 @@ assert int(next(x.split(':')[1].strip() for x in open('/proc/self/status') if x.
         # No raw tool/provider output or credentials in acceptance logs.
     result['finished'] = now()
     print(json.dumps(result, indent=2))
+    if os.environ.get('GITHUB_ACTIONS')=='true':
+        # Public diagnostics contain bounded counters/stage only, never upstream text.
+        summary={k:result[k] for k in ('status','stage','failure_type','osv') if k in result}
+        print('::notice title=Live acceptance stage::'+json.dumps(summary))
     return 0 if result['status'] == 'PASSED' else 1
 
 
