@@ -62,12 +62,10 @@ def scan_web(url,scope,checkpoint):
             events.append('AUTHENTICATION_REJECTED: credential or access policy rejected; protected content not assessed.');checkpoint(findings,inventory);break
         if status>=500: events.append('Stopped after server error (possible instability)');break
         hd={k.lower():v for k,v in hs}
-        if status in (301,302,303,307,308) and 'location' in hd:
-            try:
-                nxt=urljoin(current,hd['location']);scope.check(nxt);queue.append(nxt)
-            except (ValueError,OSError): events.append('Out-of-scope redirect blocked')
-            continue
-        for header,why in [('content-security-policy','Define a restrictive Content-Security-Policy.'),('x-content-type-options','Set X-Content-Type-Options: nosniff.')]:
+        redirect=status in (301,302,303,307,308)
+        # Redirect cookies and HTTPS transport policy are still observable evidence.
+        # Document-header checks apply only to non-redirect responses.
+        for header,why in ([] if redirect else [('content-security-policy','Define a restrictive Content-Security-Policy.'),('x-content-type-options','Set X-Content-Type-Options: nosniff.')]):
             if header not in hd:
                 findings.append(Finding('HTTP-'+header,'Missing '+header,asset,'Header absent on this response.',why,severity='LOW',confidence='HIGH',evidence=['Observed header names: '+', '.join(sorted(hd))]))
         if u.scheme=='https' and 'strict-transport-security' not in hd:
@@ -78,6 +76,13 @@ def scan_web(url,scope,checkpoint):
                 missing={'secure','httponly','samesite'}-attrs
                 if missing: findings.append(Finding('COOKIE-FLAGS','Cookie flags need review',asset,'Cookie lacks '+', '.join(sorted(missing)), 'Set flags appropriate for the cookie purpose.',confidence='HIGH',evidence=['Cookie values omitted; missing flags: '+', '.join(sorted(missing))]))
         checkpoint(findings,inventory)
+        if redirect:
+            events.append('REDIRECT_RESPONSE: destination content not assessed by this response; authentication may be required.')
+            if 'location' in hd:
+                try:
+                    nxt=urljoin(current,hd['location']);scope.check(nxt);queue.append(nxt)
+                except (ValueError,OSError): events.append('Out-of-scope redirect blocked')
+            continue
         if 'text/html' in hd.get('content-type',''):
             parser=Links();parser.feed(body.decode('utf-8','replace'))
             for link in parser.urls[:100]:

@@ -114,6 +114,9 @@ def scan(cfg,run_id=None):
             auth_rejected=any(e.startswith('AUTHENTICATION_REJECTED') for e in events)
             for row in run['coverage']:
                 if row['module']=='web': row.update(status='PARTIAL' if assets else 'NOT TESTED',reason='Bounded GET crawl and header/cookie checks; no browser, login automation or role-comparison checks. Static credentials are sent only when configured.' if assets else 'No HTTP responses available.')
+            if assets and all(a['status'] in (301,302,303,307,308) for a in assets):
+                for row in run['coverage']:
+                    if row['module']=='web': row.update(reason='Only redirect responses assessed for cookie/transport policy; destination content NOT TESTED. Authentication may be required.')
             if auth_rejected:
                 for row in run['coverage']:
                     if row['module']=='web': row.update(status='PARTIAL' if any(a['status'] not in (401,403) for a in assets) else 'NOT TESTED',reason='Authentication/access rejected; protected content coverage incomplete.')
