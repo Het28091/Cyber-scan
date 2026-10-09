@@ -32,7 +32,9 @@ def verify():
         result['stage']='scanner-preflight'
         # Fixed version command only: no source mount or inherited credentials.
         # Retain bounded startup diagnostics to distinguish runtime incompatibility.
-        code, startup = bounded(sandbox_command('/bin/sh') + ['-c', '/usr/local/bin/gitleaks version 2>&1'], 10, 65536, max_address_bytes=ADDRESS_LIMITS['gitleaks'])
+        selected=shutil.which('gitleaks')
+        if not selected:raise PolicyError('REQUIRED_MISSING: gitleaks')
+        code, startup = bounded(sandbox_command(selected) + ['version'], 10, 65536, max_address_bytes=ADDRESS_LIMITS['gitleaks'])
         if code:
             result['startup_diagnostic']=startup.decode('utf-8','replace')[:2000]
         exe, version = probe('gitleaks', {})
