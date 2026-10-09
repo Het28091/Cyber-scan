@@ -26,6 +26,12 @@ as recorded in DVWA_ASSESSMENT.md. Old connectivity/key observations below are
 historical. No new real-provider readiness assertion is made in this pass.
 Production and whole-spiral acceptance remain open.
 
+External scanner follow-up: Kali's separate live OSV check succeeded, but Gitleaks
+is missing on that VM. This is an optional external-module prerequisite, not a
+failure of the verified built-in offline/web modes. CI's live OSV/Gitleaks job
+passed at `e7480e6` after a prior run failed without detailed diagnostics; see
+VERIFICATION.md. Prepare the pinned scanner before claiming VM adapter acceptance.
+
 ## Kali checkpoint
 
 SSH restored at the owner's updated address. The clean checkout was fast-forwarded

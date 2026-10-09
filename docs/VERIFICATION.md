@@ -2,6 +2,18 @@
 
 ## Separate modes — 9 October 2026
 
+Pipeline follow-up: run 37964117347 at `f078127` passed the new mode journeys
+but failed the live OSV/Gitleaks job without stage diagnostics. That failure is
+retained as unresolved historical evidence, not relabeled a pass. At `e7480e6`,
+the harness emits sanitized stage/counter annotations; live job 37964349440
+passes all stages (one OSV request, ten advisories, real Gitleaks controls and
+sandbox checks). This later pass does not establish the earlier failure's cause.
+On Kali at `e7480e6`, OSV passed but this optional external-scanner check stopped
+at preflight because Gitleaks is not installed; no boundary was weakened.
+Its VM log is `artifacts/checkpoints/mode-quality/live.log`. The three built-in
+mode journeys do not depend on Gitleaks. External-scanner VM acceptance remains
+NOT TESTED until that tool is prepared.
+
 Implementation `18fc648`: Kali Python 3.13.12, 177 tests PASS in 9.975 seconds;
 CI 37963739961 successful. Eight portable AI/web targeted tests also PASS.
 Harness source `15ca6e45ea77a75f54edc5f2692e9a4f54fd87d4`: six actual CLI/PDF
