@@ -1,5 +1,12 @@
 # Project completion status
 
+**DVWA checkpoint — 9 October 2026:** the owner's lab exposed a redirect-cookie
+detection gap, repaired at `ca13ace`. All 174 Kali tests and its CI run pass.
+Actual HTTP/HTTPS CLI findings match independent header/cookie observations,
+with PDF output and no AI calls. A lab HTTPS endpoint is prepared. Protected
+DVWA content, injection detection and whole-app accuracy remain NOT TESTED;
+no whole-spiral or production acceptance. See [DVWA handover](DVWA_ASSESSMENT.md).
+
 **AI integration continuation — 6 October 2026:** explicit JSON response mode
 is implemented for compatible providers and enabled in the Groq template. All
 170 regression tests pass on Kali at `7f8b08f`. Live API acceptance is still blocked:

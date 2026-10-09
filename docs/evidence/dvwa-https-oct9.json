@@ -1,0 +1,95 @@
+{
+  "timestamp": "2026-10-09T16:58:19.195008+00:00",
+  "source_commit": "ca13ace488bcc39adec03cf5d971f8c157dc1ecb",
+  "certificate_verification": true,
+  "scope": "Unauthenticated exact security and login pages; no links/forms/payloads",
+  "request_budget_per_page": {
+    "scanner_HEAD": 1,
+    "scanner_GET": 1,
+    "independent_GET": 1
+  },
+  "results": [
+    {
+      "target": "https://10.87.119.94:8443/security.php",
+      "exit_code": 0,
+      "run_id": "db02ba2872404a40b63e61c91c026b01",
+      "status": "COMPLETED_WITH_LIMITATIONS",
+      "assets": [
+        {
+          "asset": "https://10.87.119.94:8443/security.php",
+          "status": 302
+        }
+      ],
+      "coverage": [
+        {
+          "module": "web",
+          "status": "PARTIAL",
+          "reason": "Only redirect responses assessed for cookie/transport policy; destination content NOT TESTED. Authentication may be required."
+        }
+      ],
+      "findings": [
+        {
+          "rule": "COOKIE-FLAGS",
+          "description": "Cookie lacks httponly, samesite, secure"
+        },
+        {
+          "rule": "HTTP-HSTS",
+          "description": "HTTPS response lacks HSTS."
+        }
+      ],
+      "true_positives": 2,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "pdf_reports": true,
+      "ai_enabled": false,
+      "comparison_pass": true
+    },
+    {
+      "target": "https://10.87.119.94:8443/login.php",
+      "exit_code": 0,
+      "run_id": "b059959d3918423dbd38f07a9f06cfac",
+      "status": "COMPLETED_WITH_LIMITATIONS",
+      "assets": [
+        {
+          "asset": "https://10.87.119.94:8443/login.php",
+          "status": 200
+        }
+      ],
+      "coverage": [
+        {
+          "module": "web",
+          "status": "PARTIAL",
+          "reason": "Bounded GET crawl and header/cookie checks; no browser, login automation or role-comparison checks. Static credentials are sent only when configured."
+        }
+      ],
+      "findings": [
+        {
+          "rule": "COOKIE-FLAGS",
+          "description": "Cookie lacks httponly, samesite, secure"
+        },
+        {
+          "rule": "HTTP-HSTS",
+          "description": "HTTPS response lacks HSTS."
+        },
+        {
+          "rule": "HTTP-content-security-policy",
+          "description": "Header absent on this response."
+        },
+        {
+          "rule": "HTTP-x-content-type-options",
+          "description": "Header absent on this response."
+        }
+      ],
+      "true_positives": 4,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "pdf_reports": true,
+      "ai_enabled": false,
+      "comparison_pass": true
+    }
+  ],
+  "limitations": [
+    "HTTPS proxy adds a deployment layer; HSTS observation belongs to the lab endpoint.",
+    "Header/cookie agreement is not SQLi/XSS accuracy or full-DVWA recall."
+  ]
+}

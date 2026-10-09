@@ -1,0 +1,51 @@
+{
+  "timestamp": "2026-10-09T16:56:50.958753+00:00",
+  "source_commit": "ca13ace488bcc39adec03cf5d971f8c157dc1ecb",
+  "host": "Linux-6.19.14+kali-amd64-x86_64-with-glibc2.42",
+  "status": "PASS",
+  "target": "http://10.87.119.94:8080/security.php",
+  "request_budget": {
+    "scanner_HEAD": 1,
+    "scanner_GET": 1,
+    "independent_GET": 1
+  },
+  "run_id": "3d8204f00c274cc8a6ffc01d5cd3d20d",
+  "run_status": "COMPLETED_WITH_LIMITATIONS",
+  "assets": [
+    {
+      "asset": "http://10.87.119.94:8080/security.php",
+      "status": 302
+    }
+  ],
+  "coverage": [
+    {
+      "module": "web",
+      "status": "PARTIAL",
+      "reason": "Only redirect responses assessed for cookie/transport policy; destination content NOT TESTED. Authentication may be required."
+    }
+  ],
+  "events": [
+    "Internet mode: scoped target access enabled; AI disabled.",
+    "REDIRECT_RESPONSE: destination content not assessed by this response; authentication may be required.",
+    "Out-of-scope redirect blocked"
+  ],
+  "findings": [
+    {
+      "rule": "COOKIE-FLAGS",
+      "description": "Cookie lacks httponly, samesite, secure"
+    }
+  ],
+  "cookie_check": {
+    "expected_unique_observations": 1,
+    "true_positives": 1,
+    "false_positives": 0,
+    "false_negatives": 0
+  },
+  "pdf_reports": true,
+  "ai_enabled": false,
+  "limitations": [
+    "Comparison covers cookie-flag observations on two consecutive responses only; deployment may change.",
+    "No login, forms, payloads, SQL injection, XSS or command execution tested.",
+    "Not a whole-DVWA precision/recall measurement; duplicate cookie findings are consolidated."
+  ]
+}

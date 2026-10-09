@@ -1,5 +1,16 @@
 # Verification record
 
+## Owner DVWA and HTTPS — 9 October 2026
+
+Source `ca13ace488bcc39adec03cf5d971f8c157dc1ecb`: 174 tests PASS on Kali
+Python 3.13.12 in 9.755 seconds; four portable targeted tests pass too.
+CI run 37962681926 completed successfully. S2-02/S2-05 redirect-cookie repair
+retains evidence without widening scope; S3-01/S3-04 actual CLI checks cover
+one original HTTP response and two HTTPS responses, independently compared.
+TLS validation remained enabled; PDF outputs pass. See
+[results and limitations](DVWA_ASSESSMENT.md). No authenticated injection tests,
+AI inference or production acceptance claimed.
+
 ## API JSON-response option — 6 October 2026
 
 Implementation source `7f8b08f`: full Kali Python 3.13.12 suite, 170 tests PASS in

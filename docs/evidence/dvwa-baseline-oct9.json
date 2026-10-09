@@ -1,0 +1,30 @@
+{
+  "id": "1ca6a5328aba4f82bed95da07fcf4646",
+  "status": "COMPLETED_WITH_LIMITATIONS",
+  "assets": [
+    {
+      "asset": "http://10.87.119.94:8080/security.php",
+      "status": 302
+    }
+  ],
+  "coverage": [
+    {
+      "module": "web",
+      "status": "PARTIAL",
+      "reason": "Bounded GET crawl and header/cookie checks; no browser, login automation or role-comparison checks. Static credentials are sent only when configured."
+    }
+  ],
+  "events": [
+    "Internet mode: scoped target access enabled; AI disabled.",
+    "Out-of-scope redirect blocked"
+  ],
+  "ai_usage": {
+    "enabled": false,
+    "provider": "none",
+    "verified": "not used"
+  },
+  "source_commit": "c52bea65ca19e222ce9bc725b754d8027167ee93",
+  "exit_code": 0,
+  "findings": [],
+  "run_path": "artifacts/checkpoints/dvwa-oct9/runs/1ca6a5328aba4f82bed95da07fcf4646/run.json"
+}

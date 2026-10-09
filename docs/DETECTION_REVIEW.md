@@ -1,5 +1,9 @@
 # Detection identity and mapping review — 2 October 2026
 
+Owner-lab redirect coverage was repaired and checked on 9 October; see
+[DVWA assessment](DVWA_ASSESSMENT.md). These header/cookie observations supplement
+the synthetic corpus but do not measure whole-DVWA vulnerability recall.
+
 S3-04 developer review; independent review and a representative owner dataset are
 still required. The implemented associations are related evidence, never a control
 pass, compliance assessment or demonstrated attacker technique.

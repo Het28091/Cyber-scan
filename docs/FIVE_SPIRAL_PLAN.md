@@ -7,6 +7,11 @@ Baseline and current status: [PROJECT_STATUS.md](PROJECT_STATUS.md).
 
 ## Working agreement
 
+**9 October evidence:** S2-02/S2-05 redirect-cookie correction VERIFIED on Kali
+and CI at `ca13ace`; S3-01 scope retention and S3-04 bounded real-DVWA comparisons
+recorded in [DVWA_ASSESSMENT.md](DVWA_ASSESSMENT.md). Authenticated DVWA accuracy
+remains NOT TESTED. Provider/owner gates and whole-spiral acceptance remain open.
+
 **6 October owner scope:** prioritize API AI on Groq with free quota only, web-only
 non-AI and offline local-source non-AI. Defer local-model testing for now. This
 changes immediate execution order, not historical evidence or final gate results.
