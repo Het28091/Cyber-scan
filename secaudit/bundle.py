@@ -6,6 +6,28 @@ from . import __version__
 
 ALLOWED=['secaudit.pyz','source.zip','LICENSE','README.md','requirements.lock']
 SOURCE_PATHS=['secaudit','scripts','config','demo/source','demo/server.py','tests','integration','docs','.github','setup.sh','run.sh','Makefile','scope.json','requirements.lock','requirements-dev.txt','LICENSE','README.md','CHANGELOG.md','CONTRIBUTING.md','SECURITY.md']
+
+def verify_source(root,commit=None):
+    """Both bundle entry points require a clean, reviewable Git source checkout."""
+    root=Path(root).resolve()
+    for name in SOURCE_PATHS:
+        path=root/name
+        if path.is_symlink() or path.is_dir() and any(p.is_symlink() for p in path.rglob('*')):
+            raise PolicyError('linked release source inputs are forbidden')
+    def git(*args):
+        try:return subprocess.check_output(['git',*args],cwd=root,text=True,stderr=subprocess.DEVNULL,timeout=15).strip()
+        except (OSError,subprocess.CalledProcessError,subprocess.TimeoutExpired) as exc:
+            raise PolicyError('bundle preparation requires a readable Git source checkout') from exc
+    if Path(git('rev-parse','--show-toplevel')).resolve()!=root:
+        raise PolicyError('bundle preparation requires the Git source root')
+    actual=git('rev-parse','HEAD')
+    if commit is not None and actual!=commit:raise PolicyError('source commit does not match the checkout')
+    if git('status','--porcelain','--untracked-files=all','--',*SOURCE_PATHS):
+        raise PolicyError('release source contains uncommitted or untracked inputs')
+    ignored=git('ls-files','--others','--ignored','--exclude-standard','--',*SOURCE_PATHS)
+    if any('__pycache__' not in Path(name).parts and not name.endswith('.pyc') for name in ignored.splitlines()):
+        raise PolicyError('ignored files would enter the release source; remove them from packaged directories')
+    return actual
 def pip_environment():
     env={k:v for k,v in os.environ.items() if not k.startswith('PIP_')}
     env['PIP_CONFIG_FILE']=os.devnull
@@ -29,10 +51,11 @@ def prepare_wheels(output,lock,local=None):
 
 def prepare(output,download_dependencies=False,wheelhouse=None):
     if download_dependencies and wheelhouse is not None:raise PolicyError('choose downloaded dependencies or a local wheelhouse, not both')
+    root=Path(__file__).resolve().parent.parent
+    commit=verify_source(root)
     out=Path(output)
     if out.exists(): raise PolicyError('bundle output must not already exist')
     out.mkdir(parents=True,mode=0o700)
-    root=Path(__file__).resolve().parent.parent
     if not (root/'secaudit').is_dir(): raise PolicyError('prepare requires the source checkout')
     import tempfile
     with tempfile.TemporaryDirectory() as temp:
@@ -53,6 +76,8 @@ def prepare(output,download_dependencies=False,wheelhouse=None):
         names += [p.relative_to(out).as_posix() for p in sorted((out/'wheelhouse').glob('*.whl'))]
     manifest={'schema':2,'app_version':__version__,'python_min':'3.11','python_version':list(sys.version_info[:2]),'os':'Linux','architecture':platform.machine(),'prerequisites':['Python 3.11+ with venv/pip','system libseccomp2','matching Python minor version for optional wheels'],'provenance':'Built from local source; optional wheels verified against requirements.lock','authenticity':'Unsigned SHA-256 detects corruption, not publisher authenticity','pdf_wheels':download_dependencies,'files':{n:digest(out/n) for n in names}}
     manifest['pdf_wheels']=pdf_wheels
+    verify_source(root,commit)
+    manifest['source_commit']=commit
     write_json(out/'manifest.json',manifest)
     return manifest
 

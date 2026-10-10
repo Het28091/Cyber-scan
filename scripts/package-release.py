@@ -11,21 +11,8 @@ import tempfile
 import subprocess
 
 from secaudit import __version__
-from secaudit.bundle import prepare, verify, SOURCE_PATHS
+from secaudit.bundle import prepare, verify, SOURCE_PATHS, verify_source
 from secaudit.release_gate import verify as verify_acceptance
-
-
-def verify_source(root,commit):
-    root=Path(root)
-    for name in SOURCE_PATHS:
-        path=root/name
-        if path.is_symlink() or path.is_dir() and any(p.is_symlink() for p in path.rglob('*')):raise ValueError('linked release source inputs are forbidden')
-    actual=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()
-    if actual!=commit:raise ValueError('source commit does not match the checkout')
-    changes=subprocess.check_output(['git','status','--porcelain','--untracked-files=all','--',*SOURCE_PATHS],cwd=root,text=True)
-    if changes.strip():raise ValueError('release source contains uncommitted or untracked inputs')
-    ignored=subprocess.check_output(['git','ls-files','--others','--ignored','--exclude-standard','--',*SOURCE_PATHS],cwd=root,text=True)
-    if any('__pycache__' not in Path(name).parts and not name.endswith('.pyc') for name in ignored.splitlines()):raise ValueError('ignored files would enter the release source; remove them from packaged directories')
 
 
 def main():
