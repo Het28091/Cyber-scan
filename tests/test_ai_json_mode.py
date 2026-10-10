@@ -7,6 +7,24 @@ from secaudit.security import PolicyError
 
 
 class JsonModeTests(unittest.TestCase):
+    def test_ollama_constrains_schema_without_trusting_it(self):
+        with patch.dict('os.environ',{'SECAUDIT_EXPERIMENTAL_AI':'1'}):
+            provider=Provider(Config(mode='local-ai',ai=AIConfig(enabled=True,provider='ollama',
+                endpoint='http://127.0.0.1:11434',model='fixture',approved_ips=['127.0.0.1'])))
+            finding={'id':'owned','rule':'PY-SHELL','severity':'HIGH','asset':'PRIVATE_PATH'}
+            response={'done':True,'done_reason':'stop','message':{'content':
+                '{"suggestions":[{"id":"owned","text":"Review"}]}'}}
+            with patch.object(provider,'call',return_value=response) as call:
+                self.assertEqual(provider.suggest([finding])['suggestions'][0]['id'],'owned')
+                body=call.call_args.args[1]
+                self.assertEqual(body['format']['properties']['suggestions']['items']['properties']['id']['enum'],['owned'])
+                self.assertNotIn('PRIVATE_PATH',json.dumps(body))
+            for content in ('{"unexpected":[]}', '{"suggestions":[{"id":"invented","text":"Review"}]}',
+                            '{"suggestions":[{"id":"owned","text":"Review"},{"id":"owned","text":"Again"}]}'):
+                response['message']['content']=content
+                with patch.object(provider,'call',return_value=response),self.assertRaises(PolicyError):
+                    provider.suggest([finding])
+
     def config(self,format='text'):
         return Config(mode='connected-ai',ai=AIConfig(enabled=True,provider='openai-compatible',
             endpoint='https://owned.example.invalid/v1',model='fixture',approved_ips=['192.0.2.1'],response_format=format))
