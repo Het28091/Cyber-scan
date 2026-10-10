@@ -1,0 +1,98 @@
+{
+  "runtime": {
+    "source_commit": "6a1d362851c89806e6d915fd85059eba9536e1ca",
+    "platform": "Linux-6.19.14+kali-amd64-x86_64-with-glibc2.42",
+    "python": "3.13.12",
+    "checks": [
+      {
+        "check": "operations",
+        "status": "PASS",
+        "exit_code": 0,
+        "seconds": 2.331
+      },
+      {
+        "check": "storage",
+        "status": "PASS",
+        "exit_code": 0,
+        "seconds": 0.274
+      },
+      {
+        "check": "load",
+        "status": "PASS",
+        "exit_code": 0,
+        "seconds": 7.266
+      },
+      {
+        "check": "browser",
+        "status": "PASS",
+        "exit_code": 0,
+        "seconds": 7.999
+      }
+    ]
+  },
+  "scanner": {
+    "source_commit": "089cefea204b420d19fb9c08e033753ac39e34b2",
+    "result": {
+      "started": "2026-10-10T09:29:37.446525+00:00",
+      "platform": "Linux-6.19.14+kali-amd64-x86_64-with-glibc2.42",
+      "status": "PASSED",
+      "stage": "sandbox-boundaries",
+      "osv": {
+        "requests": 1,
+        "responses": 1,
+        "completed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "advisories": 10
+      },
+      "tool": {
+        "name": "gitleaks",
+        "version": "8.24.2",
+        "virtual_address_limit_bytes": 8589934592,
+        "sha256": "64805175c8f88959587ba6afc58210401088206a27ba582cfbb98791137d6208",
+        "fixture_findings": 1,
+        "clean_control_findings": 0
+      },
+      "sandbox": {
+        "network_namespace": "PASS",
+        "source_read_only": "PASS",
+        "credential_environment_removed": "PASS",
+        "capabilities_dropped": "PASS",
+        "bubblewrap": "/usr/bin/bwrap"
+      },
+      "finished": "2026-10-10T09:29:46.323316+00:00"
+    }
+  },
+  "candidate": {
+    "source_commit": "1d35d63eb764e2481d7350e94f8d41476e92664e",
+    "status": "PASS",
+    "python": "3.13.12",
+    "archive": "secaudit-1.1.0-candidate-1d35d63eb764-linux-x86_64-py3.13.tar.gz",
+    "archive_sha256": "1b3e343648c9d769837c036a4146644e1c8b7591588aa6fb7bac6e14491871d7",
+    "checks": [
+      "outer and inner archive checksums",
+      "local-wheel candidate build under seccomp",
+      "offline clean install under seccomp",
+      "host pip source settings ignored",
+      "installed CLI owned finding",
+      "PDF reports",
+      "AI disabled"
+    ],
+    "release_channel": "candidate",
+    "limitations": [
+      "Python 3.13 Kali candidate only; not a stable release or owner acceptance"
+    ]
+  },
+  "regression": {
+    "source_commit": "1d35d63eb764e2481d7350e94f8d41476e92664e",
+    "tests": 181,
+    "status": "PASS",
+    "seconds": 14.272,
+    "log": "artifacts/checkpoints/production-oct10/installer-tests.log"
+  },
+  "limitations": [
+    "Developer-executed owned fixtures; not owner or independent acceptance.",
+    "Earlier candidate build at 6a1d362 failed resolving Pillow; retained as historical failure.",
+    "Scanner archive transfer initially timed out; resumed and complete checksum verified before execution."
+  ]
+}

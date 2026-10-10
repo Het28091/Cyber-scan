@@ -1,5 +1,19 @@
 # Project completion status
 
+**Production preparation — 10 October 2026:** local-wheel packaging and isolated
+pip configuration are implemented at `1d35d63`; 181 Kali tests and full Linux CI
+PASS. A candidate was rebuilt, freshly installed and scanned with PDF output
+under network denial. Gitleaks/OSV and scanner isolation now pass on Kali too.
+See [remaining production checklist](PRODUCTION_CHECKLIST.md) and
+[recorded evidence](evidence/production-kali-oct10.json). Provider preparation,
+owner/reviewer acceptance and final release gates remain open; no stable release.
+
+**Production continuation — 9 October 2026:** current remaining acceptance,
+responsible roles and release gates are consolidated in
+[PRODUCTION_CHECKLIST.md](PRODUCTION_CHECKLIST.md). Kali access is available;
+private provider preparation, authenticated benchmark inputs, independent review,
+owner operational decisions/UAT and exact-commit release acceptance remain open.
+
 **Separate-mode checkpoint — 9 October 2026:** offline Docker runtime-user
 detection, web empty-header detection and API completion validation improved at
 `18fc648` (177 Kali tests and CI PASS). Six independent mode journeys PASS at

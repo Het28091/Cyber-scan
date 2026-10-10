@@ -166,6 +166,18 @@ or weaken existing mandatory gates.
 
 ## Prioritized execution backlog
 
+**10 October:** S3-05/S4-04 real Gitleaks/OSV preparation VERIFIED on Kali;
+S4-03/04 offline-wheel candidate packaging/install VERIFIED under network denial
+at `1d35d63`. Full Linux CI and 181 Kali tests PASS. These resolve developer
+preparation gaps; S2-04, owner/reviewer decisions and final release gates remain.
+
+**9 October production continuation:** use PRODUCTION_CHECKLIST.md for the current
+remaining tasks/owners. S3-05/S4-04 scanner preparation is being verified without
+global installation; S4-01/02/03 fresh Kali operations/storage/load and isolated
+browser exercises PASS at `6a1d362`. Owner budgets, UAT, independent review and
+real-provider gates remain open. Candidate packaging does not start S5 acceptance
+or authorize publication. Earlier backlog statements below are historical.
+
 **6 October update:** S3-04 developer mapping/fingerprint review is complete for
 the declared bounded rule set; independent review and a representative owner dataset
 remain pending. S4-01/05 full source, owned HTTP and actual queue exercises pass at

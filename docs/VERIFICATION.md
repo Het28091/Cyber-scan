@@ -1,5 +1,37 @@
 # Verification record
 
+## Production preparation — 10 October 2026
+
+- `6a1d362`: refreshed Kali operations/upgrade/restore/rollback (2.331 s), actual
+  full-storage recovery (0.274 s), full source/HTTP/queue load (7.266 s) and isolated
+  Chromium (7.999 s) PASS. These are exercise runtimes, not approved service budgets.
+- `089cefe`: 181 Kali tests PASS in 12.325 s; full CI run 38041422050 PASS.
+  Gitleaks 8.24.2 positive/clean controls and sandbox checks PASS; one live OSV
+  query returns ten advisories. No provider AI was called.
+- `1d35d63eb764e2481d7350e94f8d41476e92664e`: 181 Kali tests PASS in 14.272 s;
+  [CI run 38041663352](https://github.com/Het28091/Cyber-scan/actions/runs/38041663352)
+  PASS, including offline preparation/install across the Linux/Python matrix.
+  The actual Kali candidate archive was verified, rebuilt from local wheels,
+  installed and scanned under inherited seccomp denial; both PDF reports pass.
+  Host pip settings were deliberately pointed at an unusable remote source and
+  required a virtualenv; isolated preparation/install still succeeded offline.
+
+[Copied evidence](evidence/production-kali-oct10.json) records commits, checks and
+archive hash. Candidate archive on Kali:
+`artifacts/checkpoints/production-oct10/candidate-offline/secaudit-1.1.0-candidate-1d35d63eb764-linux-x86_64-py3.13.tar.gz`.
+Full logs remain under `artifacts/checkpoints/production-oct9/` and `production-oct10/`.
+The clean test installation was temporary; the candidate archive is retained.
+
+Earlier candidate preparation at `6a1d362` failed to resolve Pillow 12.3.0; later
+PyPI metadata confirmed release files exist. We do not claim the exact earlier
+environment cause was established. Hashes/versions were not weakened. Gitleaks
+transfer timed out, resumed, then its full upstream archive checksum passed before
+execution. Checksums from the same upstream are integrity evidence, not an
+independent signature. Initial portable tests failed on Windows sandbox temporary
+directory permissions; four actual-pip tests passed outside that sandbox, and
+Linux acceptance is authoritative. No owner/independent attestation or release
+gate was fabricated, and no stable package/tag/publication occurred.
+
 ## Separate modes — 9 October 2026
 
 Pipeline follow-up: run 37964117347 at `f078127` passed the new mode journeys

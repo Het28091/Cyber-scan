@@ -1,5 +1,18 @@
 # Owner-selected modes — 6 October 2026
 
+## Production preparation — 10 October 2026
+
+Kali is reachable at the owner's new address. Gitleaks 8.24.2 is now prepared
+and passes actual positive/clean and isolation controls; earlier missing-tool
+entries below are historical. At `1d35d63`, 181 Kali tests and full CI PASS;
+the actual candidate rebuild, install, offline scan and PDFs pass under network
+denial. Local-wheel packaging now preserves hash checks without an online fallback.
+See PRODUCTION_CHECKLIST.md, OPERATIONS.md and the source-specific VERIFICATION.md
+record. Online API acceptance still requires private free-only preparation;
+authenticated DVWA and owner/independent acceptance remain open. The prior DVWA
+HTTPS certificate and IP scope describe the old address and must not be reused
+unchanged for the new address.
+
 ## Separate mode improvements — 9 October 2026
 
 Implementation `18fc648`: **177 Kali tests PASS in 9.975 seconds**, with CI run

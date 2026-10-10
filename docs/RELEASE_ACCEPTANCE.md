@@ -71,6 +71,11 @@ must be attached to every stable bundle and supplied to collection.
 
 ## Commands
 
+For candidate or later gated stable preparation with predownloaded, hash-locked
+wheels, substitute `--wheelhouse /absolute/prepared-wheels` for `--with-wheels`.
+The options are mutually exclusive; local-wheel mode never falls back to an index.
+This does not waive source cleanliness, manifest, exact-commit or stable gates.
+
 ```sh
 python -m secaudit release-check --manifest /prepared/acceptance/manifest.json \
   --commit FULL_SOURCE_COMMIT

@@ -6,24 +6,28 @@ These inputs do not authorize publication or waive later release gates.
 
 ## VM and local Ollama
 
-Start Kali and confirm its SSH address when ready for live provider/owner-machine
-tests. Its checkout has not been synchronized since SSH became unavailable. The
-developer must first preserve local changes, record the source/runtime and update
-the checkout safely. Provide the exact installed Ollama model name and confirmed
+Kali SSH is available and the checkout has been updated during the 9 October
+checks, preserving the owner's untracked files. The VM is not currently a missing
+input. Local-model testing is deferred under the owner's three-mode priority;
+the current release policy still requires its acceptance. When that work resumes,
+provide the exact installed Ollama model name and confirmed
 host endpoint. No API key is needed for Ollama. Use the authenticated loopback
 tunnel described in AI_QUICKSTART.md when Ollama runs on the host PC; do not expose
 it publicly or change the local adapter's loopback policy.
 
 ## API provider
 
-For live API acceptance, choose the provider, exact compatible HTTPS endpoint and
-model. Privately configure `SECAUDIT_API_KEY` in the environment that will launch
+The selected API provider is Groq, endpoint `https://api.groq.com/openai/v1`,
+model `llama-3.1-8b-instant`, free quota only. Privately configure a replacement
+`SECAUDIT_API_KEY` in the environment that will launch
 the test. Do not paste the key into chat, JSON, Git or screenshots. Tell the
 developer only the endpoint/model and credential variable name. A credential set
 in another shell is not automatically visible to an existing service.
 
-Confirm finding-metadata disclosure and permitted request/token/cost budgets.
-The initial fixture contains owned synthetic findings. A free tier is not assumed:
+The owner authorized synthetic finding metadata and free quota only. Confirm the
+prepared account cannot fall back to billable usage and provide the reviewed
+configuration path/environment-variable name. The initial fixture contains owned
+synthetic findings. A free tier is not assumed:
 no shared keys, account creation, guessed prices or paid calls without prepared
 owner settings. Compatibility requires the application's model-listing and chat
 protocol; a provider name alone does not establish compatibility.

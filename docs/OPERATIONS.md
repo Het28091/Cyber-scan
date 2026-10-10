@@ -59,6 +59,45 @@ promise an in-place downgrade. Future database schema versions are refused.
 
 ## Diagnostics and capacity
 
+### Prepared wheels and candidate packages
+
+Use a reviewed local directory of wheels matching `requirements.lock` and the
+Linux/Python version to prepare without reaching an index:
+
+```bash
+bash run.sh bundle prepare --output /absolute/new-bundle \
+  --wheelhouse /absolute/prepared-wheels
+PYTHONPATH=. python scripts/package-release.py --commit FULL_SOURCE_COMMIT \
+  --output artifacts/new-candidate --channel candidate \
+  --wheelhouse /absolute/prepared-wheels
+```
+
+`--wheelhouse` is mutually exclusive with connected download preparation
+(`--download-dependencies` for bundles, `--with-wheels` for packages). Only
+hash-locked binary wheels are resolved; missing, incompatible or altered files
+fail, without online fallback. pip configuration/environment source overrides are
+disabled during preparation and installation. Preparation and pip installation
+have 120-second subprocess limits. A failed output is not a completed bundle;
+retain it for diagnosis and retry into a new directory. Supply approved CA/proxy
+settings through the normal OS environment when connected preparation is needed.
+
+The Kali test candidate is under
+`artifacts/checkpoints/production-oct10/candidate-offline/`, source `1d35d63`.
+Its archive checksums, fresh install, actual offline CLI and PDFs passed under
+network denial. It is a testing candidate, not a new 1.1.0 stable release.
+Check the exact source and matching Python minor before using a candidate.
+
+### Prepared Kali Gitleaks
+
+The checksum-verified 8.24.2 binary is at
+`/home/kali/Cyber-scan/artifacts/tools/gitleaks-8.24.2-oct10/bin/gitleaks`.
+Set this as the Gitleaks executable in scanner configuration, or add its directory
+to PATH in the process launching the application. The preparation does not alter
+system packages or the dashboard's existing environment. Actual detection and
+isolation passed; source mounts remain read-only and scanner networking is denied.
+
+### Capacity monitoring
+
 Use doctor/preflight before an assessment. Missing tool/model/key, unavailable
 sandbox and rejected scope are blockers, never evidence of a clean target. Never
 disable isolation to silence an error. API credentials belong in environment
