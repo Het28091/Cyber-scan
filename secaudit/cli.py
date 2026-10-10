@@ -178,7 +178,10 @@ def main(argv=None):
     q=sub.add_parser('scope',help='Create an authorization record and current DNS pins; no scan');q.add_argument('--origin',required=True);q.add_argument('--authorization',required=True);q.add_argument('--exclude',action='append',default=[]);q.add_argument('--output',required=True)
     q=sub.add_parser('dataset',help='Build an integrity manifest for an operator-supplied advisory snapshot');q.add_argument('--input',required=True);q.add_argument('--output',required=True);q.add_argument('--source',required=True);q.add_argument('--version',required=True);q.add_argument('--published-at',required=True)
     q=sub.add_parser('bundle');b=q.add_subparsers(dest='action',required=True)
-    r=b.add_parser('prepare');r.add_argument('--output',required=True);r.add_argument('--download-dependencies',action='store_true',help='Explicit connected preparation: download locked PDF wheels')
+    r=b.add_parser('prepare');r.add_argument('--output',required=True)
+    dependency_source=r.add_mutually_exclusive_group()
+    dependency_source.add_argument('--download-dependencies',action='store_true',help='Explicit connected preparation: download locked PDF wheels')
+    dependency_source.add_argument('--wheelhouse',help='Prepared local locked wheels; no network fallback')
     for name in ('verify','install'):
         r=b.add_parser(name);r.add_argument('bundle')
         if name=='install': r.add_argument('--destination',default='installed')
@@ -215,7 +218,7 @@ def main(argv=None):
             build_snapshot(a.input,a.output,a.source,a.version,a.published_at);print('Validated advisory snapshot saved.');return 0
         if a.cmd=='bundle':
             from . import bundle
-            result=bundle.prepare(a.output,a.download_dependencies) if a.action=='prepare' else bundle.verify(a.bundle) if a.action=='verify' else bundle.install(a.bundle,a.destination)
+            result=bundle.prepare(a.output,a.download_dependencies,a.wheelhouse) if a.action=='prepare' else bundle.verify(a.bundle) if a.action=='verify' else bundle.install(a.bundle,a.destination)
             print(json.dumps(result,indent=2));return 0
         if a.cmd=='dashboard':
             from .dashboard import serve

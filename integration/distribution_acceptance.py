@@ -16,6 +16,9 @@ def main():
         manifest = prepare(bundle, download_dependencies=True)
         # This filter is inherited by venv, pip and the installed CLI. No online fallback.
         deny_network()
+        offline_bundle=root/'offline prepared bundle'
+        manifest=prepare(offline_bundle,wheelhouse=bundle/'wheelhouse')
+        bundle=offline_bundle
         destination = root / 'installed app'
         install(bundle, destination)
         output = root / 'assessment'

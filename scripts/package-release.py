@@ -32,7 +32,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--commit', required=True)
     parser.add_argument('--output', required=True)
-    parser.add_argument('--with-wheels', action='store_true')
+    dependencies=parser.add_mutually_exclusive_group()
+    dependencies.add_argument('--with-wheels', action='store_true')
+    dependencies.add_argument('--wheelhouse', help='Prepared local locked wheels; no network fallback')
     parser.add_argument('--channel', choices=['candidate', 'stable'], default='candidate')
     parser.add_argument('--acceptance-manifest',help='Required for stable builds; generated after the exact source commit')
     args = parser.parse_args()
@@ -50,7 +52,7 @@ def main():
     name = f'secaudit-{__version__}-{args.channel}-{args.commit[:12]}-linux-{platform.machine()}-py{sys.version_info.major}.{sys.version_info.minor}'
     with tempfile.TemporaryDirectory() as temporary:
         bundle = Path(temporary) / name
-        manifest = prepare(bundle, args.with_wheels)
+        manifest = prepare(bundle, args.with_wheels, args.wheelhouse)
         verify(bundle)
         # Keep metadata outside the installer's strict bundle manifest.
         metadata = {'app_version': __version__, 'source_commit': args.commit, 'release_channel': args.channel,
