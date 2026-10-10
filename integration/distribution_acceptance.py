@@ -1,5 +1,6 @@
 """Install a wheel bundle with inherited seccomp network denial, then run it."""
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -16,6 +17,9 @@ def main():
         manifest = prepare(bundle, download_dependencies=True)
         # This filter is inherited by venv, pip and the installed CLI. No online fallback.
         deny_network()
+        # Host pip settings must not redirect local preparation or installation.
+        os.environ['PIP_REQUIRE_VIRTUALENV']='true'
+        os.environ['PIP_FIND_LINKS']='https://must-not-contact.invalid/wheels'
         offline_bundle=root/'offline prepared bundle'
         manifest=prepare(offline_bundle,wheelhouse=bundle/'wheelhouse')
         bundle=offline_bundle

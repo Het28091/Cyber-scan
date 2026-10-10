@@ -6,6 +6,11 @@ from . import __version__
 
 ALLOWED=['secaudit.pyz','source.zip','LICENSE','README.md','requirements.lock']
 SOURCE_PATHS=['secaudit','scripts','config','demo/source','demo/server.py','tests','integration','docs','.github','setup.sh','run.sh','Makefile','scope.json','requirements.lock','requirements-dev.txt','LICENSE','README.md','CHANGELOG.md','CONTRIBUTING.md','SECURITY.md']
+def pip_environment():
+    env={k:v for k,v in os.environ.items() if not k.startswith('PIP_')}
+    env['PIP_CONFIG_FILE']=os.devnull
+    return env
+
 def prepare_wheels(output,lock,local=None):
     """Resolve only locked binary distributions; local preparation never uses indexes."""
     source=None
@@ -18,9 +23,7 @@ def prepare_wheels(output,lock,local=None):
     command=[sys.executable,'-m','pip','--disable-pip-version-check','download','--require-hashes','--only-binary=:all:',
              '--dest',str(destination),'-r',str(lock)]
     command+=['--no-index','--find-links',str(source)] if source else ['--index-url','https://pypi.org/simple']
-    env={k:v for k,v in os.environ.items() if not k.startswith('PIP_')}
-    env['PIP_CONFIG_FILE']=os.devnull
-    try:subprocess.run(command,check=True,env=env,timeout=120)
+    try:subprocess.run(command,check=True,env=pip_environment(),timeout=120)
     except (subprocess.CalledProcessError,subprocess.TimeoutExpired) as exc:
         raise PolicyError('Locked wheel preparation failed; check matching Python/platform wheels and hashes. No index fallback for a local wheelhouse.') from exc
 
@@ -77,7 +80,7 @@ def install(bundle,destination):
     python=Path(sys.executable)
     if m.get('pdf_wheels'):
         venv.EnvBuilder(with_pip=True).create(dest/'venv');python=dest/'venv/bin/python'
-        subprocess.run([str(python),'-m','pip','--disable-pip-version-check','install','--no-index','--find-links',str(Path(bundle).resolve()/'wheelhouse'),'--require-hashes','-r',str(dest/'requirements.lock')],check=True)
+        subprocess.run([str(python),'-m','pip','--disable-pip-version-check','install','--no-index','--find-links',str(Path(bundle).resolve()/'wheelhouse'),'--require-hashes','-r',str(dest/'requirements.lock')],check=True,env=pip_environment(),timeout=120)
     import shlex
     atomic(dest/'secaudit','#!/bin/sh\ncd '+shlex.quote(str(source))+' || exit 1\nexec '+shlex.quote(str(python))+' -m secaudit "$@"\n')
     (dest/'secaudit').chmod(0o700)
