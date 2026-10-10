@@ -61,6 +61,15 @@ promise an in-place downgrade. Future database schema versions are refused.
 
 ### Prepared wheels and candidate packages
 
+Both direct bundle preparation and release packaging now require a clean Git
+source root. Untracked, ignored or modified files inside packaged paths are
+rejected before creating a direct bundle; linked inputs are rejected too. Keep
+private configuration outside those paths. Do not commit secrets to satisfy this
+check. Source is checked again before the manifest is written, which records
+the commit. Installed/source-archive copies without Git metadata can still run
+scans; prepare new bundles from a clean checkout. This is not protection against
+a malicious concurrent writer; stop source edits during packaging.
+
 Use a reviewed local directory of wheels matching `requirements.lock` and the
 Linux/Python version to prepare without reaching an index:
 

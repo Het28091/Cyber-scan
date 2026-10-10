@@ -1,5 +1,11 @@
 # Production work remaining — 10 October 2026
 
+**Current owner direction:** deliver toward 12 October; blind implementation,
+with testing performed by the owner. Owner reports all prerequisite inputs ready;
+readiness is not verified acceptance. Use TWO_DAY_DELIVERY.md and OWNER_TEST_SHEET.md.
+New owner-mode setup is IMPLEMENTED_UNVERIFIED. No agent provider calls or further
+manual tests are planned under this restriction.
+
 Production is **not accepted**. The application has working Linux journeys and
 automated evidence; the outstanding acceptance below cannot be replaced by a
 completion percentage or by green unit tests. Scope remains the owner-confirmed
@@ -23,7 +29,7 @@ before choosing a final release candidate; do not bypass the validator.
 
 | Priority / task | Work and next action | Responsible role | Current state |
 | --- | --- | --- | --- |
-| 1 / S2-04 | Prepare API configuration and private environment; run real provider acceptance with free-only usage and synthetic finding metadata | Owner prepares account; developer executes | BLOCKED on provider preparation |
+| 1 / S2-04 | Exercise actual API configuration with free-only usage and synthetic finding metadata | Owner tests; developer assists when requested | OWNER REPORTS READY; NOT TESTED |
 | 1 / S2-04 | Resolve deferred local-provider acceptance under current mandatory gate | Owner + developer | DEFERRED, release requirement remains |
 | 2 / S3-03/04 | Prepare dedicated target session and a case-by-case expected result dataset; distinguish supported detectors from unsupported exercises | Owner + developer | NOT TESTED for authenticated DVWA |
 | 2 / S3-01/04/05 | Independent security/quality review, dependencies and detection/mapping limits | Independent reviewer | NOT ACCEPTED; developer review is not independent |

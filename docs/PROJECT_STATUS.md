@@ -1,5 +1,11 @@
 # Project completion status
 
+**Owner handover direction — 10 October 2026:** target delivery is 12 October.
+Owner requested blind implementation and will perform testing. New owner-mode
+workspace preparation is IMPLEMENTED_UNVERIFIED; no scan/provider call was run
+with it. See TWO_DAY_DELIVERY.md and OWNER_TEST_SHEET.md. Earlier passes below
+remain tied to their recorded sources and do not accept the new work.
+
 **Production preparation — 10 October 2026:** local-wheel packaging and isolated
 pip configuration are implemented at `1d35d63`; 181 Kali tests and full Linux CI
 PASS. A candidate was rebuilt, freshly installed and scanned with PDF output

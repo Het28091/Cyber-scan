@@ -7,6 +7,13 @@ Baseline and current status: [PROJECT_STATUS.md](PROJECT_STATUS.md).
 
 ## Working agreement
 
+**Current owner direction, 10 October:** target a deliverable by 12 October;
+continue blind implementation and leave testing to the owner. No further manual
+agent-run tests, scans, provider calls or acceptance exercises until requested.
+Keep new work IMPLEMENTED_UNVERIFIED. Existing repository CI policy is unchanged;
+automatic runs do not constitute owner acceptance. TWO_DAY_DELIVERY.md and
+OWNER_TEST_SHEET.md organize the handover; final release gates are not waived.
+
 **9 October separate-mode continuation:** S2-02/S2-05 and S3-04 corrections
 implemented and regression verified per mode; S3-02 AI output rejection preserves
 deterministic evidence. Six Linux fixture journeys PASS at `15ca6e4`; detailed

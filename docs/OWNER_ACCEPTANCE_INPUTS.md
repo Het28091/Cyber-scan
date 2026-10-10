@@ -1,5 +1,11 @@
 # Remaining owner inputs
 
+**10 October update:** owner reports prerequisites ready and will test personally.
+The current task is implementation/build handover, not agent-run acceptance.
+Use OWNER_TEST_SHEET.md; keep private credentials/configuration on the execution
+host. The preparation details below are reference instructions, not a repeated
+request to send inputs or credentials to the developer.
+
 Provider-independent development and Linux CI do not need the VM or an API key.
 The next environment-dependent work is S2-04 live providers and the owner demo.
 These inputs do not authorize publication or waive later release gates.

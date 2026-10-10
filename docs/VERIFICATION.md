@@ -1,5 +1,16 @@
 # Verification record
 
+## Handover restriction — 10 October 2026
+
+`f3ce53c`: before the owner switched to blind implementation, twelve portable
+source/release checks passed and the already-started Kali suite completed with
+183 tests PASS in 13.413 s (`artifacts/checkpoints/release-sprint/tests.log`).
+Direct bundles now share the release source-cleanliness guard. The owner then
+requested implementation only and will test independently. No further agent-run
+tests, scans or provider acceptance are authorized by that handover. The subsequent
+owner-mode preparation helper is IMPLEMENTED_UNVERIFIED; it has not been executed.
+No new final acceptance records or stable release are claimed.
+
 ## Production preparation — 10 October 2026
 
 - `6a1d362`: refreshed Kali operations/upgrade/restore/rollback (2.331 s), actual
