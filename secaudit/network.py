@@ -63,13 +63,8 @@ def scan_web(url,scope,checkpoint):
         if status>=500: events.append('Stopped after server error (possible instability)');break
         hd={k.lower():v for k,v in hs}
         redirect=status in (301,302,303,307,308)
-        # Redirect cookies and HTTPS transport policy are still observable evidence.
-        # Document-header checks apply only to non-redirect responses.
-        for header,why in ([] if redirect else [('content-security-policy','Define a restrictive Content-Security-Policy.'),('x-content-type-options','Set X-Content-Type-Options: nosniff.')]):
-            if not hd.get(header,'').strip():
-                findings.append(Finding('HTTP-'+header,'Missing '+header,asset,'Header empty on this response.' if header in hd else 'Header absent on this response.',why,severity='LOW',confidence='HIGH',evidence=['Observed header names: '+', '.join(sorted(hd))]))
-        if u.scheme=='https' and not hd.get('strict-transport-security','').strip():
-            findings.append(Finding('HTTP-HSTS','Missing HSTS',asset,'HTTPS response has empty HSTS.' if 'strict-transport-security' in hd else 'HTTPS response lacks HSTS.','Review deployment and enable HSTS.',severity='LOW',confidence='HIGH',evidence=['HSTS header absent or empty']))
+        from .web_headers import header_findings
+        findings.extend(header_findings(current,status,hs))
         for k,v in hs:
             if k.lower()=='set-cookie':
                 attrs={x.strip().split('=')[0].lower() for x in v.split(';')[1:]}

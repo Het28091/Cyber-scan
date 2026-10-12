@@ -1,5 +1,11 @@
 # Verification record
 
+## Reliability branch — 13 October 2026
+
+Baseline: `3304018f5099c82878101d4d7ec1bcd218878c0e`. Local execution is blocked by `helper_unknown_error: setup refresh had errors`; no local test run is claimed. Changes are prepared on `codex/web-reliability` through GitHub, preserving the uninspectable local working tree. Linux CI must validate the implementation commit before acceptance.
+
+New cases in `tests/test_web_headers.py` cover nosniff semantics, HSTS grammar/duplicates/zero/IP literals, redirect behavior, CSP field presence and scan evidence redaction. Existing header/redirect fixtures now use a named synthetic host where they assert HSTS. These are author-written regressions, not an independently labelled accuracy corpus. No new real-site/provider call, stable release or 99% assertion is made. See RELIABILITY_PLAN.md.
+
 ## Handover restriction — 10 October 2026
 
 `f3ce53c`: before the owner switched to blind implementation, twelve portable

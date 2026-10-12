@@ -35,7 +35,7 @@ class OfflineQualityTests(unittest.TestCase):
 
 class WebQualityTests(unittest.TestCase):
     def test_empty_versus_nonempty_headers(self):
-        url='https://127.0.0.1/page'
+        url='https://owned.example.invalid/page'
         scope=Scope(dict(authorization='owned header fixture',origins=[url],exclusions=[],
                          environment='test',profiles=['passive'],allowed_ips=['127.0.0.1'],max_requests=1,max_seconds=5))
         for values,expected in [(['',' ','\t'],3),(["default-src 'none'",'nosniff','max-age=86400'],0)]:

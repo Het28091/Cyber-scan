@@ -1,5 +1,7 @@
 # Five-spiral production implementation plan
 
+**13 October owner direction:** resume reliability implementation and verification following the renewed testing request. Prioritize detection correctness and website usability under S2-02/S2-05 and S3-03/S3-04. [RELIABILITY_PLAN.md](RELIABILITY_PLAN.md) defines the proposed precision target, separate recall/coverage requirements and remaining work; no release gate is waived.
+
 Owner: project owner. Delivery lead: assigned developer. Independent review role:
 security/quality reviewer where available. One person may hold several roles,
 but identify that limitation; a developer self-check is not independent review.
