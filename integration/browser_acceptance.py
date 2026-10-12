@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import queue
+import re
 import signal
 import socket
 import subprocess
@@ -30,7 +31,7 @@ def main():
         process = subprocess.Popen(
             [sys.executable, '-m', 'secaudit', 'dashboard', '--port', str(port), '--output', temp],
             cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True,
-            env=dict(os.environ,SECAUDIT_EXPERIMENTAL_AI='1'))
+            env=dict(os.environ,SECAUDIT_EXPERIMENTAL_AI='1',SECAUDIT_AI_CONFIG=str(Path(temp)/'prepared-ai.json')))
         lines = queue.Queue()
         def read_startup():
             for _ in range(3):
@@ -69,6 +70,15 @@ def main():
                 page.goto(f'http://127.0.0.1:{port}')
                 expect(page.locator('#version')).to_have_text('v'+__version__)
                 expect(page.locator('#recent-runs')).to_contain_text('No runs yet')
+                grouped=page.evaluate("""() => {
+                  const f={id:'a',rule:'HTTP-HSTS',scanner:'secaudit-builtins',scanner_version:'fixture',
+                    title:'Missing HSTS',description:'Missing',asset:'https://owned.invalid/a',severity:'LOW',confidence:'HIGH',validation_status:'NEEDS MANUAL REVIEW'};
+                  const input=[f,{...f,id:'b',asset:'https://owned.invalid/b'},{...f,id:'c',asset:'https://other.invalid/a'}];
+                  const before=JSON.stringify(input),groups=groupWebFindings(input);
+                  return {sizes:groups.map(g=>g.length),ids:groups.flat().map(f=>f.id),unchanged:before===JSON.stringify(input)};
+                }""")
+                assert grouped=={'sizes':[2,1],'ids':['a','b','c'],'unchanged':True}
+
                 page.locator('#new-scan').focus()
                 page.keyboard.press('Enter')
                 expect(page.get_by_role('dialog', name='Start with a defined scope.')).to_be_visible()
@@ -182,6 +192,13 @@ def main():
                     page.locator('#new-scan').click()
                     page.locator('#scan-source').fill('')
                     page.locator('#scan-target').fill(origin)
+                    page.get_by_role('button',name='Use website-only checks',exact=True).click()
+                    page.get_by_label('Authorization reference',exact=True).fill('Owned browser fixture')
+                    page.get_by_role('button',name='Prepare scope from URL',exact=True).click()
+                    expect(page.get_by_label('Approved target IP addresses — one per line',exact=True)).to_have_value('127.0.0.1')
+                    expect(page.locator('#scan-authorized')).not_to_be_checked()
+                    assert not entered.is_set(), 'Preparing scope must not contact the target'
+                    page.locator('#scan-authorized').check()
                     page.get_by_role('combobox',name='Configuration editor',exact=True).select_option('json')
                     page.locator('#scan-scope').fill(json.dumps({
                         'authorization': 'Owned browser acceptance fixture', 'origins': [origin],
@@ -218,6 +235,7 @@ def main():
                     page.locator('#new-scan').click()
                     page.locator('#scan-target').fill('')
                     page.locator('#scan-source').fill(str(ROOT/'demo/source'))
+                    page.get_by_label('Python source patterns',exact=True).check()
                     page.locator('#scan-preset').select_option('local-ai')
                     expect(page.locator('#ai-controls')).to_be_visible()
                     page.locator('#submit-scan').click()
@@ -225,6 +243,13 @@ def main():
                     expect(page.locator('#ai-consent')).not_to_be_checked()
                     config={'enabled':True,'provider':'ollama','endpoint':f'http://127.0.0.1:{provider.server_port}',
                             'model':'dashboard-fixture','approved_ips':['127.0.0.1'],'failure_policy':'required'}
+                    config['output_tokens']=768
+                    (Path(temp)/'prepared-ai.json').write_text(json.dumps({'mode':'local-ai','ai':config}))
+                    page.get_by_role('button',name='Load server AI configuration',exact=True).click()
+                    expect(page.locator('#scan-ai')).to_have_value(re.compile('dashboard-fixture'))
+                    loaded=json.loads(page.locator('#scan-ai').input_value())
+                    assert loaded['output_tokens']==768
+                    expect(page.locator('#ai-consent')).not_to_be_checked()
                     page.locator('#scan-ai').fill(json.dumps(config))
                     page.locator('#ai-consent').check()
                     page.locator('#scan-scanners').fill('{"shell":{}}')

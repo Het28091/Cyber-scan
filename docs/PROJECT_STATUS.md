@@ -1,5 +1,7 @@
 # Project completion status
 
+**13 October setup follow-up:** website-only selection, DNS-only scope preparation, grouped HTTP observations and loading private server AI configuration are implemented on PR #3; CI verification pending. AI remains optional with explicit disclosure, pinned endpoints and required preflight. Actual provider inference and deployment are not claimed. See WEBSITE_QUICKSTART.md and AI_QUICKSTART.md.
+
 **13 October reliability work:** owner requested dependable website results targeting 99%. Header semantics and safe controls are being corrected under S2-02/S2-05 and S3-04. See [RELIABILITY_PLAN.md](RELIABILITY_PLAN.md). No measured 99% claim; held-out accuracy, URL-first setup and grouping remain open. At `d258e2e`, 190 tests and all 16 mandatory Linux CI jobs PASS; the external-target gate was SKIPPED. See [evidence](evidence/web-reliability-oct13.json). Changes are on PR #3, not deployed to the owner VM. The local execution helper cannot start.
 
 **Owner handover direction — 10 October 2026:** target delivery is 12 October.

@@ -36,7 +36,22 @@ async function showJobDetail(id){
  }catch(error){dialog.append(el('p','form-error',error.message));}
 }
 function renderGlance(){const p=$('#coverage-glance');p.replaceChildren();const coverage=state.runs[0]?.coverage;if(!coverage){p.append(el('div','empty-small','Run an assessment to see coverage.'));return;}for(const c of coverage.slice(0,6)){const row=el('div','coverage-row');const label=el('div','coverage-label');label.append(el('span','',pretty(c.module)),el('span','',c.status));const track=el('div','track');track.append(el('span','coverage-indicator '+(c.status==='NOT TESTED'?'not-tested':''),c.status==='NOT TESTED'?'Not executed':'Limited checks executed'));row.append(label,track);p.append(row);}}
-async function renderFindings(){const p=$('#findings-list');const r=await detail(state.selected);if(!r){empty(p,'No findings to show','Choose or create an assessment first.');return;}const query=$('#finding-search').value.toLowerCase(),severity=$('#finding-severity').value;const fs=r.findings.filter(f=>(!severity||f.severity===severity)&&[f.title,f.asset,f.rule].join(' ').toLowerCase().includes(query));p.replaceChildren();if(!fs.length){empty(p,'No matching findings','Review coverage before drawing conclusions about security.');return;}const table=el('table');const head=el('tr');for(const s of ['FINDING / ASSET','SEVERITY','CONFIDENCE','STATUS'])head.append(el('th','',s));const th=el('thead');th.append(head);table.append(th);const body=el('tbody');for(const f of fs){const tr=el('tr');const td=el('td');const b=el('button','finding-button',f.title);b.onclick=()=>showFinding(f,r.id);td.append(b,el('span','asset',f.asset+(f.line?':'+f.line:'')));const sev=el('td');sev.append(el('span','badge severity-'+f.severity,f.severity));tr.append(td,sev,el('td','',pretty(f.confidence)),el('td','',pretty(f.validation_status)));body.append(tr);}table.append(body);const wrap=el('div','table-wrap');wrap.append(table);p.append(wrap);}
+function groupWebFindings(findings){
+ const groups=[],web=new Map();
+ for(const finding of findings){
+  let key=null;
+  if(finding.scanner==='secaudit-builtins'&&String(finding.rule).startsWith('HTTP-')){
+   try{key=JSON.stringify([new URL(finding.asset).origin,finding.rule,finding.title,finding.description,finding.severity,finding.confidence,finding.validation_status,finding.scanner_version]);}catch{}
+  }
+  if(key!==null&&web.has(key)){web.get(key).push(finding);continue;}
+  const group=[finding];groups.push(group);if(key!==null)web.set(key,group);
+ }
+ return groups;
+}
+
+async function renderFindings(){const p=$('#findings-list');const r=await detail(state.selected);if(!r){empty(p,'No findings to show','Choose or create an assessment first.');return;}const query=$('#finding-search').value.toLowerCase(),severity=$('#finding-severity').value;const fs=r.findings.filter(f=>(!severity||f.severity===severity)&&[f.title,f.asset,f.rule].join(' ').toLowerCase().includes(query));p.replaceChildren();if(!fs.length){empty(p,'No matching findings','Review coverage before drawing conclusions about security.');return;}const table=el('table');const head=el('tr');for(const s of ['FINDING / ASSET','SEVERITY','CONFIDENCE','STATUS'])head.append(el('th','',s));const th=el('thead');th.append(head);table.append(th);const body=el('tbody');for(const group of groupWebFindings(fs)){const f=group[0];const tr=el('tr');const td=el('td');const b=el('button','finding-button',f.title);b.onclick=()=>showFinding(f,r.id);td.append(b,el('span','asset',f.asset+(f.line?':'+f.line:'')));
+if(group.length>1){const affected=el('details');affected.append(el('summary','',group.length+' observations · '+new Set(group.map(item=>item.asset)).size+' affected URLs'));for(const item of group){const entry=el('button','secondary',item.asset);entry.type='button';entry.onclick=()=>showFinding(item,r.id);affected.append(entry);}td.append(affected);}
+const sev=el('td');sev.append(el('span','badge severity-'+f.severity,f.severity));tr.append(td,sev,el('td','',pretty(f.confidence)),el('td','',pretty(f.validation_status)));body.append(tr);}table.append(body);const wrap=el('div','table-wrap');wrap.append(table);p.append(el('p','muted',groupWebFindings(fs).length+' issue groups · '+fs.length+' observations. Review each affected URL separately; exports preserve every observation.'),wrap);}
 function showFinding(f,runId=state.selected){const p=$('#finding-detail');const title=el('h2','',f.title);title.id='finding-title';p.replaceChildren(title);const meta=el('div','detail-meta');meta.append(el('span','badge severity-'+f.severity,f.severity),el('span','badge',f.confidence),el('span','badge',f.validation_status));p.append(meta);for(const [title,text] of [['Asset',f.asset+(f.line?':'+f.line:'')],['Observation',f.description],['Evidence',f.evidence.join('\n')],['Impact',f.impact],['Remediation',f.remediation],['Retest',f.retest],['Provenance',f.scanner+' '+f.scanner_version+' · '+f.rule],['Related frameworks',(f.mappings||[]).map(m=>m.framework+' '+m.version+' / '+m.control+' — '+m.status).join('\n')]]){const b=el('section','detail-block');b.append(el('h3','',title),el('p','',text||'Not mapped'));p.append(b);}renderReview(p,f,runId);$('#finding-dialog').showModal();}
 async function renderReports(){const p=$('#report-list');p.replaceChildren();const r=await detail(state.selected);if(!r){empty(p,'No reports yet','Reports appear when an assessment finishes.');return;}const cards=[['JSON','AI suggestions','Untrusted assistance linked to existing finding IDs.','ai-suggestions.json'],['JSON','Assessment provenance','Modes, provider usage, events and coverage.','run.json'],['JSON','Inventory completeness','Exact pins, unresolved declarations, unsupported records and parse errors.','inventory.json'],['PDF','Executive report','Summary, boundaries, and priority remediation.','executive.pdf'],['PDF','Technical report','Findings, evidence, remediation, and retesting.','technical.pdf'],['HTML','Technical web report','A standalone report with local assets.','technical.html'],['JSON','Normalized findings','Structured evidence for downstream tools.','findings.json'],['CSV','Coverage matrix','Executed, partial, and not-tested checks.','coverage.csv'],['SARIF','Code findings','Source findings in a portable analysis format.','findings.sarif'],['CSV','Framework mappings','Reviewed related-evidence mappings.','framework-mappings.csv'],['JSON','Software inventory','CycloneDX component inventory.','sbom.cdx.json'],['JSON','Preflight report','Readiness, missing tools, and policy checks.','preflight_report.json']];for(const [format,title,desc,file] of cards){if(!(r.available_reports||[]).includes(file))continue;const card=el('article','report-card');const a=el('a','download','Download '+format+' ↓');a.href='/reports/'+r.id+'/'+file;a.download=file;card.append(el('span','format',format),el('h3','',title),el('p','',desc),a);p.append(card);}renderRetest(p,r);}
 async function renderCoverage(){const p=$('#coverage-list');const r=await detail(state.selected);p.replaceChildren();if(!r){empty(p,'Coverage is not available yet','Run an assessment to establish what was actually tested.');return;}const table=el('table');const head=el('tr');['MODULE','STATUS','EVIDENCE / LIMITATION'].forEach(s=>head.append(el('th','',s)));table.append(head);for(const c of r.coverage){const row=el('tr');const status=el('td');status.append(badge(c.status));row.append(el('td','',pretty(c.module)),status,el('td','',c.reason));table.append(row);}const wrap=el('div','table-wrap');wrap.append(table);p.append(wrap);if(r.ai_usage?.enabled)p.append(el('p','muted','AI assistance (untrusted): '+JSON.stringify(r.ai_usage)));if(r.online_advisories)p.append(el('p','muted','OSV online lookups: '+r.online_advisories.completed+' completed; '+r.online_advisories.failed+' failed. Disclosed: package names, ecosystems and versions. No AI.'));for(const e of r.events||[])p.append(el('p','muted',e));}
@@ -174,6 +189,31 @@ function setupGuidedAssessment(){
  const authorization=field(scopeBox,'Authorization reference'),environment=field(scopeBox,'Environment','local-lab');
  const origins=field(scopeBox,'Authorized URL prefixes — one per line','','lines'),exclusions=field(scopeBox,'Excluded URL prefixes — one per line','','lines'),pins=field(scopeBox,'Approved target IP addresses — one per line','','lines');
  const requests=field(scopeBox,'Maximum requests','10','number'),seconds=field(scopeBox,'Maximum duration (seconds)','30','number');
+ const draft=el('button','secondary','Prepare scope from URL');draft.type='button';scopeBox.append(draft);
+ const draftNotice=el('p','muted');draftNotice.setAttribute('role','status');scopeBox.append(draftNotice);
+ draft.onclick=async()=>{
+  const requested=text(target),reference=text(authorization);draft.disabled=true;
+  try{
+   const result=await api('/api/setup/website',{method:'POST',body:JSON.stringify({target:requested,authorization:reference})});
+   if(text(target)!==requested||text(authorization)!==reference)throw Error('Inputs changed. Prepare the scope again.');
+   origins.value=result.scope.origins.join('\n');pins.value=result.scope.allowed_ips.join('\n');
+   environment.value=result.scope.environment;
+   $('#scan-authorized').checked=false;draftNotice.textContent=result.notice;
+  }catch(error){draftNotice.textContent=error.message;}finally{draft.disabled=false;}
+ };
+ const websiteOnly=el('button','secondary','Use website-only checks');websiteOnly.type='button';
+ target.parentElement.after(websiteOnly);
+ websiteOnly.onclick=()=>{
+  $('#scan-source').value='';$('#scan-archive').value='';
+  assessmentControls.load({preset:$('#scan-preset').value,modules:[]});
+  for(const options of Object.values(scanners)){options.enabled.checked=false;options.enabled.onchange();}
+  loginEnabled.checked=false;loginBox.hidden=true;
+  for(const role of roles)role.box.remove();roles.length=0;addRole.disabled=false;
+  cors.value='';browser.value='';$('#scan-workflow').value='{}';$('#scan-scanners').value='{}';
+  mode.value='guided';visibility();$('#scan-authorized').checked=false;
+  draftNotice.textContent='Website-only checks selected. Enter an authorization reference, prepare scope, review it, then authorize.';
+ };
+
  workflowBox.append(el('p','muted','Choose only authorized test-account operations. Browser snapshots render fetched HTML with application scripts and network access disabled.'));
  const loginEnabled=toggle(workflowBox,'Verify login, logout and session invalidation'),loginBox=el('div');workflowBox.append(loginBox);
  const loginUrl=field(loginBox,'Login URL'),credentials=field(loginBox,'Credentials JSON environment variable','SECAUDIT_TARGET_LOGIN'),token=field(loginBox,'Response token field','token'),verifyUrl=field(loginBox,'Protected verification URL'),logoutUrl=field(loginBox,'Logout URL');
@@ -196,11 +236,31 @@ function setupGuidedAssessment(){
  }
  const endpoint=field(aiBox,'Provider endpoint'),model=field(aiBox,'Model name'),aiPins=field(aiBox,'Approved provider IP addresses — one per line','','lines'),key=field(aiBox,'API key environment variable','SECAUDIT_API_KEY');
  const aiRequests=field(aiBox,'Request budget','2','number'),aiTokens=field(aiBox,'Token budget','8192','number'),aiTimeout=field(aiBox,'Request timeout (seconds)','15','number'),failure=choice(aiBox,'If AI is unavailable',[['continue','Continue without AI'],['required','Require AI readiness']]);
+ let preparedAI=null;
  failure.value='required';
+ const prepared=el('button','secondary','Load server AI configuration');prepared.type='button';
+ const preparedNotice=el('p','muted');preparedNotice.setAttribute('role','status');
+ $('#ai-controls').append(prepared,preparedNotice);
+ prepared.onclick=async()=>{
+  prepared.disabled=true;
+  try{
+   const result=await api('/api/setup/ai',{method:'POST',body:'{}'});
+   if(![...$('#scan-preset').options].some(o=>o.value===result.mode&&!o.disabled))throw Error('This AI mode is disabled.');
+   $('#scan-preset').value=result.mode;$('#scan-preset').dispatchEvent(new Event('change'));
+   preparedAI=result.ai;
+   endpoint.value=result.ai.endpoint;model.value=result.ai.model;
+   aiPins.value=result.ai.approved_ips.join('\n');key.value=result.ai.api_key_env;
+   aiRequests.value=result.ai.request_budget;aiTokens.value=result.ai.token_budget;
+   aiTimeout.value=result.ai.timeout;failure.value=result.ai.failure_policy;
+   $('#scan-ai').value=JSON.stringify(result.ai,null,2);$('#ai-consent').checked=false;
+   preparedNotice.textContent=result.status+' — '+result.notice;
+  }catch(error){preparedNotice.textContent=error.message;}finally{prepared.disabled=false;}
+ };
+
  const advanced=[$('#scope-label'),$('#scan-workflow').parentElement,$('#scan-scanners').parentElement,$('#scan-ai').parentElement];
  function visibility(){const guided=mode.value==='guided',hasTarget=!!text(target);scopeBox.hidden=!guided||!hasTarget;workflowBox.hidden=!guided||!hasTarget;scannerBox.hidden=!guided;aiBox.hidden=!guided;advanced.forEach(n=>n.hidden=guided);$('#scope-label').hidden=guided||!hasTarget;}
  mode.onchange=visibility;target.addEventListener('input',visibility);
- $('#scan-preset').addEventListener('change',()=>{const local=$('#scan-preset').value==='local-ai';endpoint.value=local?'http://127.0.0.1:11434':'';aiPins.value=local?'127.0.0.1':'';key.parentElement.hidden=local;});
+ $('#scan-preset').addEventListener('change',()=>{preparedAI=null;const local=$('#scan-preset').value==='local-ai';endpoint.value=local?'http://127.0.0.1:11434':'';aiPins.value=local?'127.0.0.1':'';key.parentElement.hidden=local;});
  function sync(){
   if(mode.value!=='guided')return;
    const workflow={},scannerConfig={};
@@ -216,7 +276,7 @@ function setupGuidedAssessment(){
    $('#scan-workflow').value=JSON.stringify(workflow,null,2);$('#scan-scanners').value=JSON.stringify(scannerConfig,null,2);
    if($('#scan-preset').value.endsWith('-ai')){
     if(!lines(aiPins).length)throw Error('Approved provider IP addresses are required.');
-    $('#scan-ai').value=JSON.stringify({enabled:true,provider:$('#scan-preset').value==='local-ai'?'ollama':'openai-compatible',endpoint:required(endpoint,'Provider endpoint'),model:required(model,'Model name'),api_key_env:required(key,'API key variable'),approved_ips:lines(aiPins),request_budget:number(aiRequests,'AI request budget',1,1000000),token_budget:number(aiTokens,'AI token budget',1,1000000),timeout:number(aiTimeout,'AI timeout',1,120),failure_policy:failure.value},null,2);
+    $('#scan-ai').value=JSON.stringify({...preparedAI,enabled:true,provider:$('#scan-preset').value==='local-ai'?'ollama':'openai-compatible',endpoint:required(endpoint,'Provider endpoint'),model:required(model,'Model name'),api_key_env:required(key,'API key variable'),approved_ips:lines(aiPins),request_budget:number(aiRequests,'AI request budget',1,1000000),token_budget:number(aiTokens,'AI token budget',1,1000000),timeout:number(aiTimeout,'AI timeout',1,120),failure_policy:failure.value},null,2);
    }
  }
  assessmentEditor.sync=sync;
