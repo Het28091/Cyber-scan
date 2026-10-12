@@ -1,6 +1,6 @@
 # Project completion status
 
-**13 October reliability work:** owner requested dependable website results targeting 99%. Header semantics and safe controls are being corrected under S2-02/S2-05 and S3-04. See [RELIABILITY_PLAN.md](RELIABILITY_PLAN.md). No measured 99% claim; held-out accuracy, URL-first setup and grouping remain open. Linux CI is required; the local execution helper cannot start.
+**13 October reliability work:** owner requested dependable website results targeting 99%. Header semantics and safe controls are being corrected under S2-02/S2-05 and S3-04. See [RELIABILITY_PLAN.md](RELIABILITY_PLAN.md). No measured 99% claim; held-out accuracy, URL-first setup and grouping remain open. At `d258e2e`, 190 tests and all 16 mandatory Linux CI jobs PASS; the external-target gate was SKIPPED. See [evidence](evidence/web-reliability-oct13.json). Changes are on PR #3, not deployed to the owner VM. The local execution helper cannot start.
 
 **Owner handover direction — 10 October 2026:** target delivery is 12 October.
 Owner requested blind implementation and will perform testing. New owner-mode

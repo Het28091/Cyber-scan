@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "recorded_date": "2026-10-13",
+  "source_commit": "d258e2e4506ccf8ee449998fc8c39654f94bf9c1",
+  "task_ids": [
+    "S2-02",
+    "S2-05",
+    "S3-04"
+  ],
+  "environment": "GitHub Actions Linux runners; main test Python 3.12.15",
+  "workflow_run": 38291893040,
+  "workflow_url": "https://github.com/Het28091/Cyber-scan/actions/runs/38291893040",
+  "mandatory_jobs_passed": 16,
+  "tests": {
+    "count": 190,
+    "result": "PASS",
+    "elapsed_seconds": 47.252
+  },
+  "external_target_acceptance": "SKIPPED (separately gated)",
+  "local_execution": "BLOCKED: helper_unknown_error: setup refresh had errors",
+  "independent_website_accuracy": "NOT MEASURED",
+  "precision_99_percent": "TARGET ONLY",
+  "production_acceptance": "NOT ACCEPTED"
+}

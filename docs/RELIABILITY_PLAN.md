@@ -23,9 +23,9 @@ Do not claim 99% general website reliability, detection or uptime.
 
 | Item | State in this change | Acceptance |
 | --- | --- | --- |
-| Parse nosniff and HSTS meaning instead of only checking nonempty strings | IMPLEMENTED_UNVERIFIED pending Linux CI | Case, field order, disabled policy, malformed syntax, duplicate directives and safe controls |
-| Stop suggesting HSTS on IP-literal URLs | IMPLEMENTED_UNVERIFIED pending Linux CI | IPv4/IPv6 exclusions and named-host redirect regression |
-| Preserve findings, cookie redaction and redirect scope boundaries | Existing behavior retained; regression checks added | Existing full suite plus new header integration checks |
+| Parse nosniff and HSTS meaning instead of only checking nonempty strings | VERIFIED in Linux CI at d258e2e | Case, field order, disabled policy, malformed syntax, duplicate directives and safe controls |
+| Stop suggesting HSTS on IP-literal URLs | VERIFIED in Linux CI at d258e2e | IPv4/IPv6 exclusions and named-host redirect regression |
+| Preserve findings, cookie redaction and redirect scope boundaries | VERIFIED in Linux CI at d258e2e | Existing full suite plus new header integration checks |
 | URL-first setup with automatic draft IP pins and explicit reviewed scope | TODO | Paste URL, review resolved scope, authorize; no automatic widening on redirects or DNS changes |
 | Group equivalent findings across affected URLs | TODO | Presentation grouping only; original IDs, per-asset evidence and review revisions retained |
 | Context-aware cookie and CSP analysis | TODO | Label observations separately from vulnerabilities; meta CSP, report-only, multiple policies and cookie purposes |
