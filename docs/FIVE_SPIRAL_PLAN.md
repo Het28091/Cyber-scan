@@ -1,5 +1,9 @@
 # Five-spiral production implementation plan
 
+**13 October CSP backlog:** S2-02/S2-05 and S3-04 delivery-context checks are
+implemented; portable verification passed, Linux CI pending. Effective CSP strength,
+independent held-out precision/recall, real providers and release gates remain open.
+
 **13 October cookie backlog:** S2-02/S2-05 and S3-04 attribute parsing and evidence
 wording are implemented with five new regression methods; all 15 targeted cookie,
 header and redirect tests PASS on Windows. At `65b5767`, 201 tests and all 16 mandatory

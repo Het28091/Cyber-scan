@@ -64,7 +64,7 @@ def scan_web(url,scope,checkpoint):
         hd={k.lower():v for k,v in hs}
         redirect=status in (301,302,303,307,308)
         from .web_headers import header_findings
-        findings.extend(header_findings(current,status,hs))
+        findings.extend(header_findings(current,status,hs,body))
         findings.extend(cookie_findings(current,hs))
         checkpoint(findings,inventory)
         if redirect:

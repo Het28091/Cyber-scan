@@ -1,12 +1,13 @@
 """Response-header observations; these do not establish exploitability.
 
 Nosniff follows Fetch section 3.6. HSTS follows RFC 6797 sections 6.1 and 8.1.
-CSP remains a header-presence check, not a policy-strength assessment.
+CSP delivery context is delegated; no policy-strength assessment is claimed.
 """
 import ipaddress
 import re
 from urllib.parse import urlsplit
 from .models import Finding
+from .web_csp import csp_findings
 
 _TOKEN = r"[!#$%&'*+\-.^_\x60|~0-9A-Za-z]+"
 _DIRECTIVE = re.compile(
@@ -47,13 +48,13 @@ def hsts_state(value):
     return 'disabled' if not age.strip('0') else 'valid'
 
 
-def header_findings(url, status, headers):
+def header_findings(url, status, headers, body=b''):
     values = {}
     for name, value in headers:
         values.setdefault(name.lower(), []).append(value)
     asset_parts = urlsplit(url)
     asset = asset_parts.scheme + '://' + asset_parts.netloc + asset_parts.path
-    findings = []
+    findings = csp_findings(url, status, headers, body)
 
     def add(rule, title, description, remediation):
         findings.append(Finding(
@@ -66,11 +67,6 @@ def header_findings(url, status, headers):
 
     redirect = status in (301, 302, 303, 307, 308)
     if not redirect:
-        csp = values.get('content-security-policy', [])
-        if not any(value.strip() for value in csp):
-            add('HTTP-content-security-policy', 'Missing content-security-policy',
-                'CSP header empty on this response.' if csp else 'CSP header absent on this response.',
-                'Review a restrictive CSP. A meta policy may exist; this check only observes response headers.')
         nosniff = values.get('x-content-type-options', [])
         if not nosniff or not nosniff[0].strip():
             add('HTTP-x-content-type-options', 'Missing x-content-type-options',

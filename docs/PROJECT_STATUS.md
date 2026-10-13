@@ -1,5 +1,11 @@
 # Project completion status
 
+**13 October CSP continuation:** S2-02/S2-05 and S3-04 now distinguish absent,
+empty and report-only CSP headers and static meta candidates, with explicit
+HTML/status applicability and conservative evidence. Targeted portable tests pass;
+Linux CI verification is pending. Effective browser-policy strength, independent
+accuracy and real-provider acceptance remain open. No new external target/API call.
+
 **13 October cookie continuation:** S2-02/S2-05 and S3-04 correct cookie attribute
 whitespace, invalid/duplicate SameSite handling and context-free severity. Fifteen
 targeted checks PASS locally on Windows. At `65b5767c86a54511d53fb510b257a59fc1b6be80`,
