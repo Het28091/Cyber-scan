@@ -1,5 +1,12 @@
 # Project completion status
 
+**13 October cookie continuation:** S2-02/S2-05 and S3-04 correct cookie attribute
+whitespace, invalid/duplicate SameSite handling and context-free severity. Fifteen
+targeted checks PASS locally on Windows; Linux CI remains pending for this change.
+Local execution has recovered; the existing PR branch is now checked out locally,
+with the owner's untracked private configuration helper preserved. No VM/provider
+call or deployment. See RELIABILITY_PLAN.md for detector limits and remaining work.
+
 **13 October verified setup checkpoint:** at `2d2eca01ca1468c0017b43128623d687c98dbe47`, 196 regression tests PASS in 25.277 s and all 16 mandatory Linux CI jobs PASS, including real Chromium dashboard checks for website-only setup, reviewed DNS scope drafts, original-ID-preserving HTTP grouping and server AI configuration loading. [Run 38430892997](https://github.com/Het28091/Cyber-scan/actions/runs/38430892997); [evidence](evidence/website-setup-oct13.json). S2-02/S2-05 and S3-03/S3-04 receive this bounded regression evidence; S2-04 real-provider acceptance remains NOT TESTED for this source. The separately gated external-target job was SKIPPED. No VM deployment, independent accuracy benchmark, whole-spiral acceptance or production release is claimed.
 
 **13 October setup follow-up:** website-only selection, DNS-only scope preparation, grouped HTTP observations and loading private server AI configuration are implemented on PR #3 and verified in Linux CI at `2d2eca0`. AI remains optional with explicit disclosure, pinned endpoints and required preflight. Actual provider inference and deployment are not claimed. See WEBSITE_QUICKSTART.md and AI_QUICKSTART.md.

@@ -28,7 +28,8 @@ Do not claim 99% general website reliability, detection or uptime.
 | Preserve findings, cookie redaction and redirect scope boundaries | VERIFIED in Linux CI at d258e2e | Existing full suite plus new header integration checks |
 | URL-first setup with automatic draft IP pins and explicit reviewed scope | VERIFIED in Linux CI at 2d2eca0 | Paste URL, review resolved scope, authorize; no automatic widening on redirects or DNS changes |
 | Group equivalent findings across affected URLs | VERIFIED in Linux CI at 2d2eca0 | Presentation grouping only; original IDs, per-asset evidence and review revisions retained |
-| Context-aware cookie and CSP analysis | TODO | Label observations separately from vulnerabilities; meta CSP, report-only, multiple policies and cookie purposes |
+| Context-aware cookie attributes | IMPLEMENTED; 15 targeted Windows checks PASS; Linux CI pending | Validate SameSite values/order and whitespace; LOW manual-review observations, purpose/browser storage explicitly unknown |
+| Context-aware CSP analysis | TODO | Meta CSP, report-only and multiple policies; no policy-strength claim from presence alone |
 | Broader web detection through an isolated, scoped engine adapter | DESIGN REQUIRED | Owned vulnerable/clean fixtures; no engine networking that bypasses scope pins |
 | Independent held-out benchmark | NOT STARTED | Frozen labelled cases, adjudicated disagreements, precision/recall by rule and scope |
 | Owner website comparison | NOT VERIFIED | Independent HTTP observations and exported finding IDs; no inference from counts alone |
@@ -51,3 +52,19 @@ Standards: [Fetch nosniff](https://fetch.spec.whatwg.org/#x-content-type-options
 and [RFC 6797](https://www.rfc-editor.org/rfc/rfc6797).
 
 Server AI setup: VERIFIED in Linux CI at 2d2eca0. Explicit operator file/environment configuration can be loaded without secrets or network probes; browser consent and actual preflight remain mandatory. Protocol fixtures do not replace real-provider acceptance.
+
+## Cookie observation continuation
+
+`COOKIE-FLAGS` detector version 0.7.0 parses each Set-Cookie field independently,
+trims attribute whitespace, validates the final SameSite setting, and explains
+SameSite=None without Secure as possible browser rejection. Observations are LOW,
+HIGH-confidence observations requiring manual review, not confirmed session theft
+or CSRF. Cookie names/values/domain/path and URL query values remain redacted.
+No inference of cookie purpose, expiry/deletion, browser storage or exploitability
+is made. Secure/HttpOnly are presence attributes even when a value is supplied.
+Overlong attribute values are ignored per the browser parsing specification.
+Changing descriptions changes finding fingerprints; old reports/reviews remain
+immutable and comparisons across detector versions need manual reconciliation.
+
+Parsing reference: [HTTPWG cookie processing, sections 5.6–5.7](https://httpwg.org/http-extensions/draft-ietf-httpbis-rfc6265bis.html).
+Tests are authored fixtures, not an independent held-out benchmark.
