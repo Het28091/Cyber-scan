@@ -17,6 +17,7 @@ import zipfile
 
 from playwright.sync_api import sync_playwright, expect
 from secaudit import __version__
+from integration.csp_browser_acceptance import verify_csp_browser
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -43,6 +44,7 @@ def main():
             password = startup[2].split(': ', 1)[1]
             with sync_playwright() as playwright:
                 browser = playwright.chromium.launch()
+                verify_csp_browser(browser, artifacts)
                 context = browser.new_context(http_credentials={'username': 'operator', 'password': password},
                                               viewport={'width': 1440, 'height': 1000})
                 page = context.new_page()

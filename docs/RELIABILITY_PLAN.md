@@ -31,6 +31,7 @@ Do not claim 99% general website reliability, detection or uptime.
 | Context-aware cookie attributes | VERIFIED at 65b5767: 201 tests and 16 mandatory Linux CI jobs PASS | Validate SameSite values/order and whitespace; LOW manual-review observations, purpose/browser storage explicitly unknown |
 | CSP delivery context | VERIFIED at 47cd01e: 208 tests and 16 mandatory Linux CI jobs PASS | Report-only and static meta candidates distinguished; empty policies and MIME/status applicability; no policy-strength claim |
 | Effective CSP strength analysis | TODO | Browser policy composition, directives, nonces/hashes, encodings and DOM applicability |
+| CSP script declaration coverage | IMPLEMENTED; portable tests PASS; Linux/browser checks pending | Fallbacks and multiple enforcing fields; owned Chromium element/attribute controls |
 | Broader web detection through an isolated, scoped engine adapter | DESIGN REQUIRED | Owned vulnerable/clean fixtures; no engine networking that bypasses scope pins |
 | Independent held-out benchmark | NOT STARTED | Frozen labelled cases, adjudicated disagreements, precision/recall by rule and scope |
 | Owner website comparison | NOT VERIFIED | Independent HTTP observations and exported finding IDs; no inference from counts alone |
@@ -88,3 +89,22 @@ content is not included in evidence. Updated descriptions change fingerprints;
 historical reports/reviews remain immutable and cross-version comparisons need review.
 
 Reference: [W3C CSP3 policy delivery](https://www.w3.org/TR/CSP3/#policy-delivery).
+
+## Script declaration coverage continuation
+
+`HTTP-CSP-SCRIPT-COVERAGE` observes missing script-element/attribute source-list
+declarations across all enforced response policies. `script-src` and `default-src`
+are fallbacks for both categories; `script-src-elem` and `script-src-attr` cover
+their own category. A declaration in any enforcing policy prevents that category's
+absence finding. Empty source lists count as declarations; report-only does not.
+Any sandbox directive suppresses this bounded check because sandbox semantics have
+not been evaluated. Directive values, nonce/hash matching, permissive sources,
+Trusted Types and actual meta/DOM enforcement remain outside the detector. Findings
+are LOW manual-review observations, not confirmed XSS. No finding does not mean a
+policy is strong. This is an incremental check, not completion of CSP strength
+analysis. Detector version 0.8.0; raw source lists are not retained.
+
+Seven owned loopback Chromium cases compare inline script/handler execution with
+declaration coverage, including split/combined policies and report-only. They are
+authored acceptance fixtures, not an independent held-out benchmark. The scanner
+itself remains passive and does not execute target scripts.

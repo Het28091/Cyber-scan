@@ -3,7 +3,7 @@ import json
 import unittest
 from unittest.mock import patch
 
-from secaudit.web_csp import csp_findings
+from secaudit.web_csp import csp_findings, script_directive_gaps
 from secaudit.network import scan_web
 from secaudit.security import Scope
 
@@ -28,7 +28,7 @@ class CSPDeliveryTests(unittest.TestCase):
             self.assertIn('monitors rather than enforces', findings[0].description)
 
     def test_multiple_enforced_fields_do_not_claim_weakness(self):
-        for policy in ("default-src 'none'", "script-src * 'unsafe-inline'", 'unknown-directive'):
+        for policy in ("default-src 'none'", "script-src * 'unsafe-inline'"):
             self.assertEqual(csp_findings(self.url, 200, [
                 ('Content-Security-Policy', ''), ('Content-Security-Policy', policy),
                 ('Content-Security-Policy-Report-Only', "default-src 'none'")]), [])
@@ -69,3 +69,33 @@ class CSPDeliveryTests(unittest.TestCase):
             with patch('secaudit.web_csp._MetaCandidates.feed', side_effect=error):
                 findings = csp_findings(self.url, 200, [], b'<![invalid declaration]>')
             self.assertIn('parsing was incomplete', findings[0].description)
+
+    def test_script_fallbacks_and_multiple_policies(self):
+        for fields in (["default-src 'none'"], ['SCRIPT-SRC'],
+                       ["img-src *", "script-src 'self'"],
+                       ["img-src *, script-src 'self'"],
+                       ["script-src-elem 'none'", "script-src-attr 'none'"],
+                       ['sandbox'], ['sandbox allow-scripts']):
+            with self.subTest(fields=fields):
+                self.assertEqual(script_directive_gaps(fields), [])
+
+    def test_script_categories_and_unknown_directives(self):
+        self.assertEqual(script_directive_gaps(['script-src-elem']), ['script attributes'])
+        self.assertEqual(script_directive_gaps(['script-src-attr']), ['script elements'])
+        for policy in ('img-src *', 'script-src-typo none', 'report-uri https://private.invalid',
+                       'default-src=none', 'report-to script-src'):
+            with self.subTest(policy=policy):
+                self.assertEqual(script_directive_gaps([policy]), ['script elements', 'script attributes'])
+
+    def test_report_only_does_not_fill_enforced_directive_gaps(self):
+        findings = csp_findings(self.url, 200, [
+            ('Content-Security-Policy', 'img-src https://PRIVATE_SOURCE'),
+            ('Content-Security-Policy-Report-Only', "default-src 'none'")])
+        self.assertEqual([f.rule for f in findings], ['HTTP-CSP-SCRIPT-COVERAGE'])
+        self.assertIn('script elements, script attributes', findings[0].description)
+        self.assertNotIn('PRIVATE_SOURCE', json.dumps(findings[0].to_dict()))
+        self.assertIn('not certified', findings[0].impact)
+
+    def test_duplicate_directive_values_do_not_change_declaration_coverage(self):
+        self.assertEqual(script_directive_gaps(["script-src 'none'; script-src *"]), [])
+        self.assertEqual(script_directive_gaps(["script-src *; script-src 'none'"]), [])

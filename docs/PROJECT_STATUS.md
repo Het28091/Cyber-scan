@@ -1,5 +1,10 @@
 # Project completion status
 
+**13 October script coverage continuation:** S2-02/S2-05 and S3-04 add a bounded
+CSP script-declaration coverage check with fallback/multiple-policy handling.
+Twenty-six targeted Windows checks pass; owned Chromium and Linux CI are pending.
+General policy strength, independent accuracy and real-provider acceptance remain open.
+
 **13 October CSP continuation:** S2-02/S2-05 and S3-04 now distinguish absent,
 empty and report-only CSP headers and static meta candidates, with explicit
 HTML/status applicability and conservative evidence. At `47cd01e7998ae0c6b09a357b4a7ce75c1c2d01c7`,
