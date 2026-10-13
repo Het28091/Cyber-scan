@@ -1,5 +1,11 @@
 # Verification record
 
+## Website setup and optional AI configuration — 13 October 2026
+
+**13 October verified setup checkpoint:** at `2d2eca01ca1468c0017b43128623d687c98dbe47`, 196 regression tests PASS in 25.277 s and all 16 mandatory Linux CI jobs PASS, including real Chromium dashboard checks for website-only setup, reviewed DNS scope drafts, original-ID-preserving HTTP grouping and server AI configuration loading. [Run 38430892997](https://github.com/Het28091/Cyber-scan/actions/runs/38430892997); [evidence](evidence/website-setup-oct13.json). S2-02/S2-05 and S3-03/S3-04 receive this bounded regression evidence; S2-04 real-provider acceptance remains NOT TESTED for this source. The separately gated external-target job was SKIPPED. No VM deployment, independent accuracy benchmark, whole-spiral acceptance or production release is claimed.
+
+The CI test job also passed Ruff, Bandit, dependency audit, synthetic offline assessment and the declared detection corpus. Distribution acceptance passed on Ubuntu 22.04/24.04 with Python 3.11–3.14. Browser coverage uses owned targets and a synthetic Ollama protocol fixture, not an actual model or API account. No paid inference was requested. Local process launch remains blocked by `helper_unknown_error: setup refresh had errors`; the local working tree and owner VM were not changed. This later documentation commit records the tested source and does not inherit exact-commit publication gates.
+
 ## Reliability branch — 13 October 2026
 
 Baseline: `3304018f5099c82878101d4d7ec1bcd218878c0e`. Local execution is blocked by `helper_unknown_error: setup refresh had errors`; no local test run is claimed. Changes are prepared on `codex/web-reliability` through GitHub, preserving the uninspectable local working tree. Linux CI verified implementation commit `d258e2e4506ccf8ee449998fc8c39654f94bf9c1`: [run 38291893040](https://github.com/Het28091/Cyber-scan/actions/runs/38291893040) completed successfully, with all 16 mandatory jobs PASS and 190 tests PASS in 47.252 s. The separately gated external-target job was SKIPPED; this is not release acceptance. [Evidence summary](evidence/web-reliability-oct13.json) identifies the exact tested source; this later documentation commit does not inherit an exact-commit release gate.

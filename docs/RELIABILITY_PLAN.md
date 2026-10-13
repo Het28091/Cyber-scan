@@ -26,8 +26,8 @@ Do not claim 99% general website reliability, detection or uptime.
 | Parse nosniff and HSTS meaning instead of only checking nonempty strings | VERIFIED in Linux CI at d258e2e | Case, field order, disabled policy, malformed syntax, duplicate directives and safe controls |
 | Stop suggesting HSTS on IP-literal URLs | VERIFIED in Linux CI at d258e2e | IPv4/IPv6 exclusions and named-host redirect regression |
 | Preserve findings, cookie redaction and redirect scope boundaries | VERIFIED in Linux CI at d258e2e | Existing full suite plus new header integration checks |
-| URL-first setup with automatic draft IP pins and explicit reviewed scope | IMPLEMENTED_UNVERIFIED pending CI | Paste URL, review resolved scope, authorize; no automatic widening on redirects or DNS changes |
-| Group equivalent findings across affected URLs | IMPLEMENTED_UNVERIFIED pending CI | Presentation grouping only; original IDs, per-asset evidence and review revisions retained |
+| URL-first setup with automatic draft IP pins and explicit reviewed scope | VERIFIED in Linux CI at 2d2eca0 | Paste URL, review resolved scope, authorize; no automatic widening on redirects or DNS changes |
+| Group equivalent findings across affected URLs | VERIFIED in Linux CI at 2d2eca0 | Presentation grouping only; original IDs, per-asset evidence and review revisions retained |
 | Context-aware cookie and CSP analysis | TODO | Label observations separately from vulnerabilities; meta CSP, report-only, multiple policies and cookie purposes |
 | Broader web detection through an isolated, scoped engine adapter | DESIGN REQUIRED | Owned vulnerable/clean fixtures; no engine networking that bypasses scope pins |
 | Independent held-out benchmark | NOT STARTED | Frozen labelled cases, adjudicated disagreements, precision/recall by rule and scope |
@@ -45,9 +45,9 @@ Do not claim 99% general website reliability, detection or uptime.
   preload-list or inherited parent HSTS evaluation is claimed.
 - New checks retain LOW severity and manual-review status; confidence refers to the
   response observation. Raw header values and cookie values are not added to evidence.
-- Offline and AI behavior are not changed. AI does not add detection coverage.
+- Offline scanning stays independent. Optional AI setup is simplified; AI does not add detection coverage.
 
 Standards: [Fetch nosniff](https://fetch.spec.whatwg.org/#x-content-type-options-header)
 and [RFC 6797](https://www.rfc-editor.org/rfc/rfc6797).
 
-Server AI setup: IMPLEMENTED_UNVERIFIED pending CI. Explicit operator file/environment configuration can be loaded without secrets or network probes; browser consent and actual preflight remain mandatory. Protocol fixtures do not replace real-provider acceptance.
+Server AI setup: VERIFIED in Linux CI at 2d2eca0. Explicit operator file/environment configuration can be loaded without secrets or network probes; browser consent and actual preflight remain mandatory. Protocol fixtures do not replace real-provider acceptance.

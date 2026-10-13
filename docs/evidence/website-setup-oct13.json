@@ -1,0 +1,26 @@
+{
+  "source_commit": "2d2eca01ca1468c0017b43128623d687c98dbe47",
+  "date": "2026-10-13",
+  "task_ids": [
+    "S2-02",
+    "S2-05",
+    "S3-03",
+    "S3-04"
+  ],
+  "run_url": "https://github.com/Het28091/Cyber-scan/actions/runs/38430892997",
+  "run_conclusion": "success",
+  "regression_tests": {
+    "passed": 196,
+    "seconds": 25.277
+  },
+  "mandatory_jobs": {
+    "passed": 16
+  },
+  "external_target_job": "SKIPPED",
+  "dashboard_browser": "PASS; owned target and protocol fixture",
+  "real_provider": "NOT TESTED",
+  "independent_accuracy": "NOT MEASURED",
+  "deployment": "NOT PERFORMED",
+  "release_acceptance": "NOT ACCEPTED",
+  "local_execution": "Blocked: helper_unknown_error: setup refresh had errors"
+}
