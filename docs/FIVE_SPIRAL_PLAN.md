@@ -1,7 +1,8 @@
 # Five-spiral production implementation plan
 
 **13 October CSP backlog:** S2-02/S2-05 and S3-04 delivery-context checks are
-implemented; portable verification passed, Linux CI pending. Effective CSP strength,
+verified at `47cd01e`: 208 tests and 16 mandatory Linux CI jobs PASS, with the
+external-target job SKIPPED. See VERIFICATION.md. Effective CSP strength,
 independent held-out precision/recall, real providers and release gates remain open.
 
 **13 October cookie backlog:** S2-02/S2-05 and S3-04 attribute parsing and evidence

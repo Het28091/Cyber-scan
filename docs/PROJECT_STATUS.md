@@ -2,8 +2,9 @@
 
 **13 October CSP continuation:** S2-02/S2-05 and S3-04 now distinguish absent,
 empty and report-only CSP headers and static meta candidates, with explicit
-HTML/status applicability and conservative evidence. Targeted portable tests pass;
-Linux CI verification is pending. Effective browser-policy strength, independent
+HTML/status applicability and conservative evidence. At `47cd01e7998ae0c6b09a357b4a7ce75c1c2d01c7`,
+208 tests and all 16 mandatory Linux CI jobs PASS; the external-target job was SKIPPED.
+See [evidence](evidence/csp-reliability-oct13.json). Effective browser-policy strength, independent
 accuracy and real-provider acceptance remain open. No new external target/API call.
 
 **13 October cookie continuation:** S2-02/S2-05 and S3-04 correct cookie attribute

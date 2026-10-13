@@ -1,5 +1,31 @@
 # Verification record
 
+## CSP delivery context — 13 October 2026
+
+S2-02/S2-05 and S3-04 source `47cd01e7998ae0c6b09a357b4a7ce75c1c2d01c7`:
+[Linux run 38433352880](https://github.com/Het28091/Cyber-scan/actions/runs/38433352880)
+passed all 16 mandatory jobs, including **208 regression tests in 48.357 s**,
+dashboard/isolated Chromium, operations, scanner integrations and the eight
+Ubuntu/Python distribution combinations. The external-target job was SKIPPED.
+Before commit, Windows Python 3.12.14 passed 22 targeted tests in 0.009 s using
+`python -m unittest tests.test_web_csp tests.test_web_headers tests.test_web_cookies tests.test_redirect_evidence`.
+
+Seven new methods cover MIME/status applicability, empty/separator-only policies,
+report-only delivery, multiple enforcing fields, meta candidates, comment/script
+decoys, malformed parser failure handling, scan integration and redaction. An
+initial test incorrectly assumed identical HTMLParser malformed-declaration
+behavior across Python versions; it was corrected to test the real input plus
+explicit exception controls, then the targeted suite passed. No suppression of
+test failures or product safety boundary occurred.
+
+These are authored regression fixtures, not an independently labelled accuracy
+benchmark or real-provider acceptance. Effective CSP strength, dynamic DOM,
+browser applicability/encoding and non-HTML policy behavior remain outside the
+new detector. No P0/P1 was observed in these executed checks. No owner-site scan,
+provider call, VM deployment or publication occurred. The subsequent documentation
+commit records the tested source; it does not inherit exact-commit release gates.
+Evidence: [csp-reliability-oct13.json](evidence/csp-reliability-oct13.json).
+
 ## Cookie observation correctness — 13 October 2026
 
 Source: `65b5767c86a54511d53fb510b257a59fc1b6be80`; baseline `3ba14b67207b02ec1031a232304d24fc3834b7f3`.

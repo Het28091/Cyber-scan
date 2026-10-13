@@ -1,5 +1,12 @@
 # Capability matrix — 1.0.0
 
+**Unreleased CSP refinement, 13 October 2026:** HTML/XHTML and uncertain-content
+responses now distinguish missing/empty CSP headers, report-only delivery and
+static meta candidates. Redirects, no-content/not-modified responses and explicit
+other media types are outside this HTML recommendation. No effective policy,
+nonce/hash security, dynamic DOM or XSS protection assessment is claimed. Raw
+markup and policy values are not retained. See RELIABILITY_PLAN.md and VERIFICATION.md.
+
 **Unreleased cookie refinement, 13 October 2026:** `COOKIE-FLAGS` version 0.7.0
 validates SameSite settings and attribute whitespace. Findings are LOW-severity
 manual-review observations; HIGH confidence describes response attributes only.

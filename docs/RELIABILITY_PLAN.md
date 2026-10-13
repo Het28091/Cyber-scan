@@ -29,7 +29,7 @@ Do not claim 99% general website reliability, detection or uptime.
 | URL-first setup with automatic draft IP pins and explicit reviewed scope | VERIFIED in Linux CI at 2d2eca0 | Paste URL, review resolved scope, authorize; no automatic widening on redirects or DNS changes |
 | Group equivalent findings across affected URLs | VERIFIED in Linux CI at 2d2eca0 | Presentation grouping only; original IDs, per-asset evidence and review revisions retained |
 | Context-aware cookie attributes | VERIFIED at 65b5767: 201 tests and 16 mandatory Linux CI jobs PASS | Validate SameSite values/order and whitespace; LOW manual-review observations, purpose/browser storage explicitly unknown |
-| CSP delivery context | IMPLEMENTED; targeted checks PASS; Linux CI pending | Report-only and static meta candidates distinguished; empty policies and MIME/status applicability; no policy-strength claim |
+| CSP delivery context | VERIFIED at 47cd01e: 208 tests and 16 mandatory Linux CI jobs PASS | Report-only and static meta candidates distinguished; empty policies and MIME/status applicability; no policy-strength claim |
 | Effective CSP strength analysis | TODO | Browser policy composition, directives, nonces/hashes, encodings and DOM applicability |
 | Broader web detection through an isolated, scoped engine adapter | DESIGN REQUIRED | Owned vulnerable/clean fixtures; no engine networking that bypasses scope pins |
 | Independent held-out benchmark | NOT STARTED | Frozen labelled cases, adjudicated disagreements, precision/recall by rule and scope |
