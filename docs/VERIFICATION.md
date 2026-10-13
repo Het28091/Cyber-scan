@@ -1,5 +1,31 @@
 # Verification record
 
+## CSP script declaration coverage — 13 October 2026
+
+S2-02/S2-05 and S3-04 source `a77e5206a0bf3b835017a247db736b71c3cc8835`:
+[run 38434263476](https://github.com/Het28091/Cyber-scan/actions/runs/38434263476)
+passed all 16 mandatory Linux jobs, with **212 tests in 46.400 s**. The separately
+gated external-target job was SKIPPED. Before commit, Windows Python 3.12.14 passed
+26 targeted CSP/header/cookie/redirect tests in 0.009 s; browser fixture files also
+passed compilation. No target scripts are executed by the scanner.
+
+The real Chromium dashboard job additionally ran seven owned loopback CSP fixtures:
+unrelated directives, default-src fallback, element-only, attribute-only, split
+headers, comma-combined policies and report-only delivery. It compared actual
+inline-script/event-handler execution with declaration coverage and passed all
+assertions. Browser requests were restricted to that owned server. Evidence is
+`artifacts/browser/csp-directives.json` in the run's browser artifact. These are
+authored controls, not independent precision/recall or general CSP strength evidence.
+The test job passed code/security/dependency gates; operations, scanners, isolated
+Chromium and all eight Ubuntu/Python distribution jobs also passed.
+
+No P0/P1 defect was observed in these checks. Full source-list evaluation,
+nonce/hash behavior, real providers, independent review/benchmarking and owner
+release gates remain open. No external assessment, provider call, VM deployment
+or publication occurred. The later documentation commit records this tested source
+and does not inherit exact-commit release acceptance.
+Summary: [csp-directives-oct13.json](evidence/csp-directives-oct13.json).
+
 ## CSP delivery context — 13 October 2026
 
 S2-02/S2-05 and S3-04 source `47cd01e7998ae0c6b09a357b4a7ce75c1c2d01c7`:

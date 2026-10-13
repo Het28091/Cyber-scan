@@ -2,7 +2,9 @@
 
 **13 October script coverage continuation:** S2-02/S2-05 and S3-04 add a bounded
 CSP script-declaration coverage check with fallback/multiple-policy handling.
-Twenty-six targeted Windows checks pass; owned Chromium and Linux CI are pending.
+At `a77e5206a0bf3b835017a247db736b71c3cc8835`, 212 tests and all 16 mandatory Linux
+CI jobs PASS, including seven owned Chromium CSP cases. Twenty-six targeted Windows
+checks also passed. The external-target job was SKIPPED; see VERIFICATION.md.
 General policy strength, independent accuracy and real-provider acceptance remain open.
 
 **13 October CSP continuation:** S2-02/S2-05 and S3-04 now distinguish absent,

@@ -1,8 +1,9 @@
 # Five-spiral production implementation plan
 
 **13 October directive backlog:** S2-02/S2-05 and S3-04 script declaration coverage
-is implemented and portable checks pass. Linux CI and owned Chromium comparisons
-are pending; no whole-spiral, effective-policy or production acceptance is claimed.
+is verified at `a77e520`: 212 tests, seven owned Chromium CSP cases and all 16
+mandatory Linux CI jobs PASS. The external-target job was SKIPPED; no whole-spiral,
+effective-policy or production acceptance is claimed.
 
 **13 October CSP backlog:** S2-02/S2-05 and S3-04 delivery-context checks are
 verified at `47cd01e`: 208 tests and 16 mandatory Linux CI jobs PASS, with the

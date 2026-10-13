@@ -31,7 +31,7 @@ Do not claim 99% general website reliability, detection or uptime.
 | Context-aware cookie attributes | VERIFIED at 65b5767: 201 tests and 16 mandatory Linux CI jobs PASS | Validate SameSite values/order and whitespace; LOW manual-review observations, purpose/browser storage explicitly unknown |
 | CSP delivery context | VERIFIED at 47cd01e: 208 tests and 16 mandatory Linux CI jobs PASS | Report-only and static meta candidates distinguished; empty policies and MIME/status applicability; no policy-strength claim |
 | Effective CSP strength analysis | TODO | Browser policy composition, directives, nonces/hashes, encodings and DOM applicability |
-| CSP script declaration coverage | IMPLEMENTED; portable tests PASS; Linux/browser checks pending | Fallbacks and multiple enforcing fields; owned Chromium element/attribute controls |
+| CSP script declaration coverage | VERIFIED at a77e520: 212 tests, seven Chromium cases and 16 mandatory Linux CI jobs PASS | Fallbacks and multiple enforcing fields; owned Chromium element/attribute controls |
 | Broader web detection through an isolated, scoped engine adapter | DESIGN REQUIRED | Owned vulnerable/clean fixtures; no engine networking that bypasses scope pins |
 | Independent held-out benchmark | NOT STARTED | Frozen labelled cases, adjudicated disagreements, precision/recall by rule and scope |
 | Owner website comparison | NOT VERIFIED | Independent HTTP observations and exported finding IDs; no inference from counts alone |
