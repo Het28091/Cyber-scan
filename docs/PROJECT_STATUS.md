@@ -1,5 +1,34 @@
 # Project completion status
 
+**13 October script coverage continuation:** S2-02/S2-05 and S3-04 add a bounded
+CSP script-declaration coverage check with fallback/multiple-policy handling.
+At `a77e5206a0bf3b835017a247db736b71c3cc8835`, 212 tests and all 16 mandatory Linux
+CI jobs PASS, including seven owned Chromium CSP cases. Twenty-six targeted Windows
+checks also passed. The external-target job was SKIPPED; see VERIFICATION.md.
+General policy strength, independent accuracy and real-provider acceptance remain open.
+
+**13 October CSP continuation:** S2-02/S2-05 and S3-04 now distinguish absent,
+empty and report-only CSP headers and static meta candidates, with explicit
+HTML/status applicability and conservative evidence. At `47cd01e7998ae0c6b09a357b4a7ce75c1c2d01c7`,
+208 tests and all 16 mandatory Linux CI jobs PASS; the external-target job was SKIPPED.
+See [evidence](evidence/csp-reliability-oct13.json). Effective browser-policy strength, independent
+accuracy and real-provider acceptance remain open. No new external target/API call.
+
+**13 October cookie continuation:** S2-02/S2-05 and S3-04 correct cookie attribute
+whitespace, invalid/duplicate SameSite handling and context-free severity. Fifteen
+targeted checks PASS locally on Windows. At `65b5767c86a54511d53fb510b257a59fc1b6be80`,
+201 tests PASS and all 16 mandatory Linux CI jobs PASS; the external-target job was
+SKIPPED. See [evidence](evidence/cookie-reliability-oct13.json).
+Local execution has recovered; the existing PR branch is now checked out locally,
+with the owner's untracked private configuration helper preserved. No VM/provider
+call or deployment. See RELIABILITY_PLAN.md for detector limits and remaining work.
+
+**13 October verified setup checkpoint:** at `2d2eca01ca1468c0017b43128623d687c98dbe47`, 196 regression tests PASS in 25.277 s and all 16 mandatory Linux CI jobs PASS, including real Chromium dashboard checks for website-only setup, reviewed DNS scope drafts, original-ID-preserving HTTP grouping and server AI configuration loading. [Run 38430892997](https://github.com/Het28091/Cyber-scan/actions/runs/38430892997); [evidence](evidence/website-setup-oct13.json). S2-02/S2-05 and S3-03/S3-04 receive this bounded regression evidence; S2-04 real-provider acceptance remains NOT TESTED for this source. The separately gated external-target job was SKIPPED. No VM deployment, independent accuracy benchmark, whole-spiral acceptance or production release is claimed.
+
+**13 October setup follow-up:** website-only selection, DNS-only scope preparation, grouped HTTP observations and loading private server AI configuration are implemented on PR #3 and verified in Linux CI at `2d2eca0`. AI remains optional with explicit disclosure, pinned endpoints and required preflight. Actual provider inference and deployment are not claimed. See WEBSITE_QUICKSTART.md and AI_QUICKSTART.md.
+
+**13 October reliability work:** owner requested dependable website results targeting 99%. Header semantics and safe controls are being corrected under S2-02/S2-05 and S3-04. See [RELIABILITY_PLAN.md](RELIABILITY_PLAN.md). No measured 99% claim; held-out accuracy remains open; URL-first setup and grouping are verified at the checkpoint above. At `d258e2e`, 190 tests and all 16 mandatory Linux CI jobs PASS; the external-target gate was SKIPPED. See [evidence](evidence/web-reliability-oct13.json). Changes are on PR #3, not deployed to the owner VM. The local execution helper cannot start.
+
 **Owner handover direction — 10 October 2026:** target delivery is 12 October.
 Owner requested blind implementation and will perform testing. New owner-mode
 workspace preparation is IMPLEMENTED_UNVERIFIED; no scan/provider call was run

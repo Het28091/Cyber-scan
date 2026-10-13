@@ -5,6 +5,35 @@ unless the server environment enabled experimental AI. This implementation pass
 makes both choices visible, adds startup flags and shows saved suggestions in the
 dashboard. **This pass is unverified; no tests or debugging were run.**
 
+## Load a privately prepared server configuration
+
+Set SECAUDIT_AI_CONFIG to an existing reviewed Secaudit JSON configuration containing
+mode and ai settings. For API mode, configure its api_key_env credential privately
+in the same environment that starts the dashboard. Do not put keys in the JSON,
+browser, saved profile, repository or chat.
+
+```bash
+export SECAUDIT_AI_CONFIG=/absolute/private/provider.json
+bash run.sh dashboard --experimental-ai --output runs
+```
+
+Choose the desired AI mode, then **Load server AI configuration**. This retains
+reviewed output/context limits, format, prices and budgets, checks credential presence
+without returning its value, and clears disclosure consent. It performs no provider call.
+CONFIGURED_NOT_TESTED is not verified readiness. Actual model listing and bounded
+inference run during the assessment; require AI readiness to block failures.
+
+Only the server environment selects the file. The authenticated, CSRF-protected
+endpoint accepts no client file path. It rejects symlinks, nonregular files, files
+larger than 64 KiB and invalid AI configuration. Existing mode opt-in remains required.
+API requests use the configured environment credential; local Ollama requires its
+prepared loopback service or authenticated tunnel. A credential alone is insufficient:
+the exact provider endpoint, model and reviewed IP pins are also required.
+
+Free-only use must be configured at the provider/account; loading a configuration
+does not verify billing or turn a zero estimated price into a spending guarantee.
+This change is verified with protocol fixtures only until real-provider evidence exists.
+
 ## Enable the dashboard
 
 After updating your Linux checkout, stop an existing dashboard with Ctrl+C and run:

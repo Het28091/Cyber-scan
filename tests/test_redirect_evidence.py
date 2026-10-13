@@ -9,7 +9,7 @@ from secaudit.security import Scope
 
 class RedirectEvidenceTests(unittest.TestCase):
     def run_scan(self, headers, secure=False):
-        target=('https' if secure else 'http')+'://127.0.0.1/security.php'
+        target=('https' if secure else 'http')+'://owned.example.invalid/security.php'
         scope=Scope(dict(authorization='owned redirect fixture', origins=[target],
                          exclusions=[], environment='test', profiles=['passive'],
                          allowed_ips=['127.0.0.1'], max_requests=1, max_seconds=5))

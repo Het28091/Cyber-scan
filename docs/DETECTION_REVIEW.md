@@ -1,5 +1,12 @@
 # Detection identity and mapping review — 2 October 2026
 
+**13 October unreleased addition:** `HTTP-CSP-SCRIPT-COVERAGE` is a LOW-severity
+header declaration observation for script elements/attributes, not a demonstrated
+XSS vulnerability. It receives generic related-evidence mapping only; no new
+framework-control coverage is claimed. Header/cookie corrections and this new rule
+are outside the historical 28-rule denominator below. See RELIABILITY_PLAN.md for
+scope and VERIFICATION.md for current tests and owned browser controls.
+
 Owner-lab redirect coverage was repaired and checked on 9 October; see
 [DVWA assessment](DVWA_ASSESSMENT.md). These header/cookie observations supplement
 the synthetic corpus but do not measure whole-DVWA vulnerability recall.

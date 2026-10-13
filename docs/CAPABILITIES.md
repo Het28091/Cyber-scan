@@ -1,5 +1,27 @@
 # Capability matrix — 1.0.0
 
+**Unreleased script declaration check, 13 October 2026:**
+`HTTP-CSP-SCRIPT-COVERAGE` reviews whether enforced headers declare controls for
+script elements and attributes, including fallback and multiple-policy behavior.
+This is declaration coverage, not a CSP strength score or XSS confirmation.
+Presence-only checks intentionally do not evaluate source values or nonce/hash
+security. Any sandbox declaration suppresses this narrow check. See the current
+source-specific evidence in VERIFICATION.md.
+
+**Unreleased CSP refinement, 13 October 2026:** HTML/XHTML and uncertain-content
+responses now distinguish missing/empty CSP headers, report-only delivery and
+static meta candidates. Redirects, no-content/not-modified responses and explicit
+other media types are outside this HTML recommendation. No effective policy,
+nonce/hash security, dynamic DOM or XSS protection assessment is claimed. Raw
+markup and policy values are not retained. See RELIABILITY_PLAN.md and VERIFICATION.md.
+
+**Unreleased cookie refinement, 13 October 2026:** `COOKIE-FLAGS` version 0.7.0
+validates SameSite settings and attribute whitespace. Findings are LOW-severity
+manual-review observations; HIGH confidence describes response attributes only.
+Cookie purpose, deletion, actual browser storage and CSRF exploitability are not
+determined. Evidence omits cookie names and values. See RELIABILITY_PLAN.md and
+VERIFICATION.md for source-specific results; this is not a new released version.
+
 **Unreleased checkpoint, 2 October 2026:** static Chromium/Bubblewrap inventory is
 implemented and verified on Kali and CI, with scripts/network disabled and bounded
 cgroup resources. Backup/restore, pre-upgrade-copy rollback and interrupted report

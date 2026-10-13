@@ -1,5 +1,95 @@
 # Verification record
 
+## CSP script declaration coverage — 13 October 2026
+
+S2-02/S2-05 and S3-04 source `a77e5206a0bf3b835017a247db736b71c3cc8835`:
+[run 38434263476](https://github.com/Het28091/Cyber-scan/actions/runs/38434263476)
+passed all 16 mandatory Linux jobs, with **212 tests in 46.400 s**. The separately
+gated external-target job was SKIPPED. Before commit, Windows Python 3.12.14 passed
+26 targeted CSP/header/cookie/redirect tests in 0.009 s; browser fixture files also
+passed compilation. No target scripts are executed by the scanner.
+
+The real Chromium dashboard job additionally ran seven owned loopback CSP fixtures:
+unrelated directives, default-src fallback, element-only, attribute-only, split
+headers, comma-combined policies and report-only delivery. It compared actual
+inline-script/event-handler execution with declaration coverage and passed all
+assertions. Browser requests were restricted to that owned server. Evidence is
+`artifacts/browser/csp-directives.json` in the run's browser artifact. These are
+authored controls, not independent precision/recall or general CSP strength evidence.
+The test job passed code/security/dependency gates; operations, scanners, isolated
+Chromium and all eight Ubuntu/Python distribution jobs also passed.
+
+No P0/P1 defect was observed in these checks. Full source-list evaluation,
+nonce/hash behavior, real providers, independent review/benchmarking and owner
+release gates remain open. No external assessment, provider call, VM deployment
+or publication occurred. The later documentation commit records this tested source
+and does not inherit exact-commit release acceptance.
+Summary: [csp-directives-oct13.json](evidence/csp-directives-oct13.json).
+
+## CSP delivery context — 13 October 2026
+
+S2-02/S2-05 and S3-04 source `47cd01e7998ae0c6b09a357b4a7ce75c1c2d01c7`:
+[Linux run 38433352880](https://github.com/Het28091/Cyber-scan/actions/runs/38433352880)
+passed all 16 mandatory jobs, including **208 regression tests in 48.357 s**,
+dashboard/isolated Chromium, operations, scanner integrations and the eight
+Ubuntu/Python distribution combinations. The external-target job was SKIPPED.
+Before commit, Windows Python 3.12.14 passed 22 targeted tests in 0.009 s using
+`python -m unittest tests.test_web_csp tests.test_web_headers tests.test_web_cookies tests.test_redirect_evidence`.
+
+Seven new methods cover MIME/status applicability, empty/separator-only policies,
+report-only delivery, multiple enforcing fields, meta candidates, comment/script
+decoys, malformed parser failure handling, scan integration and redaction. An
+initial test incorrectly assumed identical HTMLParser malformed-declaration
+behavior across Python versions; it was corrected to test the real input plus
+explicit exception controls, then the targeted suite passed. No suppression of
+test failures or product safety boundary occurred.
+
+These are authored regression fixtures, not an independently labelled accuracy
+benchmark or real-provider acceptance. Effective CSP strength, dynamic DOM,
+browser applicability/encoding and non-HTML policy behavior remain outside the
+new detector. No P0/P1 was observed in these executed checks. No owner-site scan,
+provider call, VM deployment or publication occurred. The subsequent documentation
+commit records the tested source; it does not inherit exact-commit release gates.
+Evidence: [csp-reliability-oct13.json](evidence/csp-reliability-oct13.json).
+
+## Cookie observation correctness — 13 October 2026
+
+Source: `65b5767c86a54511d53fb510b257a59fc1b6be80`; baseline `3ba14b67207b02ec1031a232304d24fc3834b7f3`.
+Tasks S2-02/S2-05 and S3-04. At this source,
+[run 38432361907](https://github.com/Het28091/Cyber-scan/actions/runs/38432361907)
+passed all 16 mandatory Linux jobs. The regression suite passed **201 tests in
+47.253 s**. Ruff, Bandit, dependency audit, offline/corpus checks, Chromium dashboard
+and isolated snapshot checks, operations, real scanner integrations and the eight
+Ubuntu/Python distribution combinations passed. The separately gated external-target
+job was SKIPPED. No real AI call, owner-site rescan or VM deployment was performed.
+
+Before committing, Python 3.12.14 on Windows passed 15 targeted tests in 0.031 s:
+`python -m unittest tests.test_web_cookies tests.test_web_headers tests.test_redirect_evidence -v`.
+This portable check is separate from Linux runtime acceptance. The local shell has
+recovered; WSL is not installed, so GitHub CI supplies the supported Linux runtime.
+The owner's untracked configuration helper was preserved and not inspected.
+
+Five new test methods cover attribute case/whitespace, boolean attribute values,
+Expires commas, invalid/duplicate SameSite, None without Secure, independent fields,
+oversized attributes, conservative risk wording and redaction. These are authored
+regressions, not independent precision/recall measurements. No P0/P1 defect was
+observed in these checks; this is not independent security review. Context-aware
+CSP, real-provider acceptance, independent benchmarking and owner gates remain open.
+Evidence: [cookie-reliability-oct13.json](evidence/cookie-reliability-oct13.json).
+This subsequent documentation commit does not inherit exact-commit release gates.
+
+## Website setup and optional AI configuration — 13 October 2026
+
+**13 October verified setup checkpoint:** at `2d2eca01ca1468c0017b43128623d687c98dbe47`, 196 regression tests PASS in 25.277 s and all 16 mandatory Linux CI jobs PASS, including real Chromium dashboard checks for website-only setup, reviewed DNS scope drafts, original-ID-preserving HTTP grouping and server AI configuration loading. [Run 38430892997](https://github.com/Het28091/Cyber-scan/actions/runs/38430892997); [evidence](evidence/website-setup-oct13.json). S2-02/S2-05 and S3-03/S3-04 receive this bounded regression evidence; S2-04 real-provider acceptance remains NOT TESTED for this source. The separately gated external-target job was SKIPPED. No VM deployment, independent accuracy benchmark, whole-spiral acceptance or production release is claimed.
+
+The CI test job also passed Ruff, Bandit, dependency audit, synthetic offline assessment and the declared detection corpus. Distribution acceptance passed on Ubuntu 22.04/24.04 with Python 3.11–3.14. Browser coverage uses owned targets and a synthetic Ollama protocol fixture, not an actual model or API account. No paid inference was requested. Local process launch remains blocked by `helper_unknown_error: setup refresh had errors`; the local working tree and owner VM were not changed. This later documentation commit records the tested source and does not inherit exact-commit publication gates.
+
+## Reliability branch — 13 October 2026
+
+Baseline: `3304018f5099c82878101d4d7ec1bcd218878c0e`. Local execution is blocked by `helper_unknown_error: setup refresh had errors`; no local test run is claimed. Changes are prepared on `codex/web-reliability` through GitHub, preserving the uninspectable local working tree. Linux CI verified implementation commit `d258e2e4506ccf8ee449998fc8c39654f94bf9c1`: [run 38291893040](https://github.com/Het28091/Cyber-scan/actions/runs/38291893040) completed successfully, with all 16 mandatory jobs PASS and 190 tests PASS in 47.252 s. The separately gated external-target job was SKIPPED; this is not release acceptance. [Evidence summary](evidence/web-reliability-oct13.json) identifies the exact tested source; this later documentation commit does not inherit an exact-commit release gate.
+
+New cases in `tests/test_web_headers.py` cover nosniff semantics, HSTS grammar/duplicates/zero/IP literals, redirect behavior, CSP field presence and scan evidence redaction. Existing header/redirect fixtures now use a named synthetic host where they assert HSTS. These are author-written regressions, not an independently labelled accuracy corpus. No new real-site/provider call, stable release or 99% assertion is made. See RELIABILITY_PLAN.md.
+
 ## Handover restriction — 10 October 2026
 
 `f3ce53c`: before the owner switched to blind implementation, twelve portable

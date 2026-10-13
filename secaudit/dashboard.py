@@ -135,6 +135,12 @@ def serve(root,port=8765):
                 if m:
                     if payload:raise PolicyError('report refresh takes no configuration')
                     self.send(jobs.refresh_reports(m[1]),code=202);return
+                if self.path=='/api/setup/website':
+                    from .dashboard_setup import website_scope
+                    self.send(website_scope(payload));return
+                if self.path=='/api/setup/ai':
+                    from .dashboard_setup import prepared_ai
+                    self.send(prepared_ai(payload));return
                 if self.path=='/api/configuration/preview':
                     from .profiles import preview
                     self.send(preview(payload));return

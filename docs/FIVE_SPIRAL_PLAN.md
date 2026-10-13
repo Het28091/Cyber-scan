@@ -1,5 +1,26 @@
 # Five-spiral production implementation plan
 
+**13 October directive backlog:** S2-02/S2-05 and S3-04 script declaration coverage
+is verified at `a77e520`: 212 tests, seven owned Chromium CSP cases and all 16
+mandatory Linux CI jobs PASS. The external-target job was SKIPPED; no whole-spiral,
+effective-policy or production acceptance is claimed.
+
+**13 October CSP backlog:** S2-02/S2-05 and S3-04 delivery-context checks are
+verified at `47cd01e`: 208 tests and 16 mandatory Linux CI jobs PASS, with the
+external-target job SKIPPED. See VERIFICATION.md. Effective CSP strength,
+independent held-out precision/recall, real providers and release gates remain open.
+
+**13 October cookie backlog:** S2-02/S2-05 and S3-04 attribute parsing and evidence
+wording are implemented with five new regression methods; all 15 targeted cookie,
+header and redirect tests PASS on Windows. At `65b5767`, 201 tests and all 16 mandatory
+Linux CI jobs PASS; see VERIFICATION.md. The external-target job was SKIPPED. CSP context,
+independent precision/recall measurement, real-provider acceptance and owner release
+gates remain open; this does not accept a spiral.
+
+**13 October verified setup checkpoint:** at `2d2eca01ca1468c0017b43128623d687c98dbe47`, 196 regression tests PASS in 25.277 s and all 16 mandatory Linux CI jobs PASS, including real Chromium dashboard checks for website-only setup, reviewed DNS scope drafts, original-ID-preserving HTTP grouping and server AI configuration loading. [Run 38430892997](https://github.com/Het28091/Cyber-scan/actions/runs/38430892997); [evidence](evidence/website-setup-oct13.json). S2-02/S2-05 and S3-03/S3-04 receive this bounded regression evidence; S2-04 real-provider acceptance remains NOT TESTED for this source. The separately gated external-target job was SKIPPED. No VM deployment, independent accuracy benchmark, whole-spiral acceptance or production release is claimed.
+
+**13 October owner direction:** resume reliability implementation and verification following the renewed testing request. Prioritize detection correctness and website usability under S2-02/S2-05 and S3-03/S3-04. [RELIABILITY_PLAN.md](RELIABILITY_PLAN.md) defines the proposed precision target, separate recall/coverage requirements and remaining work; no release gate is waived.
+
 Owner: project owner. Delivery lead: assigned developer. Independent review role:
 security/quality reviewer where available. One person may hold several roles,
 but identify that limitation; a developer self-check is not independent review.
