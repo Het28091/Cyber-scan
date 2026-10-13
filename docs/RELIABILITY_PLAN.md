@@ -28,7 +28,7 @@ Do not claim 99% general website reliability, detection or uptime.
 | Preserve findings, cookie redaction and redirect scope boundaries | VERIFIED in Linux CI at d258e2e | Existing full suite plus new header integration checks |
 | URL-first setup with automatic draft IP pins and explicit reviewed scope | VERIFIED in Linux CI at 2d2eca0 | Paste URL, review resolved scope, authorize; no automatic widening on redirects or DNS changes |
 | Group equivalent findings across affected URLs | VERIFIED in Linux CI at 2d2eca0 | Presentation grouping only; original IDs, per-asset evidence and review revisions retained |
-| Context-aware cookie attributes | IMPLEMENTED; 15 targeted Windows checks PASS; Linux CI pending | Validate SameSite values/order and whitespace; LOW manual-review observations, purpose/browser storage explicitly unknown |
+| Context-aware cookie attributes | VERIFIED at 65b5767: 201 tests and 16 mandatory Linux CI jobs PASS | Validate SameSite values/order and whitespace; LOW manual-review observations, purpose/browser storage explicitly unknown |
 | Context-aware CSP analysis | TODO | Meta CSP, report-only and multiple policies; no policy-strength claim from presence alone |
 | Broader web detection through an isolated, scoped engine adapter | DESIGN REQUIRED | Owned vulnerable/clean fixtures; no engine networking that bypasses scope pins |
 | Independent held-out benchmark | NOT STARTED | Frozen labelled cases, adjudicated disagreements, precision/recall by rule and scope |

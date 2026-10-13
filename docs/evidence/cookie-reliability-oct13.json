@@ -1,0 +1,15 @@
+{
+  "source_commit": "65b5767c86a54511d53fb510b257a59fc1b6be80",
+  "baseline_commit": "3ba14b67207b02ec1031a232304d24fc3834b7f3",
+  "date": "2026-10-13",
+  "task_ids": ["S2-02", "S2-05", "S3-04"],
+  "run_url": "https://github.com/Het28091/Cyber-scan/actions/runs/38432361907",
+  "mandatory_jobs_passed": 16,
+  "regression_tests": {"passed": 201, "seconds": 47.253},
+  "portable_precommit_tests": {"platform": "Windows", "python": "3.12.14", "passed": 15, "seconds": 0.031},
+  "external_target_job": "SKIPPED",
+  "real_provider": "NOT TESTED",
+  "independent_accuracy": "NOT MEASURED",
+  "deployment": "NOT PERFORMED",
+  "release_acceptance": "NOT ACCEPTED"
+}

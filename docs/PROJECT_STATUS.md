@@ -2,7 +2,9 @@
 
 **13 October cookie continuation:** S2-02/S2-05 and S3-04 correct cookie attribute
 whitespace, invalid/duplicate SameSite handling and context-free severity. Fifteen
-targeted checks PASS locally on Windows; Linux CI remains pending for this change.
+targeted checks PASS locally on Windows. At `65b5767c86a54511d53fb510b257a59fc1b6be80`,
+201 tests PASS and all 16 mandatory Linux CI jobs PASS; the external-target job was
+SKIPPED. See [evidence](evidence/cookie-reliability-oct13.json).
 Local execution has recovered; the existing PR branch is now checked out locally,
 with the owner's untracked private configuration helper preserved. No VM/provider
 call or deployment. See RELIABILITY_PLAN.md for detector limits and remaining work.

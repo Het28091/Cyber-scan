@@ -1,5 +1,31 @@
 # Verification record
 
+## Cookie observation correctness — 13 October 2026
+
+Source: `65b5767c86a54511d53fb510b257a59fc1b6be80`; baseline `3ba14b67207b02ec1031a232304d24fc3834b7f3`.
+Tasks S2-02/S2-05 and S3-04. At this source,
+[run 38432361907](https://github.com/Het28091/Cyber-scan/actions/runs/38432361907)
+passed all 16 mandatory Linux jobs. The regression suite passed **201 tests in
+47.253 s**. Ruff, Bandit, dependency audit, offline/corpus checks, Chromium dashboard
+and isolated snapshot checks, operations, real scanner integrations and the eight
+Ubuntu/Python distribution combinations passed. The separately gated external-target
+job was SKIPPED. No real AI call, owner-site rescan or VM deployment was performed.
+
+Before committing, Python 3.12.14 on Windows passed 15 targeted tests in 0.031 s:
+`python -m unittest tests.test_web_cookies tests.test_web_headers tests.test_redirect_evidence -v`.
+This portable check is separate from Linux runtime acceptance. The local shell has
+recovered; WSL is not installed, so GitHub CI supplies the supported Linux runtime.
+The owner's untracked configuration helper was preserved and not inspected.
+
+Five new test methods cover attribute case/whitespace, boolean attribute values,
+Expires commas, invalid/duplicate SameSite, None without Secure, independent fields,
+oversized attributes, conservative risk wording and redaction. These are authored
+regressions, not independent precision/recall measurements. No P0/P1 defect was
+observed in these checks; this is not independent security review. Context-aware
+CSP, real-provider acceptance, independent benchmarking and owner gates remain open.
+Evidence: [cookie-reliability-oct13.json](evidence/cookie-reliability-oct13.json).
+This subsequent documentation commit does not inherit exact-commit release gates.
+
 ## Website setup and optional AI configuration — 13 October 2026
 
 **13 October verified setup checkpoint:** at `2d2eca01ca1468c0017b43128623d687c98dbe47`, 196 regression tests PASS in 25.277 s and all 16 mandatory Linux CI jobs PASS, including real Chromium dashboard checks for website-only setup, reviewed DNS scope drafts, original-ID-preserving HTTP grouping and server AI configuration loading. [Run 38430892997](https://github.com/Het28091/Cyber-scan/actions/runs/38430892997); [evidence](evidence/website-setup-oct13.json). S2-02/S2-05 and S3-03/S3-04 receive this bounded regression evidence; S2-04 real-provider acceptance remains NOT TESTED for this source. The separately gated external-target job was SKIPPED. No VM deployment, independent accuracy benchmark, whole-spiral acceptance or production release is claimed.

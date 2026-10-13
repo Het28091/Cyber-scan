@@ -2,7 +2,8 @@
 
 **13 October cookie backlog:** S2-02/S2-05 and S3-04 attribute parsing and evidence
 wording are implemented with five new regression methods; all 15 targeted cookie,
-header and redirect tests PASS on Windows. Linux acceptance is pending. CSP context,
+header and redirect tests PASS on Windows. At `65b5767`, 201 tests and all 16 mandatory
+Linux CI jobs PASS; see VERIFICATION.md. The external-target job was SKIPPED. CSP context,
 independent precision/recall measurement, real-provider acceptance and owner release
 gates remain open; this does not accept a spiral.
 
